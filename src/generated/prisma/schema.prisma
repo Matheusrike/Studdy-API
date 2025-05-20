@@ -1,0 +1,189 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @unique @default(autoincrement())
+  name            String
+  email           String   @unique
+  birth_date      DateTime
+  cpf             String   @unique
+  created_at      DateTime @default(now())
+  modified_at     DateTime @default(now()) @updatedAt
+  role            Role
+  hashed_password String
+  teacher         Teacher?
+  student         Student?
+}
+
+enum Role {
+  Admin
+  Student
+  Teacher
+}
+
+model Teacher {
+  id                     Int                                  @id @unique @default(autoincrement())
+  user_id                Int                                  @unique
+  user                   User                                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  created_at             DateTime                             @default(now())
+  modified_at            DateTime                             @default(now()) @updatedAt
+  teacher_subjects       Relationship_teacher_subject[]
+  teacher_class_subjects Relationship_teacher_class_subject[]
+}
+
+model Subject {
+  id                     Int                                  @id @unique @default(autoincrement())
+  name                   String
+  created_at             DateTime                             @default(now())
+  modified_at            DateTime                             @default(now()) @updatedAt
+  teacher_subjects       Relationship_teacher_subject[]
+  teacher_class_subjects Relationship_teacher_class_subject[]
+}
+
+model Relationship_teacher_subject {
+  id         Int     @id @unique @default(autoincrement())
+  subject_id Int
+  teacher_id Int
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  teacher    Teacher @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+
+  @@unique([teacher_id, subject_id])
+}
+
+model Class {
+  id                     Int                                  @id @unique @default(autoincrement())
+  name                   String
+  shift                  String
+  course                 String
+  created_at             DateTime                             @default(now())
+  modified_at            DateTime                             @default(now()) @updatedAt
+  students               Student[]
+  teacher_class_subjects Relationship_teacher_class_subject[]
+}
+
+model Student {
+  id            Int            @id @unique @default(autoincrement())
+  enrollment    Int            @unique
+  user_id       Int            @unique
+  class_id      Int
+  created_at    DateTime       @default(now())
+  modified_at   DateTime       @default(now()) @updatedAt
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  class         Class          @relation(fields: [class_id], references: [id])
+  quiz_attempts Quiz_attempt[]
+}
+
+model Relationship_teacher_class_subject {
+  id         Int     @id @unique @default(autoincrement())
+  class_id   Int
+  teacher_id Int
+  subject_id Int
+  class      Class   @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  teacher    Teacher @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  quizzes    Quiz[]
+
+  @@unique([teacher_id, class_id, subject_id])
+}
+
+model Quiz {
+  id                       Int                                @id @unique @default(autoincrement())
+  title                    String
+  duration_minutes         Int?
+  max_points               Decimal                            @default(0)
+  max_attempt              Int?
+  visibility               QuizVisibility                     @default(draft)
+  created_at               DateTime                           @default(now())
+  modified_at              DateTime                           @default(now()) @updatedAt
+  teacher_class_subject_id Int
+  teacher_class_subject    Relationship_teacher_class_subject @relation(fields: [teacher_class_subject_id], references: [id], onDelete: Cascade)
+  questions                Question[]
+  quiz_attempts            Quiz_attempt[]
+}
+
+enum QuizVisibility {
+  draft
+  public
+  archived
+}
+
+model Question {
+  id                 Int                 @id @unique @default(autoincrement())
+  statement          String              @db.Text
+  points             Decimal
+  quiz_id            Int
+  created_at         DateTime            @default(now())
+  modified_at        DateTime            @default(now()) @updatedAt
+  quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  alternatives       Alternative[]
+  question_images    Question_images[]
+  question_responses Question_response[]
+}
+
+model Alternative {
+  id                  Int                 @id @unique @default(autoincrement())
+  question_id         Int
+  response            String
+  correct_alternative Boolean             @default(false)
+  created_at          DateTime            @default(now())
+  modified_at         DateTime            @default(now()) @updatedAt
+  question            Question            @relation(fields: [question_id], references: [id], onDelete: Cascade)
+  question_responses  Question_response[]
+}
+
+model Question_images {
+  id          Int      @id @unique @default(autoincrement())
+  image_path  String
+  alt_text    String
+  question_id Int
+  created_at  DateTime @default(now())
+  question    Question @relation(fields: [question_id], references: [id], onDelete: Cascade)
+}
+
+model Quiz_attempt {
+  id                 Int                 @id @unique @default(autoincrement())
+  student_id         Int
+  quiz_id            Int
+  started_at         DateTime            @default(now())
+  finished_at        DateTime?
+  status             AttemptStatus       @default(in_progress)
+  total_score        Decimal             @default(0)
+  created_at         DateTime            @default(now())
+  modified_at        DateTime            @default(now()) @updatedAt
+  student            Student             @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  question_responses Question_response[]
+}
+
+enum AttemptStatus {
+  in_progress
+  completed
+  abandoned
+}
+
+model Question_response {
+  id                    Int          @id @unique @default(autoincrement())
+  question_id           Int
+  marked_alternative_id Int
+  quiz_attempt_id       Int
+  is_correct            Boolean
+  points_earned         Decimal      @default(0)
+  created_at            DateTime     @default(now())
+  modified_at           DateTime     @default(now()) @updatedAt
+  question              Question     @relation(fields: [question_id], references: [id], onDelete: Cascade)
+  marked_alternative    Alternative  @relation(fields: [marked_alternative_id], references: [id], onDelete: Cascade)
+  quiz_attempt          Quiz_attempt @relation(fields: [quiz_attempt_id], references: [id], onDelete: Cascade)
+}
