@@ -8,6 +8,12 @@ export default defineConfig([
 		files: ['**/*.{js,mjs,cjs}'],
 		plugins: { js },
 		extends: ['js/recommended', 'prettier'],
+		rules: {
+			'require-await': 'warn',
+			'no-unused-vars': 'warn',
+			'no-undef': 'error',
+			'consistent-return': 'warn',
+		},
 	},
 	{
 		files: ['**/*.{js,mjs,cjs}'],
@@ -18,11 +24,5 @@ export default defineConfig([
 		plugins: { json },
 		language: 'json/json',
 		extends: ['json/recommended', 'prettier'],
-	},
-	{
-		rules: {
-			'no-unused-vars': 'warn',
-			'no-undef': 'warn',
-		},
 	},
 ]);
