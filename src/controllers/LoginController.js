@@ -10,7 +10,7 @@ async function compare(password, hashedPassword) {
 	}
 }
 
-const loginController = async (req, res) => {
+async function loginController(req, res) {
 	const { email, password } = req.body;
 
 	if (!email || !password) {
@@ -41,6 +41,6 @@ const loginController = async (req, res) => {
 		console.error('Error fetching users:', error);
 		res.status(500).json({ message: 'Internal server error', error });
 	}
-};
+}
 
 export { loginController };
