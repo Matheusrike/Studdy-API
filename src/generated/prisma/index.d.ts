@@ -92,6 +92,16 @@ export namespace $Enums {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const Shift: {
+  Morning: 'Morning',
+  Afternoon: 'Afternoon',
+  Evening: 'Evening',
+  Full: 'Full'
+};
+
+export type Shift = (typeof Shift)[keyof typeof Shift]
+
+
 export const QuizVisibility: {
   draft: 'draft',
   public: 'public',
@@ -114,6 +124,10 @@ export type AttemptStatus = (typeof AttemptStatus)[keyof typeof AttemptStatus]
 export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
+
+export type Shift = $Enums.Shift
+
+export const Shift: typeof $Enums.Shift
 
 export type QuizVisibility = $Enums.QuizVisibility
 
@@ -6265,7 +6279,7 @@ export namespace Prisma {
   export type ClassMinAggregateOutputType = {
     id: number | null
     name: string | null
-    shift: string | null
+    shift: $Enums.Shift | null
     course: string | null
     created_at: Date | null
     modified_at: Date | null
@@ -6274,7 +6288,7 @@ export namespace Prisma {
   export type ClassMaxAggregateOutputType = {
     id: number | null
     name: string | null
-    shift: string | null
+    shift: $Enums.Shift | null
     course: string | null
     created_at: Date | null
     modified_at: Date | null
@@ -6416,7 +6430,7 @@ export namespace Prisma {
   export type ClassGroupByOutputType = {
     id: number
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at: Date
     modified_at: Date
@@ -6480,7 +6494,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
-      shift: string
+      shift: $Enums.Shift
       course: string
       created_at: Date
       modified_at: Date
@@ -6857,7 +6871,7 @@ export namespace Prisma {
   interface ClassFieldRefs {
     readonly id: FieldRef<"Class", 'Int'>
     readonly name: FieldRef<"Class", 'String'>
-    readonly shift: FieldRef<"Class", 'String'>
+    readonly shift: FieldRef<"Class", 'Shift'>
     readonly course: FieldRef<"Class", 'String'>
     readonly created_at: FieldRef<"Class", 'DateTime'>
     readonly modified_at: FieldRef<"Class", 'DateTime'>
@@ -15663,7 +15677,6 @@ export namespace Prisma {
 
   export const ClassOrderByRelevanceFieldEnum: {
     name: 'name',
-    shift: 'shift',
     course: 'course'
   };
 
@@ -15744,6 +15757,13 @@ export namespace Prisma {
    * Reference to a field of type 'Role'
    */
   export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Shift'
+   */
+  export type EnumShiftFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Shift'>
     
 
 
@@ -16034,7 +16054,7 @@ export namespace Prisma {
     NOT?: ClassWhereInput | ClassWhereInput[]
     id?: IntFilter<"Class"> | number
     name?: StringFilter<"Class"> | string
-    shift?: StringFilter<"Class"> | string
+    shift?: EnumShiftFilter<"Class"> | $Enums.Shift
     course?: StringFilter<"Class"> | string
     created_at?: DateTimeFilter<"Class"> | Date | string
     modified_at?: DateTimeFilter<"Class"> | Date | string
@@ -16060,7 +16080,7 @@ export namespace Prisma {
     OR?: ClassWhereInput[]
     NOT?: ClassWhereInput | ClassWhereInput[]
     name?: StringFilter<"Class"> | string
-    shift?: StringFilter<"Class"> | string
+    shift?: EnumShiftFilter<"Class"> | $Enums.Shift
     course?: StringFilter<"Class"> | string
     created_at?: DateTimeFilter<"Class"> | Date | string
     modified_at?: DateTimeFilter<"Class"> | Date | string
@@ -16088,7 +16108,7 @@ export namespace Prisma {
     NOT?: ClassScalarWhereWithAggregatesInput | ClassScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Class"> | number
     name?: StringWithAggregatesFilter<"Class"> | string
-    shift?: StringWithAggregatesFilter<"Class"> | string
+    shift?: EnumShiftWithAggregatesFilter<"Class"> | $Enums.Shift
     course?: StringWithAggregatesFilter<"Class"> | string
     created_at?: DateTimeWithAggregatesFilter<"Class"> | Date | string
     modified_at?: DateTimeWithAggregatesFilter<"Class"> | Date | string
@@ -16890,7 +16910,7 @@ export namespace Prisma {
 
   export type ClassCreateInput = {
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -16901,7 +16921,7 @@ export namespace Prisma {
   export type ClassUncheckedCreateInput = {
     id?: number
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -16911,7 +16931,7 @@ export namespace Prisma {
 
   export type ClassUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16922,7 +16942,7 @@ export namespace Prisma {
   export type ClassUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16933,7 +16953,7 @@ export namespace Prisma {
   export type ClassCreateManyInput = {
     id?: number
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -16941,7 +16961,7 @@ export namespace Prisma {
 
   export type ClassUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16950,7 +16970,7 @@ export namespace Prisma {
   export type ClassUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17786,6 +17806,13 @@ export namespace Prisma {
     teacher_id?: SortOrder
   }
 
+  export type EnumShiftFilter<$PrismaModel = never> = {
+    equals?: $Enums.Shift | EnumShiftFieldRefInput<$PrismaModel>
+    in?: $Enums.Shift[]
+    notIn?: $Enums.Shift[]
+    not?: NestedEnumShiftFilter<$PrismaModel> | $Enums.Shift
+  }
+
   export type StudentListRelationFilter = {
     every?: StudentWhereInput
     some?: StudentWhereInput
@@ -17835,6 +17862,16 @@ export namespace Prisma {
 
   export type ClassSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type EnumShiftWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Shift | EnumShiftFieldRefInput<$PrismaModel>
+    in?: $Enums.Shift[]
+    notIn?: $Enums.Shift[]
+    not?: NestedEnumShiftWithAggregatesFilter<$PrismaModel> | $Enums.Shift
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumShiftFilter<$PrismaModel>
+    _max?: NestedEnumShiftFilter<$PrismaModel>
   }
 
   export type ClassScalarRelationFilter = {
@@ -18713,6 +18750,10 @@ export namespace Prisma {
     connect?: Relationship_teacher_subject_classWhereUniqueInput | Relationship_teacher_subject_classWhereUniqueInput[]
   }
 
+  export type EnumShiftFieldUpdateOperationsInput = {
+    set?: $Enums.Shift
+  }
+
   export type StudentUpdateManyWithoutClassNestedInput = {
     create?: XOR<StudentCreateWithoutClassInput, StudentUncheckedCreateWithoutClassInput> | StudentCreateWithoutClassInput[] | StudentUncheckedCreateWithoutClassInput[]
     connectOrCreate?: StudentCreateOrConnectWithoutClassInput | StudentCreateOrConnectWithoutClassInput[]
@@ -19474,6 +19515,23 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
+  export type NestedEnumShiftFilter<$PrismaModel = never> = {
+    equals?: $Enums.Shift | EnumShiftFieldRefInput<$PrismaModel>
+    in?: $Enums.Shift[]
+    notIn?: $Enums.Shift[]
+    not?: NestedEnumShiftFilter<$PrismaModel> | $Enums.Shift
+  }
+
+  export type NestedEnumShiftWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Shift | EnumShiftFieldRefInput<$PrismaModel>
+    in?: $Enums.Shift[]
+    notIn?: $Enums.Shift[]
+    not?: NestedEnumShiftWithAggregatesFilter<$PrismaModel> | $Enums.Shift
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumShiftFilter<$PrismaModel>
+    _max?: NestedEnumShiftFilter<$PrismaModel>
+  }
+
   export type NestedIntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | null
@@ -20106,7 +20164,7 @@ export namespace Prisma {
 
   export type ClassCreateWithoutStudentsInput = {
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -20116,7 +20174,7 @@ export namespace Prisma {
   export type ClassUncheckedCreateWithoutStudentsInput = {
     id?: number
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -20210,7 +20268,7 @@ export namespace Prisma {
 
   export type ClassUpdateWithoutStudentsInput = {
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20220,7 +20278,7 @@ export namespace Prisma {
   export type ClassUncheckedUpdateWithoutStudentsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20260,7 +20318,7 @@ export namespace Prisma {
 
   export type ClassCreateWithoutTeacher_subject_classesInput = {
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -20270,7 +20328,7 @@ export namespace Prisma {
   export type ClassUncheckedCreateWithoutTeacher_subject_classesInput = {
     id?: number
     name: string
-    shift: string
+    shift: $Enums.Shift
     course: string
     created_at?: Date | string
     modified_at?: Date | string
@@ -20346,7 +20404,7 @@ export namespace Prisma {
 
   export type ClassUpdateWithoutTeacher_subject_classesInput = {
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20356,7 +20414,7 @@ export namespace Prisma {
   export type ClassUncheckedUpdateWithoutTeacher_subject_classesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
-    shift?: StringFieldUpdateOperationsInput | string
+    shift?: EnumShiftFieldUpdateOperationsInput | $Enums.Shift
     course?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string

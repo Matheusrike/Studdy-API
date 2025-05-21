@@ -255,7 +255,6 @@ exports.Prisma.SubjectOrderByRelevanceFieldEnum = {
 
 exports.Prisma.ClassOrderByRelevanceFieldEnum = {
   name: 'name',
-  shift: 'shift',
   course: 'course'
 };
 
@@ -288,6 +287,13 @@ exports.Role = exports.$Enums.Role = {
   Admin: 'Admin',
   Student: 'Student',
   Teacher: 'Teacher'
+};
+
+exports.Shift = exports.$Enums.Shift = {
+  Morning: 'Morning',
+  Afternoon: 'Afternoon',
+  Evening: 'Evening',
+  Full: 'Full'
 };
 
 exports.QuizVisibility = exports.$Enums.QuizVisibility = {

@@ -62,10 +62,17 @@ model Relationship_teacher_subject {
   @@unique([teacher_id, subject_id])
 }
 
+enum Shift {
+  Morning
+  Afternoon
+  Evening
+  Full
+}
+
 model Class {
   id                      Int                                  @id @unique @default(autoincrement())
   name                    String
-  shift                   String
+  shift                   Shift
   course                  String
   created_at              DateTime                             @default(now())
   modified_at             DateTime                             @default(now()) @updatedAt
