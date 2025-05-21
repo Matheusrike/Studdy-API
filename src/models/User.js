@@ -1,5 +1,6 @@
 import prisma from '../../prisma/client.js';
 import { userSchema } from '../schemas/schemas.js';
+import { generateHashPassword } from '../utils/hash.js';
 
 async function getAllUsers() {
 	try {
@@ -21,25 +22,30 @@ async function getUserById(id) {
 	}
 }
 
-const user = {
-	name: 'Lucas Soalheiro',
-	email: 'Soalheiro@gmail.com',
-	cpf: '31586415946',
-	birth_date: new Date(),
-	role: 'Student',
-};
-
 async function createUser(userData) {
 	const validUser = userSchema.safeParse(userData);
-	if (!validUser) {
+
+	if (validUser.success === false) {
 		console.error('Invalid user data:', validUser.error);
+		return null;
 	}
-	console.log(validUser);
-	// try {
-	// 	await prisma.user.create({
-	// 		data: { UserData },
-	// 	});
-	// } catch (error) {}
+
+	try {
+		const hashed_password = await generateHashPassword(
+			validUser.data.password,
+		);
+		validUser.data.password = hashed_password;
+
+		const { password, ...rest } = validUser.data;
+		const user = { ...rest, hashed_password: password };
+
+		await prisma.user.create({
+			data: user,
+		});
+	} catch (error) {
+		console.error('Error creating user:', error);
+		throw error;
+	}
 }
 
 createUser(user);

@@ -170,11 +170,10 @@ exports.Prisma.StudentScalarFieldEnum = {
   modified_at: 'modified_at'
 };
 
-exports.Prisma.Relationship_teacher_class_subjectScalarFieldEnum = {
+exports.Prisma.Relationship_teacher_subject_classScalarFieldEnum = {
   id: 'id',
   class_id: 'class_id',
-  teacher_id: 'teacher_id',
-  subject_id: 'subject_id'
+  teacher_subject_id: 'teacher_subject_id'
 };
 
 exports.Prisma.QuizScalarFieldEnum = {
@@ -186,7 +185,7 @@ exports.Prisma.QuizScalarFieldEnum = {
   visibility: 'visibility',
   created_at: 'created_at',
   modified_at: 'modified_at',
-  teacher_class_subject_id: 'teacher_class_subject_id'
+  teacher_subject_class_id: 'teacher_subject_class_id'
 };
 
 exports.Prisma.QuestionScalarFieldEnum = {
@@ -260,6 +259,10 @@ exports.Prisma.ClassOrderByRelevanceFieldEnum = {
   course: 'course'
 };
 
+exports.Prisma.StudentOrderByRelevanceFieldEnum = {
+  enrollment: 'enrollment'
+};
+
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
@@ -306,7 +309,7 @@ exports.Prisma.ModelName = {
   Relationship_teacher_subject: 'Relationship_teacher_subject',
   Class: 'Class',
   Student: 'Student',
-  Relationship_teacher_class_subject: 'Relationship_teacher_class_subject',
+  Relationship_teacher_subject_class: 'Relationship_teacher_subject_class',
   Quiz: 'Quiz',
   Question: 'Question',
   Alternative: 'Alternative',
