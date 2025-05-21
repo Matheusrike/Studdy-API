@@ -16076,6 +16076,7 @@ export namespace Prisma {
 
   export type ClassWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    name_shift_course?: ClassNameShiftCourseCompoundUniqueInput
     AND?: ClassWhereInput | ClassWhereInput[]
     OR?: ClassWhereInput[]
     NOT?: ClassWhereInput | ClassWhereInput[]
@@ -16086,7 +16087,7 @@ export namespace Prisma {
     modified_at?: DateTimeFilter<"Class"> | Date | string
     students?: StudentListRelationFilter
     teacher_subject_classes?: Relationship_teacher_subject_classListRelationFilter
-  }, "id" | "id">
+  }, "id" | "id" | "name_shift_course">
 
   export type ClassOrderByWithAggregationInput = {
     id?: SortOrder
@@ -17827,6 +17828,12 @@ export namespace Prisma {
     fields: ClassOrderByRelevanceFieldEnum | ClassOrderByRelevanceFieldEnum[]
     sort: SortOrder
     search: string
+  }
+
+  export type ClassNameShiftCourseCompoundUniqueInput = {
+    name: string
+    shift: $Enums.Shift
+    course: string
   }
 
   export type ClassCountOrderByAggregateInput = {
