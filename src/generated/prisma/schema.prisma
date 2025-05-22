@@ -26,6 +26,8 @@ model User {
   hashed_password String
   teacher         Teacher?
   student         Student?
+
+  @@map("user")
 }
 
 enum Role {
@@ -41,6 +43,8 @@ model Teacher {
   created_at       DateTime                       @default(now())
   modified_at      DateTime                       @default(now()) @updatedAt
   teacher_subjects Relationship_teacher_subject[]
+
+  @@map("teacher")
 }
 
 model Subject {
@@ -49,6 +53,8 @@ model Subject {
   created_at       DateTime                       @default(now())
   modified_at      DateTime                       @default(now()) @updatedAt
   teacher_subjects Relationship_teacher_subject[]
+
+  @@map("subject")
 }
 
 model Relationship_teacher_subject {
@@ -60,6 +66,7 @@ model Relationship_teacher_subject {
   teacher_subject_classes Relationship_teacher_subject_class[]
 
   @@unique([teacher_id, subject_id])
+  @@map("relationship_teacher_subject")
 }
 
 enum Shift {
@@ -80,6 +87,7 @@ model Class {
   teacher_subject_classes Relationship_teacher_subject_class[]
 
   @@unique([name, shift, course])
+  @@map("class")
 }
 
 model Student {
@@ -92,6 +100,8 @@ model Student {
   user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   class         Class          @relation(fields: [class_id], references: [id])
   quiz_attempts Quiz_attempt[]
+
+  @@map("student")
 }
 
 model Relationship_teacher_subject_class {
@@ -103,6 +113,7 @@ model Relationship_teacher_subject_class {
   quizzes            Quiz[]
 
   @@unique([teacher_subject_id, class_id])
+  @@map("relationship_teacher_subject_class")
 }
 
 model Quiz {
@@ -118,6 +129,8 @@ model Quiz {
   teacher_subject_class    Relationship_teacher_subject_class @relation(fields: [teacher_subject_class_id], references: [id], onDelete: Cascade)
   questions                Question[]
   quiz_attempts            Quiz_attempt[]
+
+  @@map("quiz")
 }
 
 enum QuizVisibility {
@@ -137,6 +150,8 @@ model Question {
   alternatives       Alternative[]
   question_images    Question_images[]
   question_responses Question_response[]
+
+  @@map("question")
 }
 
 model Alternative {
@@ -148,6 +163,8 @@ model Alternative {
   modified_at         DateTime            @default(now()) @updatedAt
   question            Question            @relation(fields: [question_id], references: [id], onDelete: Cascade)
   question_responses  Question_response[]
+
+  @@map("alternative")
 }
 
 model Question_images {
@@ -157,6 +174,8 @@ model Question_images {
   question_id Int
   created_at  DateTime @default(now())
   question    Question @relation(fields: [question_id], references: [id], onDelete: Cascade)
+
+  @@map("question_images")
 }
 
 model Quiz_attempt {
@@ -172,6 +191,8 @@ model Quiz_attempt {
   student            Student             @relation(fields: [student_id], references: [id], onDelete: Cascade)
   quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
   question_responses Question_response[]
+
+  @@map("quiz_attempt")
 }
 
 enum AttemptStatus {
@@ -192,4 +213,6 @@ model Question_response {
   question              Question     @relation(fields: [question_id], references: [id], onDelete: Cascade)
   marked_alternative    Alternative  @relation(fields: [marked_alternative_id], references: [id], onDelete: Cascade)
   quiz_attempt          Quiz_attempt @relation(fields: [quiz_attempt_id], references: [id], onDelete: Cascade)
+
+  @@map("question_response")
 }

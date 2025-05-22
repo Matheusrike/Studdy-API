@@ -1,6 +1,5 @@
 import { z } from 'zod/v4';
 import { validateCPF, parseBRDateToIso, isOlderThanSixYears } from './utils.js';
-import { error } from 'zod/v4/locales/ar.js';
 
 // Schema de validação de usuário
 const userSchema = z.object({
