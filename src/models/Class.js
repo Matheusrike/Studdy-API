@@ -28,7 +28,7 @@ async function createClass(classData) {
 
 	if (validClass.success === false) {
 		console.error('Invalid class data:', validClass.error);
-		return null;
+		throw new Error('Invalid class data');
 	}
 
 	try {

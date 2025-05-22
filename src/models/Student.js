@@ -1,5 +1,7 @@
 import prisma from '../../prisma/client.js';
 import { studentSchema } from '../schemas/schemas.js';
+import { createUser } from './User.js';
+import { generateEnrollment } from '../utils/generateEnrollment.js';
 
 async function getAllStudents() {
 	try {
@@ -30,42 +32,49 @@ async function getStudentById(id) {
 }
 
 async function createStudent(studentData) {
-	const validStudent = studentSchema.safeParse(studentData);
-
 	try {
-		// Verifica se os dados estão corretos
-		if (validStudent.success === false) {
-			console.error('Invalid student data:', validStudent.error);
-			return null;
-		}
+		const { user, student } = studentData;
+		await prisma.$transaction(async (tx) => {
+			// 1. Cria o usuário
+			const user_id = await createUser(user, tx).then(
+				(createdUser) => createdUser.id,
+			);
 
-		// Verifica se o usuário do aluno existe
-		const user = await prisma.user.findUnique({
-			where: { id: validStudent.data.user_id },
-		});
+			if (!user_id) {
+				console.error('Error creating user while creating student');
+				throw new Error('Error creating user while creating student');
+			}
 
-		if (!user) {
-			console.error('User not found');
-			return null;
-		}
+			// 2. valida os dados
+			const validStudent = studentSchema.safeParse({
+				user_id,
+				class_id: student.class_id,
+			});
 
-		// Verifica se a turma do aluno existe
-		const schoolClass = await prisma.class.findUnique({
-			where: validStudent.data.class_id,
-		});
+			if (!validStudent.success) {
+				console.error('Invalid student data:', validStudent.error);
+				throw new Error('Invalid student data:', validStudent.error);
+			}
 
-		if (!schoolClass) {
-			console.error('Class not found');
-			return null;
-		}
+			// 3. Verifica se a turma do aluno existe
+			const schoolClass = await tx.class.findUnique({
+				where: { id: validStudent.data.class_id },
+			});
 
-		const student = {
-			...validStudent.data,
-			enrollment: generateEnrollment(),
-		};
+			if (!schoolClass) {
+				console.error('Class not found while creating student');
+				throw new Error('Class not found while creating student');
+			}
 
-		await prisma.student.create({
-			data: validStudent.data,
+			// 4. Cria o aluno
+			const studentData = {
+				...validStudent.data,
+				enrollment: generateEnrollment(validStudent.data.user_id),
+			};
+
+			await tx.student.create({
+				data: studentData,
+			});
 		});
 	} catch (error) {
 		console.error('Error creating student:', error);

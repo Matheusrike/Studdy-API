@@ -36,4 +36,4 @@ const studentSchema = z.object({
 	class_id: z.number().int().positive({ error: 'Invalid class id' }),
 });
 
-export { userSchema, classSchema };
+export { userSchema, classSchema, studentSchema };
