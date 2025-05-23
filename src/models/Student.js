@@ -34,7 +34,7 @@ async function getStudentById(id) {
 async function createStudent(studentData) {
 	try {
 		const { user, student } = studentData;
-		await prisma.$transaction(async (tx) => {
+		const createdStudent = await prisma.$transaction(async (tx) => {
 			// 1. Cria o usuário
 			const user_id = await createUser(user, tx).then(
 				(createdUser) => createdUser.id,
@@ -52,8 +52,7 @@ async function createStudent(studentData) {
 			});
 
 			if (!validStudent.success) {
-				console.error('Invalid student data:', validStudent.error);
-				throw new Error('Invalid student data:', validStudent.error);
+				throw new Error(validStudent.error.message);
 			}
 
 			// 3. Verifica se a turma do aluno existe
@@ -72,14 +71,86 @@ async function createStudent(studentData) {
 				enrollment: generateEnrollment(validStudent.data.user_id),
 			};
 
-			await tx.student.create({
+			return await tx.student.create({
 				data: studentData,
 			});
 		});
+		return createdStudent;
 	} catch (error) {
-		console.error('Error creating student:', error);
 		throw error;
 	}
 }
 
-export { getAllStudents, getStudentById, createStudent };
+async function updateStudentClass(student_id, class_id) {
+	try {
+		// Verifica se o aluno e a turma existem
+		const student = await prisma.student.findUnique({
+			where: { id: student_id },
+			select: { id: true },
+		});
+
+		if (!student) {
+			console.error('Student not found');
+			throw new Error('Student not found');
+		}
+
+		const schoolClass = await prisma.class.findUnique({
+			where: { id: class_id },
+			select: { id: true },
+		});
+
+		if (!schoolClass) {
+			console.error('Class not found');
+			throw new Error('Class not found');
+		}
+
+		// Atualiza a turma do aluno
+		const updatedStudent = await prisma.student.update({
+			where: { id: student_id },
+			data: { class_id: class_id },
+		});
+
+		return updatedStudent;
+	} catch (error) {
+		console.error('Error updating student class:', error);
+		throw error;
+	}
+}
+
+async function deleteStudentAccount(user_id) {
+	try {
+		// Verifica se o user existe
+		const user = await prisma.user.findUnique({
+			where: { id: user_id },
+			select: { id: true, role: true },
+		});
+
+		if (!user) {
+			console.error('User not found');
+			throw new Error('User not found');
+		}
+
+		if (user.role !== 'Student') {
+			console.error('User is not a student');
+			throw new Error('User is not a student');
+		}
+
+		// Deleta o user do estudante
+		const deleted = await prisma.user.delete({
+			where: { id: user_id },
+		});
+
+		return deleted;
+	} catch (error) {
+		console.error('Error deleting student:', error);
+		throw error;
+	}
+}
+
+export {
+	getAllStudents,
+	getStudentById,
+	createStudent,
+	updateStudentClass,
+	deleteStudentAccount,
+};

@@ -10,7 +10,10 @@ const userSchema = z.object({
 	password: z.string(),
 	cpf: z
 		.string()
-		.refine((cpf) => validateCPF(cpf).formatted, { error: 'Invalid CPF' }),
+		.refine((cpf) => validateCPF(cpf).valid, {
+			message: 'Invalid CPF',
+		})
+		.transform((cpf) => validateCPF(cpf).formatted),
 	birth_date: z
 		.string()
 		.refine((date) => parseBRDateToIso(date) !== null, {

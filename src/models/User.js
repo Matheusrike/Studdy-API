@@ -22,7 +22,7 @@ async function getUserById(id) {
 	}
 }
 
-async function createUser(userData, tx) {
+async function createUser(userData, tx = prisma) {
 	// 1. Verifica se os dados do usuario estao corretos
 	const validUser = userSchema.safeParse(userData);
 

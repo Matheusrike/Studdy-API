@@ -1,7 +1,15 @@
 import express from 'express';
-import { createClassController } from '../controllers/ClassController.js';
+import {
+	getAllClassesController,
+	getClassByIdController,
+	createClassController,
+} from '../controllers/ClassController.js';
 
 const router = express.Router();
+
+router.get('/', getAllClassesController);
+
+router.get('/:id', getClassByIdController);
 
 router.post('/', createClassController);
 
