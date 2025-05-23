@@ -9,10 +9,10 @@ import {
 async function getAllStudentsController(req, res) {
 	try {
 		const students = await getAllStudents();
-		res.status(200).json(students);
+		return res.status(200).json(students);
 	} catch (error) {
 		console.error('Error fetching students:', error);
-		res.status(500).json({ message: 'Error fetching students' });
+		return res.status(500).json({ message: 'Error fetching students' });
 	}
 }
 
@@ -27,7 +27,7 @@ async function getStudentByIdController(req, res) {
 		return res.status(200).json(student);
 	} catch (error) {
 		console.error('Error fetching student:', error);
-		res.status(500).json({ message: 'Error fetching student' });
+		return res.status(500).json({ message: 'Error fetching student' });
 	}
 }
 

@@ -136,11 +136,9 @@ async function deleteStudentAccount(user_id) {
 		}
 
 		// Deleta o user do estudante
-		const deleted = await prisma.user.delete({
+		return await prisma.user.delete({
 			where: { id: user_id },
 		});
-
-		return deleted;
 	} catch (error) {
 		console.error('Error deleting student:', error);
 		throw error;

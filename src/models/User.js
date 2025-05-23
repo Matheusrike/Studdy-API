@@ -26,7 +26,7 @@ async function createUser(userData, tx = prisma) {
 	// 1. Verifica se os dados do usuario estao corretos
 	const validUser = userSchema.safeParse(userData);
 
-	if (validUser.success === false) {
+	if (!validUser.success) {
 		console.error('Invalid user data:', validUser.error);
 		throw new Error('Invalid user data');
 	}
