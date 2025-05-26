@@ -15963,14 +15963,14 @@ export namespace Prisma {
 
   export type SubjectWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    name?: string
     AND?: SubjectWhereInput | SubjectWhereInput[]
     OR?: SubjectWhereInput[]
     NOT?: SubjectWhereInput | SubjectWhereInput[]
-    name?: StringFilter<"Subject"> | string
     created_at?: DateTimeFilter<"Subject"> | Date | string
     modified_at?: DateTimeFilter<"Subject"> | Date | string
     teacher_subjects?: Relationship_teacher_subjectListRelationFilter
-  }, "id" | "id">
+  }, "id" | "id" | "name">
 
   export type SubjectOrderByWithAggregationInput = {
     id?: SortOrder

@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE `class` MODIFY `shift` ENUM('Morning', 'Afternoon', 'Evening', 'Full') NOT NULL;
+ALTER TABLE `Class` MODIFY `shift` ENUM('Morning', 'Afternoon', 'Evening', 'Full') NOT NULL;

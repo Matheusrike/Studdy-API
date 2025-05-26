@@ -7,29 +7,29 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `quiz` DROP FOREIGN KEY `Quiz_teacher_class_subject_id_fkey`;
+ALTER TABLE `Quiz` DROP FOREIGN KEY `Quiz_teacher_class_subject_id_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `relationship_teacher_class_subject` DROP FOREIGN KEY `Relationship_teacher_class_subject_class_id_fkey`;
+ALTER TABLE `Relationship_teacher_class_subject` DROP FOREIGN KEY `Relationship_teacher_class_subject_class_id_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `relationship_teacher_class_subject` DROP FOREIGN KEY `Relationship_teacher_class_subject_subject_id_fkey`;
+ALTER TABLE `Relationship_teacher_class_subject` DROP FOREIGN KEY `Relationship_teacher_class_subject_subject_id_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `relationship_teacher_class_subject` DROP FOREIGN KEY `Relationship_teacher_class_subject_teacher_id_fkey`;
+ALTER TABLE `Relationship_teacher_class_subject` DROP FOREIGN KEY `Relationship_teacher_class_subject_teacher_id_fkey`;
 
 -- DropIndex
-DROP INDEX `Quiz_teacher_class_subject_id_fkey` ON `quiz`;
+DROP INDEX `Quiz_teacher_class_subject_id_fkey` ON `Quiz`;
 
 -- AlterTable
-ALTER TABLE `quiz` DROP COLUMN `teacher_class_subject_id`,
+ALTER TABLE `Quiz` DROP COLUMN `teacher_class_subject_id`,
     ADD COLUMN `teacher_subject_class_id` INTEGER NOT NULL;
 
 -- AlterTable
-ALTER TABLE `student` MODIFY `enrollment` VARCHAR(191) NOT NULL;
+ALTER TABLE `Student` MODIFY `enrollment` VARCHAR(191) NOT NULL;
 
 -- DropTable
-DROP TABLE `relationship_teacher_class_subject`;
+DROP TABLE `Relationship_teacher_class_subject`;
 
 -- CreateTable
 CREATE TABLE `Relationship_teacher_subject_class` (
