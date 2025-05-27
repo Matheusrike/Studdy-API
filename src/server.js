@@ -4,7 +4,6 @@ import cors from 'cors';
 // Routes
 import authRoute from './routes/loginRoute.js';
 import adminRoute from './routes/adminRoute.js';
-import subjectRoute from './routes/subjectRoute.js';
 import quizRoute from './routes/quizRoute.js';
 
 // express config
@@ -25,9 +24,6 @@ app.use('/login', authRoute);
 
 // Admin route
 app.use('/admin', adminRoute);
-
-// Subject route
-app.use('/subject', subjectRoute);
 
 // Quiz route
 app.use('/quiz', quizRoute);

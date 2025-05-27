@@ -43,18 +43,6 @@ const studentSchema = z.object({
 	class_id: z.number().int().positive({ error: 'Invalid class id' }),
 });
 
-const subjectSchema = z.object({
-	name: z
-		.string()
-		.min(3, {
-			error: 'The subject name must be at least 3 characters long',
-		})
-		.max(100, {
-			error: 'The subject name must be at most 100 characters long',
-		})
-		.transform((name) => name.trim().toLowerCase()),
-});
-
 // Schema de validação de materias
 const subjectListSchema = z
 	.array(z.number().int().positive())
@@ -114,7 +102,6 @@ export {
 	userSchema,
 	classSchema,
 	studentSchema,
-	subjectSchema,
 	subjectListSchema,
 	teacherSchema,
 	alternativeSchema,

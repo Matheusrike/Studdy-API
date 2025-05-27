@@ -306,7 +306,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\24250674\\projects\\Studdy-API\\src\\generated\\prisma",
+      "value": "/home/matheus/projects/Studdy-API/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -315,12 +315,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-1.1.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\24250674\\projects\\Studdy-API\\prisma\\schema.prisma",
+    "sourceFilePath": "/home/matheus/projects/Studdy-API/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

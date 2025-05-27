@@ -1,6 +1,14 @@
 import express from 'express';
 
 import {
+	getAllSubjectsController,
+	getSubjectByIdController,
+	createSubjectController,
+	updateSubjectController,
+	deleteSubjectController,
+} from '../controllers/SubjectController.js';
+
+import {
 	getAllTeachersController,
 	getTeacherByIdController,
 	createTeacherController,
@@ -25,6 +33,13 @@ import {
 } from '../controllers/ClassController.js';
 
 const router = express.Router();
+
+// Rotas para gerenciar disciplinas
+router.get('/subjects', getAllSubjectsController);
+router.get('/subjects/:subjectId', getSubjectByIdController);
+router.post('/subjects', createSubjectController);
+router.put('/subjects/:subjectId', updateSubjectController);
+router.delete('/subjects/:subjectId', deleteSubjectController);
 
 // Rotas para gerenciar professores
 router.get('/teachers', getAllTeachersController);
