@@ -18,7 +18,7 @@ async function getAllTeachersController(req, res) {
 
 async function getTeacherByIdController(req, res) {
 	try {
-		const teacher = await getTeacherById(parseInt(req.params.id));
+		const teacher = await getTeacherById(parseInt(req.params.teacherId));
 
 		if (!teacher) {
 			return res.status(404).json({ message: 'Teacher not found' });
@@ -44,7 +44,7 @@ async function createTeacherController(req, res) {
 async function updateTeacherSubjectController(req, res) {
 	try {
 		const updatedSubjects = await updateTeacherSubject(
-			parseInt(req.params.id),
+			parseInt(req.params.teacherId),
 			req.body,
 		);
 
@@ -64,7 +64,7 @@ async function updateTeacherSubjectController(req, res) {
 async function deleteTeacherAccountController(req, res) {
 	try {
 		const deleted = await deleteTeacherAccount(
-			parseInt(req.params.user_id),
+			parseInt(req.params.teacherId),
 		);
 		return res.status(200).json(deleted);
 	} catch (error) {

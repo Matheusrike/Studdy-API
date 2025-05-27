@@ -3,10 +3,8 @@ import cors from 'cors';
 
 // Routes
 import authRoute from './routes/loginRoute.js';
-import studentRoute from './routes/studentRoute.js';
-import classRoute from './routes/classRoute.js';
+import adminRoute from './routes/adminRoute.js';
 import subjectRoute from './routes/subjectRoute.js';
-import teacherRoute from './routes/teacherRoute.js';
 import quizRoute from './routes/quizRoute.js';
 
 // express config
@@ -25,17 +23,11 @@ app.use(
 // Login route
 app.use('/login', authRoute);
 
-// Student route
-app.use('/student', studentRoute);
-
-// Class route
-app.use('/class', classRoute);
+// Admin route
+app.use('/admin', adminRoute);
 
 // Subject route
 app.use('/subject', subjectRoute);
-
-// Teacher route
-app.use('/teacher', teacherRoute);
 
 // Quiz route
 app.use('/quiz', quizRoute);

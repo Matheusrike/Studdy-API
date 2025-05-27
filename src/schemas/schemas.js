@@ -1,8 +1,7 @@
-import { toLowerCase, trim, z } from 'zod/v4';
+import { z } from 'zod/v4';
 import { validateCPF } from '../utils/validateCPF.js';
 import { parseBRDateToIso } from '../utils/parseDate.js';
 import { isOlderThanSixYears } from '../utils/validateAge.js';
-import { vi } from 'zod/v4/locales';
 
 // Schema de validação de usuário
 const userSchema = z.object({
@@ -104,6 +103,11 @@ const quizSchema = z.object({
 	visibility: z.enum(['draft', 'public', 'archived'], {
 		error: 'Invalid visibility',
 	}),
+});
+
+const assignmentSchema = z.object({
+	subject_id: z.number().int().positive({ error: 'Invalid subject id' }),
+	teacher_id: z.number().int().positive({ error: 'Invalid teacher id' }),
 });
 
 export {

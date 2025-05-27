@@ -4,7 +4,21 @@ import { createUser } from './User.js';
 
 async function getAllTeachers() {
 	try {
-		const teachers = await prisma.teacher.findMany();
+		const teachers = await prisma.teacher.findMany({
+			select: {
+				id: true,
+				user_id: true,
+				user: {
+					select: {
+						name: true,
+						email: true,
+						birth_date: true,
+						cpf: true,
+						role: true,
+					},
+				},
+			},
+		});
 		return teachers;
 	} catch (error) {
 		console.error('Error fetching teachers:', error);
@@ -16,6 +30,19 @@ async function getTeacherById(teacher_id) {
 	try {
 		const teacher = await prisma.teacher.findUnique({
 			where: { id: teacher_id },
+			select: {
+				id: true,
+				user_id: true,
+				user: {
+					select: {
+						name: true,
+						email: true,
+						birth_date: true,
+						cpf: true,
+						role: true,
+					},
+				},
+			},
 		});
 		return teacher;
 	} catch (error) {

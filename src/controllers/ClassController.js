@@ -1,4 +1,9 @@
-import { getAllClasses, getClassById, createClass } from '../models/Class.js';
+import {
+	getAllClasses,
+	getClassById,
+	createClass,
+	updateClass,
+} from '../models/Class.js';
 
 async function getAllClassesController(req, res) {
 	try {
@@ -35,8 +40,34 @@ async function createClassController(req, res) {
 	}
 }
 
+async function updateClassController(req, res) {
+	try {
+		const schoolClass = await updateClass(
+			parseInt(req.params.id),
+			req.body,
+		);
+
+		return res.status(200).json(schoolClass);
+	} catch (error) {
+		console.error('Error updating class:', error);
+		return res.status(500).json({ message: 'Error updating class' });
+	}
+}
+
+async function deleteClassController(req, res) {
+	try {
+		await deleteClass(parseInt(req.params.id));
+		return res.status(204).json({ message: 'Class deleted successfully' });
+	} catch (error) {
+		console.error('Error deleting class:', error);
+		return res.status(500).json({ message: 'Error deleting class' });
+	}
+}
+
 export {
 	getAllClassesController,
 	getClassByIdController,
 	createClassController,
+	updateClassController,
+	deleteClassController,
 };

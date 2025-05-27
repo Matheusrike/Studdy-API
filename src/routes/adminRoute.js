@@ -1,0 +1,50 @@
+import express from 'express';
+
+import {
+	getAllTeachersController,
+	getTeacherByIdController,
+	createTeacherController,
+	updateTeacherSubjectController,
+	deleteTeacherAccountController,
+} from '../controllers/TeacherController.js';
+
+import {
+	getAllStudentsController,
+	getStudentByIdController,
+	createStudentController,
+	updateStudentClassController,
+	deleteStudentAccountController,
+} from '../controllers/StudentController.js';
+
+import {
+	getAllClassesController,
+	getClassByIdController,
+	createClassController,
+	updateClassController,
+	deleteClassController,
+} from '../controllers/ClassController.js';
+
+const router = express.Router();
+
+// Rotas para gerenciar professores
+router.get('/teachers', getAllTeachersController);
+router.get('/teachers/:teacherId', getTeacherByIdController);
+router.post('/teachers', createTeacherController);
+router.put('/teachers/:teacherId', updateTeacherSubjectController);
+router.delete('/teachers/:userId', deleteTeacherAccountController); // TODO: modificar o model teacher para usar o teacherId
+
+// Rotas para gerenciar alunos
+router.get('/students', getAllStudentsController);
+router.get('/students/:studentId', getStudentByIdController);
+router.post('/students', createStudentController);
+router.put('/students/:studentId', updateStudentClassController);
+router.delete('/students/:userId', deleteStudentAccountController); // TODO: modificar o model student para usar o studentId
+
+// Rotas para gerenciar turmas
+router.get('/classes', getAllClassesController);
+router.get('/classes/:classId', getClassByIdController);
+router.post('/classes', createClassController);
+router.put('/classes/:classId', updateClassController);
+router.delete('/classes/:classId', deleteClassController);
+
+export default router;

@@ -41,4 +41,56 @@ async function createClass(classData) {
 	}
 }
 
-export { getAllClasses, getClassById, createClass };
+async function updateClass(class_id, classData) {
+	let schoolClass, classId;
+
+	try {
+		classId = z.number().int().positive().parse(class_id);
+		schoolClass = classSchema.parse(classData);
+	} catch (error) {
+		console.error('Invalid request data:', error);
+		throw new Error('Invalid request data');
+	}
+
+	const existingClass = await prisma.class.findUnique({
+		where: { id: classId },
+	});
+
+	if (!existingClass) {
+		throw new Error(`Class with ID ${classId} not found`);
+	}
+
+	try {
+		const updatedClass = await prisma.class.update({
+			where: { id: classId },
+			data: schoolClass,
+		});
+
+		return updatedClass;
+	} catch (error) {
+		console.error('Error updating class:', error);
+		throw error;
+	}
+}
+
+async function deleteClass(class_id) {
+	let classId;
+
+	try {
+		classId = z.number().int().positive().parse(class_id);
+	} catch (error) {
+		console.error('Invalid request data:', error);
+		throw new Error('Invalid request data');
+	}
+
+	try {
+		return await prisma.class.delete({
+			where: { id: classId },
+		});
+	} catch (error) {
+		console.error('Error deleting class:', error);
+		throw error;
+	}
+}
+
+export { getAllClasses, getClassById, createClass, updateClass };
