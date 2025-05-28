@@ -57,7 +57,7 @@ router.delete('/students/:userId', deleteStudentAccountController); // TODO: mod
 
 // Rotas para gerenciar turmas
 router.get('/classes', getAllClassesController);
-router.get('/classes/:classId', getClassByIdController);
+router.get('/classes/:classId', getClassByIdController); // TODO: modificar o model class para usar retornar os dados completos da turma
 router.post('/classes', createClassController);
 router.put('/classes/:classId', updateClassController);
 router.delete('/classes/:classId', deleteClassController);

@@ -5,7 +5,6 @@ import {
 	updateSubject,
 	deleteSubject,
 } from '../models/Subject.js';
-import { ZodError } from 'zod';
 import { subjectSchema } from '../schemas/subject.schema.js';
 
 async function getAllSubjectsController(req, res) {
@@ -84,7 +83,7 @@ async function deleteSubjectController(req, res) {
 	try {
 		const subject_id = parseInt(req.params.subjectId);
 		const deleted = await deleteSubject(subject_id);
-		return res.status(200).json(deleted);
+		return res.status(204).send();
 	} catch (error) {
 		const status = error.status || 500;
 		const message = error.message || 'Internal server error';

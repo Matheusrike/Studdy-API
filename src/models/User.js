@@ -1,6 +1,4 @@
-import { ca } from 'zod/v4/locales';
 import prisma from '../../prisma/client.js';
-import { userSchema } from '../schemas/schemas.js';
 import { generateHashPassword } from '../utils/hash.js';
 
 async function getAllUsers() {

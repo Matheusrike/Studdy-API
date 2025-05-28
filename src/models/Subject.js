@@ -26,13 +26,17 @@ async function getSubjectById(subject_id) {
 }
 
 async function createSubject(subjectData) {
-	return await prisma.subject.create({
-		data: subjectData,
-		select: {
-			id: true,
-			name: true,
-		},
-	});
+	try {
+		return await prisma.subject.create({
+			data: subjectData,
+			select: {
+				id: true,
+				name: true,
+			},
+		});
+	} catch (error) {
+		throw error;
+	}
 }
 
 async function updateSubject(subject_id, subjectData) {
