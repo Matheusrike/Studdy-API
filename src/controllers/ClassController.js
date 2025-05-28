@@ -33,25 +33,31 @@ async function getClassByIdController(req, res) {
 }
 
 async function createClassController(req, res) {
-	let classData;
-
-	// Validação do payload
+	let payload;
 	try {
-		classData = classSchema.parse(req.body);
+		payload = classSchema.parse(req.body);
 	} catch (err) {
-		return res.status(400).json({ message: 'Invalid request body' });
+		return res.status(400).json({
+			message: err.errors
+				? err.errors[0].message
+				: 'Invalid request body',
+		});
 	}
 
-	// Criação da class
 	try {
-		const schoolClass = await createClass(classData);
-		return res.status(201).json(schoolClass);
+		const created = await createClass(payload);
+		return res.status(201).json(created);
 	} catch (err) {
-		// Erro de duplicação (Prisma Unique Constraint)
-		if (err.code === 'P2002') {
-			return res.status(409).json({ message: 'Subject already exists' });
+		// erro de professor não leciona matéria
+		if (err.message.includes('does not teach subject')) {
+			return res.status(400).json({ message: err.message });
 		}
-		// Erro genérico
+		// constraint do enum ou duplicação de nome cai aqui
+		if (err.code === 'P2002') {
+			return res
+				.status(409)
+				.json({ message: 'Class name already exists' });
+		}
 		console.error('Unexpected error:', err);
 		return res.status(500).json({ message: 'Internal Server Error' });
 	}

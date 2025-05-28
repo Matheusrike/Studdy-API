@@ -20,32 +20,112 @@ async function getClassById(classId) {
 				name: true,
 				shift: true,
 				course: true,
+
+				// Alunos da turma
+				students: {
+					select: {
+						id: true,
+						enrollment: true,
+						user: {
+							select: {
+								name: true,
+								email: true,
+							},
+						},
+					},
+				},
+
+				// Professores e matérias
+				teacher_subject_classes: {
+					select: {
+						teacher_subject: {
+							select: {
+								subject: {
+									select: { id: true, name: true },
+								},
+								teacher: {
+									select: {
+										id: true,
+										user: {
+											select: {
+												name: true,
+												email: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		});
-		return schoolClass;
+
+		if (!schoolClass) throw new Error('Class not found');
+
+		// Formata os professores
+		const teachers = schoolClass.teacher_subject_classes.map((item) => ({
+			teacher_id: item.teacher_subject.teacher.id,
+			teacher_name: item.teacher_subject.teacher.user.name,
+			teacher_email: item.teacher_subject.teacher.user.email,
+			subject: item.teacher_subject.subject,
+		}));
+
+		// Formata os alunos
+		const students = schoolClass.students.map((s) => ({
+			student_id: s.id,
+			name: s.user.name,
+			email: s.user.email,
+			enrollment: s.enrollment,
+		}));
+
+		return {
+			id: schoolClass.id,
+			name: schoolClass.name,
+			shift: schoolClass.shift,
+			course: schoolClass.course,
+			students,
+			teachers,
+		};
 	} catch (error) {
 		throw error;
 	}
 }
 
 async function createClass(classData) {
-	try {
-		return await prisma.class.create({
-			data: classData,
-			select: {
-				id: true,
-				name: true,
-			},
+	return await prisma.$transaction(async (tx) => {
+		// 1. Cria a turma
+		const { name, shift, course, assignments } = classData;
+		const newClass = await tx.class.create({
+			data: { name, shift, course },
+			select: { id: true, name: true, shift: true, course: true },
 		});
-	} catch (error) {
-		if (error.message.includes('Invalid enum value')) {
-			throw new Error(
-				'O turno informado é inválido. Use: Morning, Afternoon ou Evening.',
-			);
+
+		// 2. Para cada assignment, valida e insere na tabela de relação
+		for (const { teacher_id, subject_id } of assignments) {
+			// 2.1 Verifica se o professor leciona essa matéria
+			const ts = await tx.relationship_teacher_subject.findFirst({
+				where: { teacher_id, subject_id },
+				select: { id: true },
+			});
+			if (!ts) {
+				throw new Error(
+					`Teacher ${teacher_id} does not teach subject ${subject_id}`,
+				);
+			}
+
+			// 2.2 Grava na relação class, teacher_subject
+			await tx.relationship_teacher_subject_class.create({
+				data: {
+					class_id: newClass.id,
+					teacher_subject_id: ts.id,
+				},
+			});
 		}
 
-		throw error;
-	}
+		// 3. Retorna a turma criada
+		return newClass;
+	});
 }
 
 async function updateClass(classId, classData) {
