@@ -23,33 +23,23 @@ async function getUserById(id) {
 }
 
 async function createUser(userData, tx = prisma) {
-	// 1. Verifica se os dados do usuario estao corretos
-	const validUser = userSchema.safeParse(userData);
-
-	if (!validUser.success) {
-		console.error('Invalid user data:', validUser.error);
-		throw new Error('Invalid user data');
-	}
-
 	try {
-		// 2. Faz o hash da senha
-		const hashed_password = await generateHashPassword(
-			validUser.data.password,
-		);
-		validUser.data.password = hashed_password;
+		// 1. Faz o hash da senha
+		const hashed_password = await generateHashPassword(userData.password);
 
-		// 3. Substitui o password pelo hashed_password
-		const { password, ...rest } = validUser.data;
+		userData.password = hashed_password;
+
+		// 2. Substitui o password pelo hashed_password
+		const { password, ...rest } = userData;
 		const user = { ...rest, hashed_password: password };
 
-		// 4. Cria o usuário no banco de dados
+		// 3. Cria o usuário no banco de dados
 		const createdUser = await tx.user.create({
 			data: user,
 		});
 
 		return createdUser;
 	} catch (error) {
-		console.error('Error creating user:', error);
 		throw error;
 	}
 }

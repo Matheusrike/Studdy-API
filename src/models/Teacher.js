@@ -3,36 +3,34 @@ import { teacherSchema, subjectListSchema } from '../schemas/schemas.js';
 import { createUser } from './User.js';
 
 async function getAllTeachers() {
-	try {
-		const teachers = await prisma.teacher.findMany({
-			select: {
-				id: true,
-				user_id: true,
-				user: {
-					select: {
-						name: true,
-						email: true,
-						birth_date: true,
-						cpf: true,
-						role: true,
-					},
+	return await prisma.teacher.findMany({
+		select: {
+			id: true,
+			user: {
+				select: {
+					name: true,
+					email: true,
+					birth_date: true,
+					cpf: true,
+					role: true,
 				},
 			},
-		});
-		return teachers;
-	} catch (error) {
-		console.error('Error fetching teachers:', error);
-		throw error;
-	}
+			subjects: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+		},
+	});
 }
 
 async function getTeacherById(teacher_id) {
 	try {
-		const teacher = await prisma.teacher.findUnique({
+		return await prisma.teacher.findUnique({
 			where: { id: teacher_id },
 			select: {
 				id: true,
-				user_id: true,
 				user: {
 					select: {
 						name: true,
@@ -42,9 +40,14 @@ async function getTeacherById(teacher_id) {
 						role: true,
 					},
 				},
+				subjects: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
 			},
 		});
-		return teacher;
 	} catch (error) {
 		console.error('Error fetching teacher:', error);
 		throw error;
@@ -56,64 +59,77 @@ async function createTeacher(teacherData) {
 		const { user, teacher } = teacherData;
 		const createdTeacher = await prisma.$transaction(async (tx) => {
 			// 1. Cria o usuário
-			const user_id = await createUser(user, tx).then(
-				(createdUser) => createdUser.id,
-			);
+			const createdUser = await createUser(user, tx);
+			const user_id = createdUser.id;
 
 			if (!user_id) {
 				console.error('Error creating user while creating teacher');
 				throw new Error('Error creating user while creating teacher');
 			}
 
-			// 2. valida os dados
-			const validTeacher = teacherSchema.safeParse(teacher);
+			const subjectIds = teacher.subjects.map((subject) => subject.id);
 
-			if (!validTeacher.success) {
-				console.error('Invalid Teacher data:', validTeacher.error);
-				throw new Error(validTeacher.error.message);
-			}
-
-			const subjectIds = validTeacher.data.subjects;
-
-			// 3. Verifica se todas as materias existem
-			const foundSubjects = await tx.subject.findMany({
-				where: { id: { in: subjectIds } },
-			});
-
-			if (foundSubjects.length !== subjectIds.length) {
-				const foundIds = foundSubjects.map((s) => s.id);
-				const missingIds = subjectIds.filter(
-					(s) => !foundIds.includes(s),
-				);
-				console.error(`Invalid subject(s): ${missingIds.join(', ')}`);
-				throw new Error(`Invalid subject(s): ${missingIds.join(', ')}`);
-			}
-
-			// 4. Cria o professor
+			// 2. Cria o professor
 			const createdTeacher = await tx.teacher.create({
 				data: { user_id },
 			});
 
-			// 5. Define os relacionamentos entre professor matéria
-			const teacherSubject = subjectIds.map((subject_id) => ({
+			// 3. Define os relacionamentos entre professor e matérias
+			const teacherSubjectData = subjectIds.map((subject_id) => ({
 				teacher_id: createdTeacher.id,
 				subject_id,
 			}));
-
 			await tx.relationship_teacher_subject.createMany({
-				data: teacherSubject,
+				data: teacherSubjectData,
 			});
 
-			return createdTeacher;
+			// 4. Busca o professor com usuário e matérias associadas para retorno
+			const teacherWithRelations = await tx.teacher.findUnique({
+				where: { id: createdTeacher.id },
+				select: {
+					id: true,
+					user_id: true,
+					user: {
+						select: {
+							name: true,
+							email: true,
+							cpf: true,
+							birth_date: true,
+							role: true,
+						},
+					},
+					teacher_subjects: {
+						select: {
+							subject: {
+								select: {
+									id: true,
+									name: true,
+								},
+							},
+						},
+					},
+				},
+			});
+
+			// 5. Formatar o retorno para ficar mais limpo (matérias apenas como array simples)
+			return {
+				id: teacherWithRelations.id,
+				user_id: teacherWithRelations.user_id,
+				user: teacherWithRelations.user,
+				subjects: teacherWithRelations.teacher_subjects.map(
+					(r) => r.subject,
+				),
+			};
 		});
+
 		return createdTeacher;
 	} catch (error) {
-		console.error('Error creating user:', error);
 		throw error;
 	}
 }
 
-async function updateTeacherSubject(teacher_id, teacherData) {
+//TODO: Refatorar o update para atualizar os dados do usuário também
+async function updateTeacher(teacher_id, teacherData) {
 	const { subjects } = teacherData;
 	try {
 		return await prisma.$transaction(async (tx) => {
@@ -214,6 +230,6 @@ export {
 	getAllTeachers,
 	getTeacherById,
 	createTeacher,
-	updateTeacherSubject,
+	updateTeacher,
 	deleteTeacherAccount,
 };

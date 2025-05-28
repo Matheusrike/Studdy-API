@@ -5,6 +5,7 @@ import {
 	updateSubject,
 	deleteSubject,
 } from '../models/Subject.js';
+import { ZodError } from 'zod';
 import { subjectSchema } from '../schemas/subject.schema.js';
 
 async function getAllSubjectsController(req, res) {
@@ -39,11 +40,7 @@ async function createSubjectController(req, res) {
 	try {
 		subjectData = subjectSchema.parse(req.body);
 	} catch (err) {
-		const message =
-			err instanceof ZodError
-				? err.errors[0].message
-				: 'Invalid request body';
-		return res.status(400).json({ message });
+		return res.status(400).json({ message: 'Invalid request body' });
 	}
 
 	// Criação da subject
@@ -69,8 +66,7 @@ async function updateSubjectController(req, res) {
 	try {
 		subject = subjectSchema.parse(req.body);
 	} catch (error) {
-		const message = error.errors?.[0]?.message || 'Invalid subject data';
-		return res.status(400).json({ message });
+		return res.status(400).json({ message: 'Invalid request body' });
 	}
 
 	// Chamada do serviço

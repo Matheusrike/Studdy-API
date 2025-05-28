@@ -2,9 +2,11 @@ import {
 	getAllTeachers,
 	getTeacherById,
 	createTeacher,
-	updateTeacherSubject,
+	updateTeacher,
 	deleteTeacherAccount,
 } from '../models/Teacher.js';
+import { teacherSchema } from '../schemas/teacher.schema.js';
+import { z } from 'zod';
 
 async function getAllTeachersController(req, res) {
 	try {
@@ -32,16 +34,24 @@ async function getTeacherByIdController(req, res) {
 }
 
 async function createTeacherController(req, res) {
+	let teacher;
+
 	try {
-		const teacher = await createTeacher(req.body);
-		return res.status(201).json(teacher);
+		teacher = teacherSchema.parse(req.body);
+	} catch (error) {
+		return res.status(400).json({ message: 'Invalid request body' });
+	}
+
+	try {
+		const created = await createTeacher(teacher);
+		return res.status(201).json(created);
 	} catch (error) {
 		console.error('Error creating teacher:', error);
 		return res.status(500).json({ message: 'Error creating teacher' });
 	}
 }
 
-async function updateTeacherSubjectController(req, res) {
+async function updateTeacherController(req, res) {
 	try {
 		const updatedSubjects = await updateTeacherSubject(
 			parseInt(req.params.teacherId),
@@ -86,6 +96,6 @@ export {
 	getAllTeachersController,
 	getTeacherByIdController,
 	createTeacherController,
-	updateTeacherSubjectController,
+	updateTeacherController,
 	deleteTeacherAccountController,
 };
