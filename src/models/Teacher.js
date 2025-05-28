@@ -1,6 +1,5 @@
 import prisma from '../../prisma/client.js';
-import { teacherSchema, subjectListSchema } from '../schemas/schemas.js';
-import { createUser } from './User.js';
+import { createUser, updateUser } from './User.js';
 
 async function getAllTeachers() {
 	return await prisma.teacher.findMany({
@@ -15,20 +14,24 @@ async function getAllTeachers() {
 					role: true,
 				},
 			},
-			subjects: {
+			teacher_subjects: {
 				select: {
-					id: true,
-					name: true,
+					subject: {
+						select: {
+							id: true,
+							name: true,
+						},
+					},
 				},
 			},
 		},
 	});
 }
 
-async function getTeacherById(teacher_id) {
+async function getTeacherById(teacherId) {
 	try {
 		return await prisma.teacher.findUnique({
-			where: { id: teacher_id },
+			where: { id: teacherId },
 			select: {
 				id: true,
 				user: {
@@ -40,10 +43,14 @@ async function getTeacherById(teacher_id) {
 						role: true,
 					},
 				},
-				subjects: {
+				teacher_subjects: {
 					select: {
-						id: true,
-						name: true,
+						subject: {
+							select: {
+								id: true,
+								name: true,
+							},
+						},
 					},
 				},
 			},
@@ -63,8 +70,7 @@ async function createTeacher(teacherData) {
 			const user_id = createdUser.id;
 
 			if (!user_id) {
-				console.error('Error creating user while creating teacher');
-				throw new Error('Error creating user while creating teacher');
+				throw 'Error creating user while creating teacher';
 			}
 
 			const subjectIds = teacher.subjects.map((subject) => subject.id);
@@ -124,104 +130,134 @@ async function createTeacher(teacherData) {
 
 		return createdTeacher;
 	} catch (error) {
+		if (error.code === 'P2002') {
+			const target = error.meta?.target;
+			let message = 'Dados duplicados.';
+
+			if (target?.includes('email')) {
+				message = 'O e-mail informado já está em uso.';
+			} else if (target?.includes('cpf')) {
+				message = 'O CPF informado já está em uso.';
+			}
+
+			throw new Error(message);
+		}
 		throw error;
 	}
 }
 
-//TODO: Refatorar o update para atualizar os dados do usuário também
-async function updateTeacher(teacher_id, teacherData) {
-	const { subjects } = teacherData;
+async function updateTeacher(teacherId, teacherData) {
+	const { user, teacher } = teacherData;
+
 	try {
-		return await prisma.$transaction(async (tx) => {
-			// 1. Verifica se o professor existe
-			const teacher = await tx.teacher.findUnique({
-				where: { id: teacher_id },
-				select: { id: true },
+		const updatedTeacher = await prisma.$transaction(async (tx) => {
+			// 1. Busca professor
+			const existingTeacher = await tx.teacher.findUnique({
+				where: { id: teacherId },
 			});
-			if (!teacher) {
+
+			if (!existingTeacher) {
 				throw new Error('Teacher not found');
 			}
 
-			// 2. Valida o array de IDs
-			const valid = subjectListSchema.safeParse(subjects);
-			if (!valid.success) {
-				throw new Error(valid.error.message);
-			}
-			const subjectIds = valid.data;
-
-			// 3. Confere existência das matérias no banco
-			const found = await tx.subject.findMany({
-				where: { id: { in: subjectIds } },
-				select: { id: true },
-			});
-			const foundIds = found.map((s) => s.id);
-			if (foundIds.length !== subjectIds.length) {
-				const missing = subjectIds.filter(
-					(id) => !foundIds.includes(id),
-				);
-				throw new Error(`Invalid subject(s): ${missing.join(', ')}`);
+			// 2. Atualiza user
+			if (user) {
+				await updateUser(tx, existingTeacher.user_id, user);
 			}
 
-			// 4) Relações atuais
-			const current = await tx.relationship_teacher_subject.findMany({
-				where: { teacher_id },
-				select: { subject_id: true },
-			});
-			const currentIds = current.map((r) => r.subject_id);
+			// 3. Atualiza as matérias
+			if (teacher?.subjects) {
+				const subjectIds = teacher.subjects.map((s) => s.id);
 
-			// 5) Calcula diferenças
-			const toAdd = subjectIds.filter((id) => !currentIds.includes(id));
-			const toRemove = currentIds.filter(
-				(id) => !subjectIds.includes(id),
-			);
-
-			// 6) Aplica remoções e inserções
-			if (toRemove.length) {
+				// Remove antigas
 				await tx.relationship_teacher_subject.deleteMany({
-					where: {
-						teacher_id,
-						subject_id: { in: toRemove },
-					},
+					where: { teacher_id: teacherId },
+				});
+
+				// Adiciona novas
+				await tx.relationship_teacher_subject.createMany({
+					data: subjectIds.map((subject_id) => ({
+						teacher_id: teacherId,
+						subject_id,
+					})),
 				});
 			}
-			if (toAdd.length) {
-				const data = toAdd.map((subject_id) => ({
-					teacher_id,
-					subject_id,
-				}));
-				await tx.relationship_teacher_subject.createMany({ data });
-			}
 
-			return { added: toAdd, removed: toRemove };
+			// 4. Busca professor com relações
+			const teacherWithRelations = await tx.teacher.findUnique({
+				where: { id: teacherId },
+				select: {
+					id: true,
+					user_id: true,
+					user: {
+						select: {
+							name: true,
+							email: true,
+							cpf: true,
+							birth_date: true,
+							role: true,
+						},
+					},
+					teacher_subjects: {
+						select: {
+							subject: {
+								select: {
+									id: true,
+									name: true,
+								},
+							},
+						},
+					},
+				},
+			});
+
+			// 5. Formatar o retorno para ficar mais limpo (matérias apenas como array simples)
+			return {
+				id: teacherWithRelations.id,
+				user_id: teacherWithRelations.user_id,
+				user: teacherWithRelations.user,
+				subjects: teacherWithRelations.teacher_subjects.map(
+					(r) => r.subject,
+				),
+			};
 		});
-	} catch (err) {
-		console.error('Error updating teacher subjects:', err);
-		throw err;
+		return updatedTeacher;
+	} catch (error) {
+		throw error;
 	}
 }
 
-async function deleteTeacherAccount(user_id) {
+async function deleteTeacher(teacherId) {
 	try {
-		const user = await prisma.user.findUnique({
-			where: { id: user_id },
-			select: { id: true, role: true },
+		// 1. Buscar o professor com o user_id
+		const teacher = await prisma.teacher.findUnique({
+			where: { id: teacherId },
+			select: {
+				user: {
+					select: {
+						id: true,
+						role: true,
+					},
+				},
+			},
 		});
 
-		if (!user) {
-			console.error('User not found');
-			throw new Error('User not found');
+		if (!teacher) {
+			throw new Error('Professor não encontrado');
 		}
 
-		if (user.role !== 'Teacher') {
-			console.error('User is not a teacher');
-			throw new Error('User is not a teacher');
+		const { id: user_id, role } = teacher.user;
+
+		// 2. Verificar se o usuário é um professor
+		if (role !== 'Teacher') {
+			throw new Error('O usuário não é um professor');
 		}
 
+		// 3. Deletar o usuário (e por cascata, o professor, se configurado no schema do Prisma)
 		return await prisma.user.delete({
 			where: { id: user_id },
 		});
 	} catch (error) {
-		console.error('Error deleting user:', error);
 		throw error;
 	}
 }
@@ -231,5 +267,5 @@ export {
 	getTeacherById,
 	createTeacher,
 	updateTeacher,
-	deleteTeacherAccount,
+	deleteTeacher,
 };

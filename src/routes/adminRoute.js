@@ -13,7 +13,7 @@ import {
 	getTeacherByIdController,
 	createTeacherController,
 	updateTeacherController,
-	deleteTeacherAccountController,
+	deleteTeacherController,
 } from '../controllers/TeacherController.js';
 
 import {
@@ -46,7 +46,7 @@ router.get('/teachers', getAllTeachersController);
 router.get('/teachers/:teacherId', getTeacherByIdController);
 router.post('/teachers', createTeacherController);
 router.put('/teachers/:teacherId', updateTeacherController);
-router.delete('/teachers/:userId', deleteTeacherAccountController); // TODO: modificar o model teacher para usar o teacherId
+router.delete('/teachers/:teacherId', deleteTeacherController);
 
 // Rotas para gerenciar alunos
 router.get('/students', getAllStudentsController);

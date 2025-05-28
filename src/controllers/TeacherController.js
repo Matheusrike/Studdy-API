@@ -3,10 +3,9 @@ import {
 	getTeacherById,
 	createTeacher,
 	updateTeacher,
-	deleteTeacherAccount,
+	deleteTeacher,
 } from '../models/Teacher.js';
 import { teacherSchema } from '../schemas/teacher.schema.js';
-import { z } from 'zod';
 
 async function getAllTeachersController(req, res) {
 	try {
@@ -46,49 +45,63 @@ async function createTeacherController(req, res) {
 		const created = await createTeacher(teacher);
 		return res.status(201).json(created);
 	} catch (error) {
-		console.error('Error creating teacher:', error);
-		return res.status(500).json({ message: 'Error creating teacher' });
+		return res.status(500).json({ message: error.message });
 	}
 }
 
 async function updateTeacherController(req, res) {
+	let teacher;
+
 	try {
-		const updatedSubjects = await updateTeacherSubject(
-			parseInt(req.params.teacherId),
-			req.body,
-		);
-
-		if (!updatedSubjects) {
-			return res.status(404).json({ message: 'Teacher not found' });
-		}
-
-		return res.status(200).json(updatedSubjects);
+		teacher = teacherSchema.parse(req.body);
 	} catch (error) {
-		console.error('Error updating teacher subjects:', error);
-		return res
-			.status(500)
-			.json({ message: 'Error updating teacher subjects' });
+		return res.status(400).json({ message: 'Invalid request body' });
+	}
+
+	try {
+		const updated = await updateTeacher(
+			parseInt(req.params.teacherId),
+			teacher,
+		);
+		return res.status(200).json(updated);
+	} catch (error) {
+		console.error('Error updating teacher:', error);
+		return res.status(500).json({ message: 'Error updating teacher' });
 	}
 }
 
-async function deleteTeacherAccountController(req, res) {
+async function deleteTeacherController(req, res) {
+	const id = req.params.teacherId;
+
 	try {
-		const deleted = await deleteTeacherAccount(
-			parseInt(req.params.teacherId),
-		);
-		return res.status(200).json(deleted);
+		// Verifica se o id é número válido
+		const teacherId = parseInt(id);
+		if (isNaN(teacherId) || teacherId <= 0) {
+			return res.status(400).json({ error: 'ID do professor inválido.' });
+		}
+
+		// Executa a deleção no model
+		await deleteTeacher(teacherId);
+
+		// Retorna sucesso
+		return res
+			.status(200)
+			.json({ message: 'Professor deletado com sucesso.' });
 	} catch (error) {
-		console.error('Error deleting teacher:', error);
+		console.error('Erro no deleteTeacherController:', error);
 
-		if (error.message === 'User not found') {
-			return res.status(404).json({ message: 'User not found' });
+		// Erro customizado para professor não encontrado
+		if (error.message.includes('não encontrado')) {
+			return res.status(404).json({ error: error.message });
 		}
 
-		if (error.message === 'User is not a teacher') {
-			return res.status(400).json({ message: 'User is not a teacher' });
+		// Erro de usuário não ser professor
+		if (error.message.includes('não é um professor')) {
+			return res.status(400).json({ error: error.message });
 		}
 
-		return res.status(500).json({ message: 'Error deleting teacher' });
+		// Erros inesperados
+		return res.status(500).json({ error: 'Erro interno no servidor.' });
 	}
 }
 
@@ -97,5 +110,5 @@ export {
 	getTeacherByIdController,
 	createTeacherController,
 	updateTeacherController,
-	deleteTeacherAccountController,
+	deleteTeacherController,
 };

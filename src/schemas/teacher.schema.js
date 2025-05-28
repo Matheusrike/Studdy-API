@@ -8,7 +8,7 @@ export const teacherSchema = z.object({
 			.array(
 				z.object({
 					id: z.number().int().positive(),
-					name: z.string().min(1),
+					name: z.string().min(1).optional(),
 				}),
 			)
 			.nonempty('At least one subject must be provided'),
