@@ -1,5 +1,5 @@
 import prisma from '../../prisma/client.js';
-import { quizSchema } from '../schemas/schemas.js';
+import { quizSchema } from '../schemas/quiz.schema.js';
 import { createQuestion } from './Question.js';
 
 async function createQuiz(quizData) {

@@ -1,4 +1,4 @@
-import { alternativeSchema } from '../schemas/schemas.js';
+import { alternativeSchema } from '../schemas/alternative.schema.js';
 
 async function createAlternative(tx, alternativeData, question_id) {
 	let alternative;

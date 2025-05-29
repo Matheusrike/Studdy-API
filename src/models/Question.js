@@ -1,4 +1,4 @@
-import { questionSchema } from '../schemas/schemas.js';
+import { questionSchema } from '../schemas/question.schema.js';
 import { createAlternative } from './Alternative.js';
 
 async function createQuestion(tx, questionData, quiz_id) {
