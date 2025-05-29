@@ -20,8 +20,8 @@ import {
 	getAllStudentsController,
 	getStudentByIdController,
 	createStudentController,
-	updateStudentClassController,
-	deleteStudentAccountController,
+	updateStudentController,
+	deleteStudentController,
 } from '../controllers/StudentController.js';
 
 import {
@@ -52,12 +52,11 @@ router.delete('/teachers/:teacherId', deleteTeacherController);
 router.get('/students', getAllStudentsController);
 router.get('/students/:studentId', getStudentByIdController);
 router.post('/students', createStudentController);
-router.put('/students/:studentId', updateStudentClassController);
-router.delete('/students/:userId', deleteStudentAccountController); // TODO: modificar o model student para usar o studentId
-
+router.put('/students/:studentId', updateStudentController);
+router.delete('/students/:studentId', deleteStudentController);
 // Rotas para gerenciar turmas
 router.get('/classes', getAllClassesController);
-router.get('/classes/:classId', getClassByIdController); // TODO: modificar o model class para usar retornar os dados completos da turma
+router.get('/classes/:classId', getClassByIdController);
 router.post('/classes', createClassController);
 router.put('/classes/:classId', updateClassController);
 router.delete('/classes/:classId', deleteClassController);

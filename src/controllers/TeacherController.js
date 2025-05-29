@@ -6,6 +6,7 @@ import {
 	deleteTeacher,
 } from '../models/Teacher.js';
 import { teacherSchema } from '../schemas/teacher.schema.js';
+import { ZodError } from 'zod/v4';
 
 async function getAllTeachersController(req, res) {
 	try {
@@ -38,13 +39,24 @@ async function createTeacherController(req, res) {
 	try {
 		teacher = teacherSchema.parse(req.body);
 	} catch (error) {
-		return res.status(400).json({ message: 'Invalid request body' });
+		if (error instanceof ZodError) {
+			const formatted = error['issues'].map((err) => ({
+				path: err.path.join('.'),
+				message: err.message,
+			}));
+
+			return res.status(400).json({
+				message: 'Invalid request body',
+				errors: formatted,
+			});
+		}
 	}
 
 	try {
 		const created = await createTeacher(teacher);
 		return res.status(201).json(created);
 	} catch (error) {
+		console.error(error);
 		return res.status(500).json({ message: error.message });
 	}
 }
@@ -55,7 +67,17 @@ async function updateTeacherController(req, res) {
 	try {
 		teacher = teacherSchema.parse(req.body);
 	} catch (error) {
-		return res.status(400).json({ message: 'Invalid request body' });
+		if (error instanceof ZodError) {
+			const formatted = error['issues'].map((err) => ({
+				path: err.path.join('.'),
+				message: err.message,
+			}));
+
+			return res.status(400).json({
+				message: 'Invalid request body',
+				errors: formatted,
+			});
+		}
 	}
 
 	try {
@@ -65,8 +87,8 @@ async function updateTeacherController(req, res) {
 		);
 		return res.status(200).json(updated);
 	} catch (error) {
-		console.error('Error updating teacher:', error);
-		return res.status(500).json({ message: 'Error updating teacher' });
+		console.error(error);
+		return res.status(500).json({ message: error.message });
 	}
 }
 
@@ -77,31 +99,23 @@ async function deleteTeacherController(req, res) {
 		// Verifica se o id é número válido
 		const teacherId = parseInt(id);
 		if (isNaN(teacherId) || teacherId <= 0) {
-			return res.status(400).json({ error: 'ID do professor inválido.' });
+			return res.status(400).json({ error: 'Teacher ID is invalid' });
 		}
 
 		// Executa a deleção no model
 		await deleteTeacher(teacherId);
 
 		// Retorna sucesso
-		return res
-			.status(200)
-			.json({ message: 'Professor deletado com sucesso.' });
+		return res.status(204).send();
 	} catch (error) {
-		console.error('Erro no deleteTeacherController:', error);
+		console.error(error);
 
 		// Erro customizado para professor não encontrado
-		if (error.message.includes('não encontrado')) {
+		if (error.message.includes('not found')) {
 			return res.status(404).json({ error: error.message });
 		}
 
-		// Erro de usuário não ser professor
-		if (error.message.includes('não é um professor')) {
-			return res.status(400).json({ error: error.message });
-		}
-
-		// Erros inesperados
-		return res.status(500).json({ error: 'Erro interno no servidor.' });
+		return res.status(500).json({ error: 'Internal server error' });
 	}
 }
 

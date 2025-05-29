@@ -1,11 +1,5 @@
 import { z } from 'zod/v4';
 
-// Schema de validação de estudante
-const studentSchema = z.object({
-	user_id: z.number().int().positive({ error: 'Invalid user id' }),
-	class_id: z.number().int().positive({ error: 'Invalid class id' }),
-});
-
 // Schema de validação de alternativa
 const alternativeSchema = z.object({
 	response: z
@@ -48,10 +42,4 @@ const assignmentSchema = z.object({
 	teacher_id: z.number().int().positive({ error: 'Invalid teacher id' }),
 });
 
-export {
-	studentSchema,
-	alternativeSchema,
-	questionSchema,
-	quizSchema,
-	assignmentSchema,
-};
+export { alternativeSchema, questionSchema, quizSchema, assignmentSchema };

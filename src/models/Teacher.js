@@ -7,6 +7,7 @@ async function getAllTeachers() {
 			id: true,
 			user: {
 				select: {
+					id: true,
 					name: true,
 					email: true,
 					birth_date: true,
@@ -65,12 +66,16 @@ async function createTeacher(teacherData) {
 	try {
 		const { user, teacher } = teacherData;
 		const createdTeacher = await prisma.$transaction(async (tx) => {
+			if (user.role !== 'Teacher') {
+				throw new Error('User is not a teacher');
+			}
+
 			// 1. Cria o usuário
 			const createdUser = await createUser(user, tx);
 			const user_id = createdUser.id;
 
 			if (!user_id) {
-				throw 'Error creating user while creating teacher';
+				throw new Error('Error creating user');
 			}
 
 			const subjectIds = teacher.subjects.map((subject) => subject.id);
@@ -94,9 +99,9 @@ async function createTeacher(teacherData) {
 				where: { id: createdTeacher.id },
 				select: {
 					id: true,
-					user_id: true,
 					user: {
 						select: {
+							id: true,
 							name: true,
 							email: true,
 							cpf: true,
@@ -150,6 +155,10 @@ async function updateTeacher(teacherId, teacherData) {
 	const { user, teacher } = teacherData;
 
 	try {
+		if (user.role !== 'Teacher') {
+			throw new Error('User is not a teacher');
+		}
+
 		const updatedTeacher = await prisma.$transaction(async (tx) => {
 			// 1. Busca professor
 			const existingTeacher = await tx.teacher.findUnique({
@@ -188,9 +197,9 @@ async function updateTeacher(teacherId, teacherData) {
 				where: { id: teacherId },
 				select: {
 					id: true,
-					user_id: true,
 					user: {
 						select: {
+							id: true,
 							name: true,
 							email: true,
 							cpf: true,
@@ -223,6 +232,19 @@ async function updateTeacher(teacherId, teacherData) {
 		});
 		return updatedTeacher;
 	} catch (error) {
+		if (error.code === 'P2002') {
+			const target = error.meta?.target;
+			let message = 'Dados duplicados.';
+
+			if (target?.includes('email')) {
+				message = 'O e-mail informado já está em uso.';
+			} else if (target?.includes('cpf')) {
+				message = 'O CPF informado já está em uso.';
+			}
+
+			throw new Error(message);
+		}
+
 		throw error;
 	}
 }
@@ -243,17 +265,12 @@ async function deleteTeacher(teacherId) {
 		});
 
 		if (!teacher) {
-			throw new Error('Professor não encontrado');
+			throw new Error('Teacher not found');
 		}
 
-		const { id: user_id, role } = teacher.user;
+		const { id: user_id } = teacher.user;
 
-		// 2. Verificar se o usuário é um professor
-		if (role !== 'Teacher') {
-			throw new Error('O usuário não é um professor');
-		}
-
-		// 3. Deletar o usuário (e por cascata, o professor, se configurado no schema do Prisma)
+		// 3. Deletar o usuário (e por cascata, o professor)
 		return await prisma.user.delete({
 			where: { id: user_id },
 		});
