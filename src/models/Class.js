@@ -21,7 +21,6 @@ async function getClassById(classId) {
 				shift: true,
 				course: true,
 
-				// Alunos da turma
 				students: {
 					select: {
 						id: true,
@@ -35,14 +34,11 @@ async function getClassById(classId) {
 					},
 				},
 
-				// Professores e matérias
 				teacher_subject_classes: {
 					select: {
 						teacher_subject: {
 							select: {
-								subject: {
-									select: { id: true, name: true },
-								},
+								subject: { select: { id: true, name: true } },
 								teacher: {
 									select: {
 										id: true,
@@ -63,15 +59,27 @@ async function getClassById(classId) {
 
 		if (!schoolClass) throw new Error('Class not found');
 
-		// Formata os professores
-		const teachers = schoolClass.teacher_subject_classes.map((item) => ({
-			teacher_id: item.teacher_subject.teacher.id,
-			teacher_name: item.teacher_subject.teacher.user.name,
-			teacher_email: item.teacher_subject.teacher.user.email,
-			subject: item.teacher_subject.subject,
-		}));
+		// Agrupa matérias por professor
+		const teacherMap = new Map();
 
-		// Formata os alunos
+		schoolClass.teacher_subject_classes.forEach(({ teacher_subject }) => {
+			const teacherId = teacher_subject.teacher.id;
+			const subject = teacher_subject.subject;
+
+			if (!teacherMap.has(teacherId)) {
+				teacherMap.set(teacherId, {
+					teacher_id: teacherId,
+					teacher_name: teacher_subject.teacher.user.name,
+					teacher_email: teacher_subject.teacher.user.email,
+					subjects: [],
+				});
+			}
+
+			teacherMap.get(teacherId).subjects.push(subject);
+		});
+
+		const teachers = Array.from(teacherMap.values());
+
 		const students = schoolClass.students.map((s) => ({
 			student_id: s.id,
 			name: s.user.name,
