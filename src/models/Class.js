@@ -129,32 +129,48 @@ async function createClass(classData) {
 }
 
 async function updateClass(classId, classData) {
-	try {
-		const updatedClass = await prisma.class.update({
+	const { name, shift, course, assignments } = classData;
+
+	return await prisma.$transaction(async (tx) => {
+		// 1. Atualiza os dados básicos da turma
+		const updatedClass = await tx.class.update({
 			where: { id: classId },
-			data: classData,
-			select: {
-				id: true,
-				name: true,
-				shift: true,
-				course: true,
-			},
+			data: { name, shift, course },
+			select: { id: true, name: true, shift: true, course: true },
 		});
+
+		// 2. Se vier lista de assignments, substitui os antigos
+		if (Array.isArray(assignments)) {
+			// 2.1 Remove todos os relacionamentos antigos dessa turma
+			await tx.relationship_teacher_subject_class.deleteMany({
+				where: { class_id: classId },
+			});
+
+			// 2.2 Insere os novos relacionamentos
+			for (const { teacher_id, subject_id } of assignments) {
+				// valida se o professor leciona a matéria
+				const ts = await tx.relationship_teacher_subject.findFirst({
+					where: { teacher_id, subject_id },
+					select: { id: true },
+				});
+				if (!ts) {
+					throw new Error(
+						`Teacher ${teacher_id} não leciona a subject ${subject_id}`,
+					);
+				}
+
+				// cria o vínculo turma ↔ teacher_subject
+				await tx.relationship_teacher_subject_class.create({
+					data: {
+						class_id: updatedClass.id,
+						teacher_subject_id: ts.id,
+					},
+				});
+			}
+		}
+
 		return updatedClass;
-	} catch (error) {
-		if (error.code === 'P2025') {
-			// ID não encontrado
-			throw new Error('Class not found');
-		}
-
-		if (error.message.includes('Invalid enum value')) {
-			throw new Error(
-				'O turno informado é inválido. Use: Morning, Afternoon ou Evening.',
-			);
-		}
-
-		throw error;
-	}
+	});
 }
 
 async function deleteClass(classId) {

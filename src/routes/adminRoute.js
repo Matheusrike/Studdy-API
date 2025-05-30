@@ -54,6 +54,7 @@ router.get('/students/:studentId', getStudentByIdController);
 router.post('/students', createStudentController);
 router.put('/students/:studentId', updateStudentController);
 router.delete('/students/:studentId', deleteStudentController);
+
 // Rotas para gerenciar turmas
 router.get('/classes', getAllClassesController);
 router.get('/classes/:classId', getClassByIdController);

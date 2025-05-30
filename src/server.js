@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 // Routes
-import authRoute from './routes/loginRoute.js';
+import authRoute from './routes/authRoute.js';
 import adminRoute from './routes/adminRoute.js';
 import quizRoute from './routes/quizRoute.js';
 
@@ -21,6 +21,9 @@ app.use(
 
 // Login route
 app.use('/login', authRoute);
+
+// Me route
+app.use('/me', authRoute);
 
 // Admin route
 app.use('/admin', adminRoute);
