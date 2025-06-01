@@ -1,46 +1,105 @@
 import prisma from '../../prisma/client.js';
-import { quizSchema } from '../schemas/quiz.schema.js';
 import { createQuestion } from './Question.js';
 
-async function createQuiz(quizData) {
-	let quiz;
-
+// Busca os quizzes relacionados ao professor, turma e disciplina
+async function getQuizzesOfTeacher(userId, classId, subjectId) {
 	try {
-		quiz = quizSchema.parse(quizData);
-	} catch (error) {
-		console.error('Invalid quiz data:', error);
-		throw new Error(`Invalid quiz data: ${error.message}`);
-	}
-
-	try {
-		return await prisma.$transaction(async (tx) => {
-			let totalPoints = 0;
-
-			quiz.questions.forEach((question) => {
-				totalPoints += question.points;
-			});
-
-			const createdQuiz = await tx.quiz.create({
-				data: {
-					title: quiz.title,
-					duration_minutes: quiz.duration_minutes,
-					max_points: totalPoints, // calcula com base nos pontos da questão
-					max_attempt: quiz.max_attempts,
-					visibility: quiz.visibility || 'draft',
-					teacher_subject_class_id: 1,
-				},
-			});
-
-			for (const questionData of quiz.questions) {
-				await createQuestion(tx, questionData, createdQuiz.id);
-			}
-
-			return createdQuiz;
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			select: { id: true },
 		});
+
+		if (!teacher) {
+			throw new Error('Teacher not found');
+		}
+
+		// Busca os quizzes relacionados ao professor, turma e disciplina
+		const quizzes = await prisma.quiz.findMany({
+			where: {
+				teacher_subject_class: {
+					class: { id: classId },
+					teacher_subject: {
+						subject: { id: subjectId },
+						teacher_id: teacher.id,
+					},
+				},
+			},
+			select: {
+				id: true,
+				title: true,
+				duration_minutes: true,
+				visibility: true,
+			},
+		});
+
+		return quizzes;
 	} catch (error) {
-		console.log('Error creating quiz:', error);
 		throw error;
 	}
 }
 
-export { createQuiz };
+// Cria um novo quiz
+async function createQuiz(userId, classId, subjectId, quizData) {
+	try {
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			select: { id: true },
+		});
+
+		if (!teacher) {
+			throw new Error('Teacher not found');
+		}
+
+		// Adiciona o professor, turma e disciplina ao objeto quiz
+		const quiz = {
+			...quizData,
+			teacher_subject_class_id:
+				await prisma.relationship_teacher_subject_class
+					.findFirst({
+						where: {
+							class_id: classId,
+							teacher_subject: {
+								subject_id: subjectId,
+								teacher_id: teacher.id,
+							},
+						},
+						select: { id: true },
+					})
+					.then((result) => result.id),
+		};
+
+		// Realiza uma transação para criar o quiz
+		return await prisma.$transaction(async (tx) => {
+			// Calcula o total de pontos com base nos pontos das questões
+			let totalPoints = 0;
+			quiz.questions.forEach((question) => {
+				totalPoints += question.points;
+			});
+
+			// Cria o quiz na tabela Quiz
+			const createdQuiz = await tx.quiz.create({
+				data: {
+					title: quiz.title,
+					duration_minutes: quiz.duration_minutes,
+					max_points: totalPoints,
+					max_attempt: quiz.max_attempts,
+					visibility: quiz.visibility || 'draft',
+					teacher_subject_class_id: quiz.teacher_subject_class_id,
+				},
+			});
+
+			// Para cada questão, cria a questão na tabela Question
+			for (const questionData of quiz.questions) {
+				await createQuestion(tx, questionData, createdQuiz.id);
+			}
+
+			// Retorna o quiz criado
+			return createdQuiz;
+		});
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+}
+
+export { createQuiz, getQuizzesOfTeacher };

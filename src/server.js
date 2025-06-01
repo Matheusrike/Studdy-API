@@ -5,6 +5,7 @@ import cors from 'cors';
 import authRoute from './routes/loginRoute.js';
 import adminRoute from './routes/adminRoute.js';
 import quizRoute from './routes/quizRoute.js';
+import teacherRoute from './routes/teacherRoute.js';
 
 // express config
 const app = express();
@@ -25,8 +26,7 @@ app.use('/login', authRoute);
 // Admin route
 app.use('/admin', adminRoute);
 
-// Quiz route
-app.use('/quiz', quizRoute);
+app.use('/teacher', teacherRoute);
 
 app.listen(port, () => {
 	console.log(`Servidor rodando na porta: http://localhost:${port}`);
