@@ -165,7 +165,8 @@ async function getClassSubjectsByTeacherController(req, res) {
 async function getSubjectQuizzesController(req, res) {
 	try {
 		const quizzes = await getQuizzesOfTeacher(
-			parseInt(req.user.id),
+			// parseInt(req.user.id),
+			6,
 			parseInt(req.params.classId),
 			parseInt(req.params.subjectId),
 		);

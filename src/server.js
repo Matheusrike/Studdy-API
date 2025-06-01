@@ -4,7 +4,6 @@ import cors from 'cors';
 // Routes
 import authRoute from './routes/loginRoute.js';
 import adminRoute from './routes/adminRoute.js';
-import quizRoute from './routes/quizRoute.js';
 import teacherRoute from './routes/teacherRoute.js';
 
 // express config
@@ -26,6 +25,7 @@ app.use('/login', authRoute);
 // Admin route
 app.use('/admin', adminRoute);
 
+// Teacher route
 app.use('/teacher', teacherRoute);
 
 app.listen(port, () => {

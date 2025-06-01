@@ -4,7 +4,11 @@ import {
 	getClassSubjectsByTeacherController,
 	getSubjectQuizzesController,
 } from '../controllers/TeacherController.js';
-import { createQuizController } from '../controllers/QuizController.js';
+import {
+	createQuizController,
+	updateQuizController,
+	updateQuizVisibilityController,
+} from '../controllers/QuizController.js';
 
 const router = express.Router();
 
@@ -22,5 +26,17 @@ router.get(
 
 // Rota para criar questionários
 router.post('/classes/:classId/subjects/:subjectId/quiz', createQuizController);
+
+// Rota para atualizar questionários
+router.put(
+	'/classes/:classId/subjects/:subjectId/quiz/:quizId',
+	updateQuizController,
+);
+
+// Rota para atualizar a visibilidade de um questionário
+router.patch(
+	'/classes/:classId/subjects/:subjectId/quiz/:quizId/visibility',
+	updateQuizVisibilityController,
+);
 
 export default router;

@@ -102,4 +102,89 @@ async function createQuiz(userId, classId, subjectId, quizData) {
 	}
 }
 
-export { createQuiz, getQuizzesOfTeacher };
+// Atualiza completamente um quiz
+async function updateQuiz(quizId, quizData) {
+	try {
+		const quiz = await prisma.quiz.findUnique({
+			where: { id: quizId },
+			select: { id: true },
+		});
+
+		if (!quiz) {
+			throw new Error('Quiz not found');
+		}
+
+		return await prisma.$transaction(async (tx) => {
+			// 1. Coleta IDs das questões antigas
+			const oldQuestions = await tx.question.findMany({
+				where: { quiz_id: quizId },
+				select: { id: true },
+			});
+
+			// 2. Apaga todas as alternativas associadas
+			for (const question of oldQuestions) {
+				await tx.alternative.deleteMany({
+					where: { question_id: question.id },
+				});
+			}
+
+			// 3. Apaga todas as questões antigas
+			await tx.question.deleteMany({
+				where: { quiz_id: quizId },
+			});
+
+			// 4. Recalcula total de pontos
+			const totalPoints = quizData.questions.reduce(
+				(sum, q) => sum + q.points,
+				0,
+			);
+
+			// 5. Atualiza apenas os campos mutáveis do quiz
+			const updatedQuiz = await tx.quiz.update({
+				where: { id: quizId },
+				data: {
+					title: quizData.title,
+					duration_minutes: quizData.duration_minutes,
+					max_points: totalPoints,
+					max_attempt: quizData.max_attempts,
+					visibility: quizData.visibility || 'draft',
+				},
+			});
+
+			// 6. Insere as novas questões e alternativas
+			for (const questionData of quizData.questions) {
+				await createQuestion(tx, questionData, updatedQuiz.id);
+			}
+
+			return updatedQuiz;
+		});
+	} catch (error) {
+		throw error;
+	}
+}
+
+// Atualiza a visibilidade de um quiz
+async function updateQuizVisibility(quizId, visibility) {
+	try {
+		const updated = await prisma.quiz.update({
+			where: { id: quizId },
+			data: { visibility: visibility.visibility },
+			select: {
+				id: true,
+				title: true,
+				duration_minutes: true,
+				visibility: true,
+			},
+		});
+
+		if (!updated) {
+			throw new Error('Quiz not found');
+		}
+
+		return updated;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export { getQuizzesOfTeacher, createQuiz, updateQuiz, updateQuizVisibility };
