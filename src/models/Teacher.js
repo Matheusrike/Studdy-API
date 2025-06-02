@@ -97,6 +97,30 @@ async function createTeacher(teacherData) {
 				data: { user_id },
 			});
 
+			// 2.1. Verificar se todos os subjectIds existem
+			const existingSubjects = await tx.subject.findMany({
+				where: { id: { in: subjectIds } },
+				select: { id: true },
+			});
+
+			const existingSubjectIds = existingSubjects.map((s) => s.id);
+
+			// Verifica se há algum ID inválido
+			const invalidSubjectIds = subjectIds.filter(
+				(id) => !existingSubjectIds.includes(id),
+			);
+
+			if (invalidSubjectIds.length > 0) {
+				throw new Error(
+					`This subjects do not exist: ${invalidSubjectIds.join(', ')}`,
+				);
+			}
+
+			// 3. Define os relacionamentos entre professor e matérias
+			const teacherSubjectData = subjectIds.map((subject_id) => ({
+				teacher_id: createdTeacher.id,
+				subject_id,
+			}));
 			await tx.relationship_teacher_subject.createMany({
 				data: subjectIds.map((subject_id) => ({
 					teacher_id: createdTeacher.id,
@@ -150,12 +174,13 @@ async function createTeacher(teacherData) {
 	} catch (error) {
 		if (error.code === 'P2002') {
 			const target = error.meta?.target;
-			let message = 'Dados duplicados.';
+			let message = 'Duplicate entry';
 
-			if (target?.includes('email'))
-				message = 'O e-mail informado já está em uso.';
-			else if (target?.includes('cpf'))
-				message = 'O CPF informado já está em uso.';
+			if (target?.includes('email')) {
+				message = 'The email address is already in use.';
+			} else if (target?.includes('cpf')) {
+				message = 'The CPF is already in use.';
+			}
 
 			throw new Error(message);
 		}
@@ -237,12 +262,13 @@ async function updateTeacher(teacherId, teacherData) {
 	} catch (error) {
 		if (error.code === 'P2002') {
 			const target = error.meta?.target;
-			let message = 'Dados duplicados.';
+			let message = 'Duplicate entry';
 
-			if (target?.includes('email'))
-				message = 'O e-mail informado já está em uso.';
-			else if (target?.includes('cpf'))
-				message = 'O CPF informado já está em uso.';
+			if (target?.includes('email')) {
+				message = 'The email address is already in use.';
+			} else if (target?.includes('cpf')) {
+				message = 'The CPF is already in use.';
+			}
 
 			throw new Error(message);
 		}

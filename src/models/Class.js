@@ -203,4 +203,59 @@ async function deleteClass(classId) {
 	}
 }
 
-export { getAllClasses, getClassById, createClass, updateClass, deleteClass };
+async function getClassByTeacherId(userId) {
+	try {
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			select: { id: true },
+		});
+
+		if (!teacher) {
+			throw new Error('Teacher not found');
+		}
+
+		const relations =
+			await prisma.relationship_teacher_subject_class.findMany({
+				where: { teacher_subject: { teacher_id: teacher.id } },
+				select: {
+					class: {
+						select: {
+							id: true,
+							name: true,
+							shift: true,
+							course: true,
+						},
+					},
+				},
+			});
+
+		const uniqueClassesMap = new Map();
+
+		for (const rel of relations) {
+			const cls = rel.class;
+
+			if (!uniqueClassesMap.has(cls.id)) {
+				uniqueClassesMap.set(cls.id, {
+					class_id: cls.id,
+					class_name: cls.name,
+					class_shift: cls.shift,
+					class_course: cls.course,
+				});
+			}
+		}
+
+		// Converter o Map para array
+		return Array.from(uniqueClassesMap.values());
+	} catch (error) {
+		throw error;
+	}
+}
+
+export {
+	getAllClasses,
+	getClassById,
+	createClass,
+	updateClass,
+	deleteClass,
+	getClassByTeacherId,
+};
