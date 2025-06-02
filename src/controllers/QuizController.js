@@ -2,6 +2,7 @@ import {
 	createQuiz,
 	updateQuiz,
 	updateQuizVisibility,
+	deleteQuiz,
 } from '../models/Quiz.js';
 import { quizSchema, visibilitySchema } from '../schemas/quiz.schema.js';
 import { ZodError } from 'zod/v4';
@@ -112,8 +113,21 @@ async function updateQuizVisibilityController(req, res) {
 	}
 }
 
+async function deleteQuizController(req, res) {
+	try {
+		const quiz_id = parseInt(req.params.quizId);
+		await deleteQuiz(quiz_id);
+		return res.status(204).send();
+	} catch (error) {
+		const status = error.status || 500;
+		const message = error.message || 'Internal server error';
+		return res.status(status).json({ message });
+	}
+}
+
 export {
 	createQuizController,
 	updateQuizController,
 	updateQuizVisibilityController,
+	deleteQuizController,
 };

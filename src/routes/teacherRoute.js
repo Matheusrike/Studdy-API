@@ -8,6 +8,7 @@ import {
 	createQuizController,
 	updateQuizController,
 	updateQuizVisibilityController,
+	deleteQuizController,
 } from '../controllers/QuizController.js';
 
 const router = express.Router();
@@ -37,6 +38,12 @@ router.put(
 router.patch(
 	'/classes/:classId/subjects/:subjectId/quiz/:quizId/visibility',
 	updateQuizVisibilityController,
+);
+
+// Rota para Deletar um questionário
+router.delete(
+	'/classes/:classId/subjects/:subjectId/quiz/:quizId',
+	deleteQuizController,
 );
 
 export default router;

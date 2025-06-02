@@ -187,4 +187,23 @@ async function updateQuizVisibility(quizId, visibility) {
 	}
 }
 
-export { getQuizzesOfTeacher, createQuiz, updateQuiz, updateQuizVisibility };
+// Deleta um quiz
+async function deleteQuiz(quizId) {
+	try {
+		const deleted = await prisma.quiz.delete({
+			where: { id: quizId },
+		});
+
+		return deleted;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export {
+	getQuizzesOfTeacher,
+	createQuiz,
+	updateQuiz,
+	updateQuizVisibility,
+	deleteQuiz,
+};
