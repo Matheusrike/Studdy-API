@@ -35,15 +35,9 @@ router.put(
 );
 
 // Rota para atualizar a visibilidade de um questionário
-router.patch(
-	'/classes/:classId/subjects/:subjectId/quiz/:quizId/visibility',
-	updateQuizVisibilityController,
-);
+router.patch('/quiz/:quizId/visibility', updateQuizVisibilityController);
 
 // Rota para Deletar um questionário
-router.delete(
-	'/classes/:classId/subjects/:subjectId/quiz/:quizId',
-	deleteQuizController,
-);
+router.delete('/quiz/:quizId', deleteQuizController);
 
 export default router;

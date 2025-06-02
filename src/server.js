@@ -4,6 +4,9 @@ import { createUser } from './models/User.js';
 import env from 'dotenv';
 import cors from 'cors';
 
+import authenticated from './middlewares/authenticated.js';
+import autorizeRole from './middlewares/authorizeRole.js';
+
 // Routes
 import authRoute from './routes/authRoute.js';
 import adminRoute from './routes/adminRoute.js';
@@ -26,17 +29,13 @@ app.use(
 // Login route
 app.use('/login', authRoute);
 
-// Me route
-app.use('/me', authRoute);
-
 // Admin route
-app.use('/admin', adminRoute);
+app.use('/admin', authenticated, autorizeRole('Admin'), adminRoute);
 
 // Teacher route
-app.use('/teacher', teacherRoute);
+app.use('/teacher', authenticated, autorizeRole('Teacher'), teacherRoute);
 
 // Start server
-
 try {
 	const adminExists = await prisma.user.findFirst({
 		where: { role: 'Admin' },

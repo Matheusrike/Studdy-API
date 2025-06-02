@@ -6,6 +6,7 @@ import {
 	deleteClass,
 } from '../models/Class.js';
 import { classSchema } from '../schemas/class.schema.js';
+import { ZodError } from 'zod/v4';
 
 async function getAllClassesController(req, res) {
 	try {
@@ -36,12 +37,18 @@ async function createClassController(req, res) {
 	let payload;
 	try {
 		payload = classSchema.parse(req.body);
-	} catch (err) {
-		return res.status(400).json({
-			message: err.errors
-				? err.errors[0].message
-				: 'Invalid request body',
-		});
+	} catch (error) {
+		if (error instanceof ZodError) {
+			const formatted = error['issues'].map((err) => ({
+				path: err.path.join('.'),
+				message: err.message,
+			}));
+
+			return res.status(400).json({
+				message: 'Invalid request body',
+				errors: formatted,
+			});
+		}
 	}
 
 	try {
@@ -70,10 +77,18 @@ async function updateClassController(req, res) {
 	// 1. Validação do payload
 	try {
 		classData = classSchema.parse(req.body);
-	} catch (err) {
-		return res
-			.status(400)
-			.json({ message: 'Invalid request body', details: err.errors });
+	} catch (error) {
+		if (error instanceof ZodError) {
+			const formatted = error['issues'].map((err) => ({
+				path: err.path.join('.'),
+				message: err.message,
+			}));
+
+			return res.status(400).json({
+				message: 'Invalid request body',
+				errors: formatted,
+			});
+		}
 	}
 
 	// 2. Atualização da turma + assignments

@@ -122,6 +122,19 @@ async function getClassSubjectsByTeacher(classId, userId) {
 	}
 }
 
+async function getSubjectsByStudent(userId) {
+	try {
+		const student = await prisma.student.findUnique({
+			where: { user_id: userId },
+			select: { id: true, class: { select: { id: true } } },
+		});
+
+		if (!student) {
+			throw new Error('Student not found');
+		}
+	} catch (error) {}
+}
+
 export {
 	getAllSubjects,
 	getSubjectById,

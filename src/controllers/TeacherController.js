@@ -11,7 +11,7 @@ import { getQuizzesOfTeacher } from '../models/Quiz.js';
 import { teacherSchema } from '../schemas/teacher.schema.js';
 import { ZodError } from 'zod/v4';
 
-// Controllers do /admin
+// Controllers do /admin/teacher
 
 async function getAllTeachersController(req, res) {
 	try {
@@ -129,7 +129,8 @@ async function deleteTeacherController(req, res) {
 // Controller para obter as turmas de um professor
 async function getTeacherClassesController(req, res) {
 	try {
-		const teacherClasses = await getClassByTeacherId(parseInt(user.id));
+		console.log(req.user.id);
+		const teacherClasses = await getClassByTeacherId(parseInt(req.user.id));
 		return res.status(200).json(teacherClasses);
 	} catch (error) {
 		console.error(error);
@@ -165,8 +166,7 @@ async function getClassSubjectsByTeacherController(req, res) {
 async function getSubjectQuizzesController(req, res) {
 	try {
 		const quizzes = await getQuizzesOfTeacher(
-			// parseInt(req.user.id),
-			6,
+			parseInt(req.user.id),
 			parseInt(req.params.classId),
 			parseInt(req.params.subjectId),
 		);

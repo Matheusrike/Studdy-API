@@ -8,6 +8,8 @@ import {
 import { studentSchema } from '../schemas/student.schema.js';
 import { ZodError } from 'zod/v4';
 
+// Controllers do /admin/student
+
 async function getAllStudentsController(req, res) {
 	try {
 		const students = await getAllStudents();
@@ -122,6 +124,17 @@ async function deleteStudentController(req, res) {
 
 		return res.status(500).json({ error: 'Internal server error' });
 	}
+}
+
+// Controllers do /student
+
+async function getStudentSubjectsController(req, res) {
+	try {
+		const studentSubjects = await getClassSubjectsByStudent(
+			parseInt(req.user.id),
+		);
+		return res.status(200).json(studentSubjects);
+	} catch (error) {}
 }
 
 export {
