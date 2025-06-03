@@ -8,8 +8,8 @@ async function generateWrongAlternativesController(req, res) {
 	let { question, correct_answer } = req.body;
 
 	try {
-		question = z.string().parse().trim(question);
-		correct_answer = z.string().parse().trim(correct_answer);
+		question = z.string().trim.parse()(question);
+		correct_answer = z.string().trim.parse()(correct_answer);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const formatted = error['issues'].map((err) => ({

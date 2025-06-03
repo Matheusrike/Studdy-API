@@ -12,6 +12,7 @@ import authRoute from './routes/authRoute.js';
 import adminRoute from './routes/adminRoute.js';
 import teacherRoute from './routes/teacherRoute.js';
 import generateRoute from './routes/generateRoute.js';
+import userRoute from './routes/userRoute.js';
 
 // Config
 const app = express();
@@ -38,6 +39,9 @@ app.use('/teacher', authenticated, autorizeRole('Teacher'), teacherRoute);
 
 // Generate route
 app.use('/generate', authenticated, autorizeRole('Teacher'), generateRoute);
+
+// User Route
+app.use('/user', userRoute);
 
 // Start server
 try {

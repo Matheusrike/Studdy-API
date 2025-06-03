@@ -27,6 +27,8 @@ async function getQuizzesOfTeacher(userId, classId, subjectId) {
 			select: {
 				id: true,
 				title: true,
+				description: true,
+				icon: true,	
 				duration_minutes: true,
 				visibility: true,
 			},
