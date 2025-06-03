@@ -59,4 +59,4 @@ async function generateResume(title) {
 	}
 }
 
-export { generateWrongAlternatives };
+export { generateWrongAlternatives, generateResume };

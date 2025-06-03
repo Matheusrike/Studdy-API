@@ -244,14 +244,48 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
+exports.Prisma.UserOrderByRelevanceFieldEnum = {
+  name: 'name',
+  email: 'email',
+  cpf: 'cpf',
+  hashed_password: 'hashed_password'
+};
+
+exports.Prisma.SubjectOrderByRelevanceFieldEnum = {
+  name: 'name'
+};
+
+exports.Prisma.ClassOrderByRelevanceFieldEnum = {
+  name: 'name',
+  course: 'course'
+};
+
+exports.Prisma.StudentOrderByRelevanceFieldEnum = {
+  enrollment: 'enrollment'
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.QuizOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description',
+  icon: 'icon'
+};
+
+exports.Prisma.QuestionOrderByRelevanceFieldEnum = {
+  statement: 'statement'
+};
+
+exports.Prisma.AlternativeOrderByRelevanceFieldEnum = {
+  response: 'response'
+};
+
+exports.Prisma.Question_imagesOrderByRelevanceFieldEnum = {
+  image_path: 'image_path',
+  alt_text: 'alt_text'
 };
 exports.Role = exports.$Enums.Role = {
   Admin: 'Admin',
