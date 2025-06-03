@@ -80,6 +80,8 @@ async function createQuiz(userId, classId, subjectId, quizData) {
 			const createdQuiz = await tx.quiz.create({
 				data: {
 					title: quiz.title,
+					description: quiz.description,
+					icon: quiz.icon,
 					duration_minutes: quiz.duration_minutes,
 					max_points: totalPoints,
 					max_attempt: quiz.max_attempts,
@@ -143,7 +145,9 @@ async function updateQuiz(quizId, quizData) {
 			const updatedQuiz = await tx.quiz.update({
 				where: { id: quizId },
 				data: {
-					title: quizData.title,
+					title: quizData.title,	
+					description: quizData.description,
+					icon: quizData.icon,
 					duration_minutes: quizData.duration_minutes,
 					max_points: totalPoints,
 					max_attempt: quizData.max_attempts,

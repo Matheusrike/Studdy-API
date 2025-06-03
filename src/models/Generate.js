@@ -1,7 +1,7 @@
 import openaiClient from '../config/openai.js';
 
 async function generateWrongAlternatives(question, correct_answer) {
-	if (!openai) {
+	if (!openaiClient) {
 		throw new Error('OpenAI client not initialized');
 	}
 
@@ -21,7 +21,7 @@ async function generateWrongAlternatives(question, correct_answer) {
 				},
 			],
 			temperature: 0.7,
-			max_tokens: 150,
+			max_tokens: 1500,
 		});
 
 		return api_response.choices[0].message.content;

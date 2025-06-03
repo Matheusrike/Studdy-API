@@ -179,6 +179,8 @@ exports.Prisma.Relationship_teacher_subject_classScalarFieldEnum = {
 exports.Prisma.QuizScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  description: 'description',
+  icon: 'icon',
   duration_minutes: 'duration_minutes',
   max_points: 'max_points',
   max_attempt: 'max_attempt',
@@ -242,46 +244,14 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  cpf: 'cpf',
-  hashed_password: 'hashed_password'
-};
-
-exports.Prisma.SubjectOrderByRelevanceFieldEnum = {
-  name: 'name'
-};
-
-exports.Prisma.ClassOrderByRelevanceFieldEnum = {
-  name: 'name',
-  course: 'course'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  enrollment: 'enrollment'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.QuizOrderByRelevanceFieldEnum = {
-  title: 'title'
-};
-
-exports.Prisma.QuestionOrderByRelevanceFieldEnum = {
-  statement: 'statement'
-};
-
-exports.Prisma.AlternativeOrderByRelevanceFieldEnum = {
-  response: 'response'
-};
-
-exports.Prisma.Question_imagesOrderByRelevanceFieldEnum = {
-  image_path: 'image_path',
-  alt_text: 'alt_text'
 };
 exports.Role = exports.$Enums.Role = {
   Admin: 'Admin',

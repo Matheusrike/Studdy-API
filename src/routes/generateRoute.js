@@ -12,7 +12,7 @@ const router = express.Router();
 router.post(
 	'/resume',
 	authenticated,
-	authorizeRole('teacher'),
+	authorizeRole('Teacher'),
 	generateResumeController,
 );
 
@@ -20,7 +20,7 @@ router.post(
 router.post(
 	'/wrong-alternatives',
 	authenticated,
-	authorizeRole('teacher'),
+	authorizeRole('Teacher'),
 	generateWrongAlternativesController,
 );
 export default router;

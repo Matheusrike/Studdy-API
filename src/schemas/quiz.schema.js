@@ -7,6 +7,11 @@ export const quizSchema = z.object({
 		.string()
 		.min(3, { error: 'Invalid title' })
 		.transform((title) => title.trim()),
+	description: z
+		.string()
+		.min(3, { error: 'Invalid description' })
+		.transform((description) => description.trim()),
+	icon: z.string().min(3, { error: 'Invalid icon' }).transform((icon) => icon.trim()),
 	questions: z.array(questionSchema).min(1, {
 		error: 'At least one question must be provided',
 	}),

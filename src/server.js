@@ -11,6 +11,7 @@ import autorizeRole from './middlewares/authorizeRole.js';
 import authRoute from './routes/authRoute.js';
 import adminRoute from './routes/adminRoute.js';
 import teacherRoute from './routes/teacherRoute.js';
+import generateRoute from './routes/generateRoute.js';
 
 // Config
 const app = express();
@@ -35,6 +36,9 @@ app.use('/admin', authenticated, autorizeRole('Admin'), adminRoute);
 // Teacher route
 app.use('/teacher', authenticated, autorizeRole('Teacher'), teacherRoute);
 
+// Generate route
+app.use('/generate', authenticated, autorizeRole('Teacher'), generateRoute);
+
 // Start server
 try {
 	const adminExists = await prisma.user.findFirst({
@@ -44,7 +48,7 @@ try {
 	const admin = {
 		name: 'Admin',
 		email: 'admin@admin.com',
-		password: 'admin',
+		password: 'admin123',
 		cpf: '177.932.340-90',
 		birth_date: new Date('2000-01-01'),
 		role: 'Admin',

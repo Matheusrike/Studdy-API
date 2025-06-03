@@ -37,6 +37,13 @@ async function generateWrongAlternativesController(req, res) {
 	}
 }
 
-async function generateResumeController(req, res) {}
+async function generateResumeController(req, res) {
+	const { quizId } = req.params;
 
-export { generateWrongAlternativesController };
+	const resume = await generateResume(quizId);
+
+	res.status(200).json({ resume });
+
+}
+
+export { generateWrongAlternativesController, generateResumeController };
