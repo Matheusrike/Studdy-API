@@ -3,24 +3,12 @@ import {
 	generateResumeController,
 	generateWrongAlternativesController,
 } from '../controllers/GenerateController.js';
-import authenticated from '../middlewares/authenticated.js';
-import authorizeRole from '../middlewares/authorizeRole.js';
 
 const router = express.Router();
 
 // Rota para gerar resumos
-router.post(
-	'/resume',
-	authenticated,
-	authorizeRole('Teacher'),
-	generateResumeController,
-);
+router.post('/generate-resume', generateResumeController);
 
 // Rota para gerar alternativas erradas
-router.post(
-	'/wrong-alternatives',
-	authenticated,
-	authorizeRole('Teacher'),
-	generateWrongAlternativesController,
-);
+router.post('/generate-alternatives', generateWrongAlternativesController);
 export default router;

@@ -1,12 +1,15 @@
 import { z, ZodError } from 'zod/v4';
-import { generateWrongAlternatives } from '../models/Generate.js';
+import {
+	generateWrongAlternatives,
+	generateResume,
+} from '../models/Generate.js';
 
 async function generateWrongAlternativesController(req, res) {
 	let { question, correct_answer } = req.body;
 
 	try {
-		question = z.string().parse(question);
-		correct_answer = z.string().parse(correct_answer);
+		question = z.string().parse().trim(question);
+		correct_answer = z.string().parse().trim(correct_answer);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const formatted = error['issues'].map((err) => ({
@@ -32,18 +35,38 @@ async function generateWrongAlternativesController(req, res) {
 		res.status(200).json({ incorrectAnswers });
 	} catch (error) {
 		console.error(error);
-
 		return res.status(500).json({ message: error });
 	}
 }
 
 async function generateResumeController(req, res) {
-	const { quizId } = req.params;
+	let { title } = req.params;
 
-	const resume = await generateResume(quizId);
+	try {
+		title = z.string().parse().trim(title);
+	} catch (error) {
+		if (error instanceof ZodError) {
+			const formatted = error['issues'].map((err) => ({
+				path: err.path.join('.'),
+				message: err.message,
+			}));
+
+			return res.status(400).json({
+				message: 'Invalid request body',
+				errors: formatted,
+			});
+		}
+	}
+
+	try {
+		const resume = await generateResume(title);
+		res.status(200).json({ resume });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: error });
+	}
 
 	res.status(200).json({ resume });
-
 }
 
 export { generateWrongAlternativesController, generateResumeController };
