@@ -5,6 +5,8 @@ import {
 	updateStudent,
 	deleteStudent,
 } from '../models/Student.js';
+import { getStudentClass } from '../models/Class.js';
+import { getSubjectsByStudent } from '../models/Subject.js';
 import { studentSchema } from '../schemas/student.schema.js';
 import { ZodError } from 'zod/v4';
 
@@ -128,13 +130,32 @@ async function deleteStudentController(req, res) {
 
 // Controllers do /student
 
+// Controller para obter as informações da turma do aluno
+async function getStudentClassController(req, res) {
+	try {
+		let studentClass = await getStudentClass(parseInt(req.user.id));
+		return res.status(200).json(studentClass);
+	} catch (error) {
+		console.error(error);
+		return res
+			.status(500)
+			.json({ message: 'Error fetching student class' });
+	}
+}
+
+// Controller para obter as matérias da turma do aluno
 async function getStudentSubjectsController(req, res) {
 	try {
-		const studentSubjects = await getClassSubjectsByStudent(
+		const studentSubjects = await getSubjectsByStudent(
 			parseInt(req.user.id),
 		);
 		return res.status(200).json(studentSubjects);
-	} catch (error) {}
+	} catch (error) {
+		console.error(error);
+		return res
+			.status(500)
+			.json({ message: 'Error fetching student subjects' });
+	}
 }
 
 export {
@@ -143,4 +164,6 @@ export {
 	createStudentController,
 	updateStudentController,
 	deleteStudentController,
+	getStudentClassController,
+	getStudentSubjectsController,
 };

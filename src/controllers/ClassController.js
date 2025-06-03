@@ -23,13 +23,13 @@ async function getClassByIdController(req, res) {
 		const schoolClass = await getClassById(parseInt(req.params.classId));
 
 		if (!schoolClass) {
-			return res.status(404).json({ message: 'Subject not found' });
+			return res.status(404).json({ message: 'Class not found' });
 		}
 
 		return res.status(200).json(schoolClass);
 	} catch (error) {
-		console.error('Error fetching subject:', error);
-		return res.status(500).json({ message: 'Error fetching subject' });
+		console.error(error);
+		return res.status(500).json({ message: error.message });
 	}
 }
 

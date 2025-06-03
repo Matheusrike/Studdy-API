@@ -6,7 +6,7 @@ import {
 	deleteTeacher,
 } from '../models/Teacher.js';
 import { getClassSubjectsByTeacher } from '../models/Subject.js';
-import { getClassByTeacherId } from '../models/Class.js';
+import { getClassesByTeacherId } from '../models/Class.js';
 import { getQuizzesOfTeacher } from '../models/Quiz.js';
 import { teacherSchema } from '../schemas/teacher.schema.js';
 import { ZodError } from 'zod/v4';
@@ -130,7 +130,9 @@ async function deleteTeacherController(req, res) {
 async function getTeacherClassesController(req, res) {
 	try {
 		console.log(req.user.id);
-		const teacherClasses = await getClassByTeacherId(parseInt(req.user.id));
+		const teacherClasses = await getClassesByTeacherId(
+			parseInt(req.user.id),
+		);
 		return res.status(200).json(teacherClasses);
 	} catch (error) {
 		console.error(error);

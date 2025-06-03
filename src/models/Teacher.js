@@ -66,6 +66,8 @@ async function getTeacherById(teacherId) {
 			},
 		});
 
+		if (!teacher) return null;
+
 		return {
 			...teacher,
 			user: {
@@ -74,7 +76,6 @@ async function getTeacherById(teacherId) {
 			},
 		};
 	} catch (error) {
-		console.error('Error fetching teacher:', error);
 		throw error;
 	}
 }
