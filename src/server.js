@@ -13,6 +13,7 @@ import adminRoute from './routes/adminRoute.js';
 import teacherRoute from './routes/teacherRoute.js';
 import generateRoute from './routes/generateRoute.js';
 import studentRoute from './routes/studentRoute.js';
+import userRoute from './routes/userRoute.js';
 
 // Config
 const app = express();
@@ -42,6 +43,8 @@ app.use('/generate', authenticated, autorizeRole('Teacher'), generateRoute);
 
 // Student route
 app.use('/student', authenticated, autorizeRole('Student'), studentRoute);
+// User Route
+app.use('/user', userRoute);
 
 // Start server
 try {

@@ -11,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
+  provider = "postgresql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
   url      = env("DATABASE_URL")
 }
 
