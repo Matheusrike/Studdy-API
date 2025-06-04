@@ -1,5 +1,6 @@
 import openaiClient from '../config/openai.js';
 
+
 async function generateWrongAlternatives(question, correct_answer) {
 	if (!openaiClient) {
 		throw new Error('OpenAI client not initialized');
@@ -36,7 +37,7 @@ async function generateResume(title) {
 	}
 
 	try {
-		const api_response = await openai.chat.completions.create({
+		const api_response = await openaiClient.chat.completions.create({
 			model: 'gpt-4',
 			messages: [
 				{
@@ -55,7 +56,7 @@ async function generateResume(title) {
 
 		return api_response.choices?.[0]?.message?.content;
 	} catch (error) {
-		throw new Error('Failed to generate resume.');
+		throw new Error(error);
 	}
 }
 

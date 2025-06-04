@@ -40,7 +40,7 @@ async function generateWrongAlternativesController(req, res) {
 }
 
 async function generateResumeController(req, res) {
-	let { title } = req.params;
+	let { title } = req.body;
 
 	try {
 		title = z.string().trim().parse(title);
