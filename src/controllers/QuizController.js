@@ -6,6 +6,7 @@ import {
 	getQuizzesBySubject,
 	startAttempt,
 	changeAttemptStatus,
+	submitAnswer,
 } from '../models/Quiz.js';
 import { quizSchema, visibilitySchema } from '../schemas/quiz.schema.js';
 import { ZodError } from 'zod/v4';
@@ -254,6 +255,25 @@ async function changeAttemptStatusController(req, res) {
 	}
 }
 
+async function submitQuizController(req, res) {
+	try {
+		const { attemptId } = req.params;
+		const { responses } = req.body;
+
+		if (!Array.isArray(responses) || responses.length === 0) {
+			return res.status(400).json({
+				error: 'Responses must be an array with at least one element',
+			});
+		}
+
+		const attempt = await submitAnswer(parseInt(attemptId), responses);
+		return res.status(200).json(attempt);
+	} catch (error) {
+		console.error('Error submitting answer:', error);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+}
+
 export {
 	createQuizController,
 	updateQuizController,
@@ -263,4 +283,5 @@ export {
 	getSubjectStatisticsController,
 	startAttemptController,
 	changeAttemptStatusController,
+	submitQuizController,
 };

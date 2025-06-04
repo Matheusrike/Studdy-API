@@ -423,13 +423,10 @@ async function startAttempt(quizId, userId) {
 			},
 			select: {
 				id: true,
-				quiz_id: true,
-				student_id: true,
-				status: true,
 			},
 		});
 
-		return quiz;
+		return { ...quiz, attempt_id: startedAttempt.id };
 	} catch (error) {
 		throw error;
 	}
@@ -441,7 +438,118 @@ async function changeAttemptStatus(attemptId, status) {
 			where: { id: attemptId },
 			data: { status: status },
 		});
-		return updatedAttempt;
+	} catch (error) {
+		throw error;
+	}
+}
+
+async function submitAnswer(attemptId, responses) {
+	try {
+		const result = await prisma.$transaction(async (tx) => {
+			const attempt = await tx.quiz_attempt.findUnique({
+				where: { id: Number(attemptId) },
+				include: { quiz: { include: { questions: true } } },
+			});
+
+			if (!attempt) {
+				throw new Error('Tentativa não encontrada.');
+			}
+
+			if (attempt.status !== 'in_progress') {
+				throw new Error('Essa tentativa já foi finalizada.');
+			}
+
+			const summary = {
+				totalScore: 0,
+				correctAnswers: 0,
+				totalQuestions: responses.length,
+				details: [],
+			};
+
+			for (const { questionId, markedAlternativeId } of responses) {
+				const markedAlternative = await tx.alternative.findUnique({
+					where: { id: markedAlternativeId },
+					select: {
+						id: true,
+						response: true,
+						question_id: true,
+						correct_alternative: true,
+						question: {
+							select: {
+								id: true,
+								statement: true,
+								points: true,
+								alternatives: {
+									where: { correct_alternative: true },
+									select: { id: true, response: true },
+								},
+							},
+						},
+					},
+				});
+
+				if (
+					!markedAlternative ||
+					markedAlternative.question_id !== questionId
+				) {
+					throw new Error(
+						`Alternativa ${markedAlternativeId} inválida para a questão ${questionId}.`,
+					);
+				}
+
+				const isCorrect = markedAlternative.correct_alternative;
+				const pointsEarned = isCorrect
+					? Number(markedAlternative.question.points)
+					: 0;
+
+				await tx.question_response.create({
+					data: {
+						question_id: questionId,
+						marked_alternative_id: markedAlternativeId,
+						quiz_attempt_id: Number(attemptId),
+						is_correct: isCorrect,
+						points_earned: pointsEarned,
+					},
+				});
+
+				if (isCorrect) summary.correctAnswers += 1;
+				summary.totalScore += pointsEarned;
+
+				summary.details.push({
+					questionId,
+					question: markedAlternative.question.question,
+					isCorrect,
+					pointsEarned,
+					markedAlternative: {
+						id: markedAlternative.id,
+						description: markedAlternative.response,
+					},
+					correctAlternative: markedAlternative.question
+						.alternatives[0]
+						? {
+								id: markedAlternative.question.alternatives[0]
+									.id,
+								description:
+									markedAlternative.question.alternatives[0]
+										.response,
+							}
+						: null,
+				});
+			}
+
+			await tx.quiz_attempt.update({
+				where: { id: Number(attemptId) },
+				data: {
+					status: 'completed',
+					finished_at: new Date(),
+					total_score: summary.totalScore,
+				},
+			});
+
+			return summary;
+		});
+
+		return result;
 	} catch (error) {
 		throw error;
 	}
@@ -456,4 +564,5 @@ export {
 	getQuizzesBySubject,
 	startAttempt,
 	changeAttemptStatus,
+	submitAnswer,
 };

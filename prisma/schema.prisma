@@ -241,7 +241,7 @@ model Resume {
   id                 Int                          @id @unique @default(autoincrement())
   teacher_subject_id Int
   titulo             String
-  teacher_subject    Relationship_teacher_subject @relation(fields: [teacher_subject_id], references: [id])
+  teacher_subject    Relationship_teacher_subject @relation(fields: [teacher_subject_id], references: [id], onUpdate: Cascade)
   descricao          String
   downloadUrl        String
   created_at         DateTime                     @default(now())

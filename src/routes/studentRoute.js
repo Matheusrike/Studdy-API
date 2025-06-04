@@ -8,6 +8,7 @@ import {
 	getSubjectStatisticsController,
 	startAttemptController,
 	changeAttemptStatusController,
+	submitQuizController,
 } from '../controllers/QuizController.js';
 
 const router = express.Router();
@@ -32,5 +33,7 @@ router.post(
 
 // rota para atualizar o status da tentativa
 router.put('/attempt/:attemptId', changeAttemptStatusController);
+
+router.post('/attempt/:attemptId/submit', submitQuizController);
 
 export default router;
