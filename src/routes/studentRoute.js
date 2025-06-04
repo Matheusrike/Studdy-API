@@ -7,7 +7,6 @@ import {
 	getQuizzesBySubjectController,
 	getSubjectStatisticsController,
 	startAttemptController,
-	getQuizDataController,
 	changeAttemptStatusController,
 } from '../controllers/QuizController.js';
 

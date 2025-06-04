@@ -262,6 +262,5 @@ export {
 	getQuizzesBySubjectController,
 	getSubjectStatisticsController,
 	startAttemptController,
-	getQuizDataController,
 	changeAttemptStatusController,
 };
