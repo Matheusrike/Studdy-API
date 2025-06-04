@@ -555,6 +555,298 @@ async function submitAnswer(attemptId, responses) {
 	}
 }
 
+// Busca um quiz específico com suas questões e alternativas
+async function getQuizWithQuestions(userId, classId, subjectId, quizId) {
+	try {
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			select: { id: true },
+		});
+
+		if (!teacher) {
+			throw new Error('Teacher not found');
+		}
+
+		// Busca o quiz específico com suas questões e alternativas
+		const quiz = await prisma.quiz.findFirst({
+			where: {
+				id: quizId,
+				teacher_subject_class: {
+					class: { id: classId },
+					teacher_subject: {
+						subject: { id: subjectId },
+						teacher_id: teacher.id,
+					},
+				},
+			},
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				icon: true,
+				duration_minutes: true,
+				visibility: true,
+				questions: {
+					select: {
+						id: true,
+						statement: true,
+						points: true,
+						alternatives: {
+							select: {
+								id: true,
+								response: true,
+								correct_alternative: true,
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!quiz) {
+			throw new Error('Quiz not found');
+		}
+
+		return quiz;
+	} catch (error) {
+		throw error;
+	}
+}
+
+// Busca um quiz específico por ID (para acesso geral)
+async function getQuizById(quizId) {
+	try {
+		const quiz = await prisma.quiz.findUnique({
+			where: { id: quizId },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				icon: true,
+				duration_minutes: true,
+				visibility: true,
+				questions: {
+					select: {
+						id: true,
+						statement: true,
+						points: true,
+						alternatives: {
+							select: {
+								id: true,
+								response: true,
+								correct_alternative: true,
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!quiz) {
+			throw new Error('Quiz not found');
+		}
+
+		return quiz;
+	} catch (error) {
+		throw error;
+	}
+}
+
+// Buscar todos os quizzes da turma do aluno
+async function getAllQuizzesForStudent(userId) {
+	try {
+		// Primeiro, buscar o student para obter o ID
+		const student = await prisma.student.findUnique({
+			where: { user_id: userId },
+			select: { id: true },
+		});
+
+		if (!student) {
+			throw new Error('Student not found');
+		}
+
+		// Agora buscar os dados completos com o student.id
+		const studentWithClass = await prisma.student.findUnique({
+			where: { user_id: userId },
+			include: {
+				class: {
+					include: {
+						teacher_subject_classes: {
+							include: {
+								teacher_subject: {
+									include: {
+										subject: true,
+										teacher: {
+											include: {
+												user: {
+													select: {
+														name: true,
+													},
+												},
+											},
+										},
+									},
+								},
+								quizzes: {
+									where: {
+										visibility: 'public',
+									},
+									include: {
+										_count: {
+											select: {
+												questions: true,
+											},
+										},
+										quiz_attempts: {
+											where: {
+												student_id: student.id,
+											},
+											orderBy: {
+												created_at: 'desc',
+											},
+										},
+									},
+									orderBy: {
+										created_at: 'desc',
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		// Coletar todos os quizzes de todas as matérias da turma
+		const allQuizzes = [];
+		studentWithClass.class.teacher_subject_classes.forEach((tsc) => {
+			tsc.quizzes.forEach((quiz) => {
+				const attempts = quiz.quiz_attempts;
+				const completedAttempts = attempts.filter(
+					(attempt) => attempt.status === 'completed',
+				);
+				const inProgressAttempts = attempts.filter(
+					(attempt) => attempt.status === 'in_progress',
+				);
+
+				let status = 'not_started';
+				let lastAttempt = null;
+
+				if (inProgressAttempts.length > 0) {
+					status = 'in_progress';
+					lastAttempt = inProgressAttempts[0];
+				} else if (completedAttempts.length > 0) {
+					status = 'completed';
+					lastAttempt = completedAttempts[0];
+				}
+
+				allQuizzes.push({
+					id: quiz.id,
+					title: quiz.title,
+					description: quiz.description,
+					icon: quiz.icon,
+					duration_minutes: quiz.duration_minutes,
+					visibility: quiz.visibility,
+					question_count: quiz._count.questions,
+					status: status,
+					last_attempt: lastAttempt,
+					subject: {
+						id: tsc.teacher_subject.subject.id,
+						name: tsc.teacher_subject.subject.name,
+					},
+					teacher: {
+						id: tsc.teacher_subject.teacher.id,
+						name: tsc.teacher_subject.teacher.user.name,
+					},
+					created_at: quiz.created_at,
+				});
+			});
+		});
+
+		// Ordenar por data de criação (mais recentes primeiro)
+		allQuizzes.sort(
+			(a, b) => new Date(b.created_at) - new Date(a.created_at),
+		);
+
+		return allQuizzes;
+	} catch (error) {
+		throw error;
+	}
+}
+
+// Buscar todos os quizzes do professor
+async function getAllQuizzesForTeacher(userId) {
+	try {
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			include: {
+				teacher_subjects: {
+					include: {
+						subject: true,
+						teacher_subject_classes: {
+							include: {
+								class: true,
+								quizzes: {
+									include: {
+										_count: {
+											select: {
+												questions: true,
+											},
+										},
+									},
+									orderBy: {
+										created_at: 'desc',
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!teacher) {
+			throw new Error('Teacher not found');
+		}
+
+		// Coletar todos os quizzes de todas as turmas/matérias do professor
+		const allQuizzes = [];
+		teacher.teacher_subjects.forEach((ts) => {
+			ts.teacher_subject_classes.forEach((tsc) => {
+				tsc.quizzes.forEach((quiz) => {
+					allQuizzes.push({
+						id: quiz.id,
+						title: quiz.title,
+						description: quiz.description,
+						icon: quiz.icon,
+						duration_minutes: quiz.duration_minutes,
+						visibility: quiz.visibility,
+						question_count: quiz._count.questions,
+						subject: {
+							id: ts.subject.id,
+							name: ts.subject.name,
+						},
+						class: {
+							id: tsc.class.id,
+							name: tsc.class.name,
+						},
+						created_at: quiz.created_at,
+					});
+				});
+			});
+		});
+
+		// Ordenar por data de criação (mais recentes primeiro)
+		allQuizzes.sort(
+			(a, b) => new Date(b.created_at) - new Date(a.created_at),
+		);
+
+		return allQuizzes;
+	} catch (error) {
+		throw error;
+	}
+}
+
 export {
 	getQuizzesOfTeacher,
 	createQuiz,
@@ -565,4 +857,8 @@ export {
 	startAttempt,
 	changeAttemptStatus,
 	submitAnswer,
+	getQuizWithQuestions,
+	getQuizById,
+	getAllQuizzesForStudent,
+	getAllQuizzesForTeacher,
 };

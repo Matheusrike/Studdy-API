@@ -9,6 +9,7 @@ import {
 	updateQuizController,
 	updateQuizVisibilityController,
 	deleteQuizController,
+ 		getQuizWithQuestionsController,
 } from '../controllers/QuizController.js';
 import {
 	createVideoController,
@@ -17,6 +18,13 @@ import {
 	updateVideoController,
 	deleteVideoController,
 } from '../controllers/VideoController.js';
+import {
+	getAllResumesController,
+    getResumeByIdController,
+    createResumeController,
+    updateResumeController,
+    deleteResumeController,
+} from '../controllers/ResumeController.js'
 
 
 const router = express.Router();
@@ -31,6 +39,12 @@ router.get('/classes/:classId/subjects', getClassSubjectsByTeacherController);
 router.get(
 	'/classes/:classId/subjects/:subjectId/quizzes',
 	getSubjectQuizzesController,
+);
+
+// Rota para obter um quiz específico com suas questões
+router.get(
+	'/classes/:classId/subjects/:subjectId/quiz/:quizId',
+	getQuizWithQuestionsController,
 );
 
 // Rota para criar questionários
@@ -62,5 +76,20 @@ router.put('/videos/:videoId', updateVideoController);
 
 // Rota para deletar um vídeo
 router.delete('/videos/:videoId', deleteVideoController);
+
+// Rota para obter um resumo
+router.get('/resumes', getAllResumesController);
+
+// Rota para obter um resumo pelo ID do aluno
+router.get('/resumes/:resumeId', getResumeByIdController);
+
+// Rota para criar um resumo
+router.post('/resumes', createResumeController);
+
+// Rota para atualizar um resumo
+router.put('/resumes/:resumeId', updateResumeController);
+
+// Rota para deletar um resumo
+router.delete('/resumes/:resumeId', deleteResumeController);	
 
 export default router;

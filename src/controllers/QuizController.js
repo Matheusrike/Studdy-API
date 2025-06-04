@@ -1,12 +1,19 @@
 import {
+	getQuizzesOfTeacher,
 	createQuiz,
 	updateQuiz,
-	updateQuizVisibility,
 	deleteQuiz,
 	getQuizzesBySubject,
 	startAttempt,
 	changeAttemptStatus,
+<<<<<<< HEAD
 	submitAnswer,
+=======
+	getQuizWithQuestions,
+	getQuizById,
+	getAllQuizzesForStudent,
+	getAllQuizzesForTeacher,
+>>>>>>> 1c765d3c43fecfafdb64dba6030c4542efafece8
 } from '../models/Quiz.js';
 import { quizSchema, visibilitySchema } from '../schemas/quiz.schema.js';
 import { ZodError } from 'zod/v4';
@@ -255,6 +262,7 @@ async function changeAttemptStatusController(req, res) {
 	}
 }
 
+<<<<<<< HEAD
 async function submitQuizController(req, res) {
 	try {
 		const { attemptId } = req.params;
@@ -271,6 +279,68 @@ async function submitQuizController(req, res) {
 	} catch (error) {
 		console.error('Error submitting answer:', error);
 		return res.status(500).json({ message: 'Internal server error' });
+=======
+// GET /teacher/classes/:classId/subjects/:subjectId/quiz/:quizId
+async function getQuizWithQuestionsController(req, res) {
+	try {
+		const { classId, subjectId, quizId } = req.params;
+		const userId = req.user.id;
+
+		const quiz = await getQuizWithQuestions(
+			parseInt(userId),
+			parseInt(classId),
+			parseInt(subjectId),
+			parseInt(quizId)
+		);
+
+		return res.status(200).json(quiz);
+	} catch (error) {
+		console.error('Error fetching quiz with questions:', error);
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+		return res.status(500).json({ message: 'Error fetching quiz with questions' });
+	}
+}
+
+// GET /quiz/:id
+async function getQuizByIdController(req, res) {
+	try {
+		const { id } = req.params;
+		const quiz = await getQuizById(parseInt(id));
+		return res.status(200).json(quiz);
+	} catch (error) {
+		console.error('Error fetching quiz:', error);
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+		return res.status(500).json({ message: 'Error fetching quiz' });
+	}
+}
+
+// GET /quizzes
+async function getAllQuizzesController(req, res) {
+	try {
+		const userId = req.user.id;
+		const userRole = req.user.role;
+		
+		let quizzes;
+		if (userRole === 'Student') {
+			quizzes = await getAllQuizzesForStudent(userId);
+		} else if (userRole === 'Teacher') {
+			quizzes = await getAllQuizzesForTeacher(userId);
+		} else {
+			return res.status(403).json({ message: 'Access denied for this role' });
+		}
+		
+		return res.status(200).json(quizzes);
+	} catch (error) {
+		console.error('Error fetching quizzes:', error);
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+		return res.status(500).json({ message: 'Error fetching quizzes' });
+>>>>>>> 1c765d3c43fecfafdb64dba6030c4542efafece8
 	}
 }
 
@@ -283,5 +353,11 @@ export {
 	getSubjectStatisticsController,
 	startAttemptController,
 	changeAttemptStatusController,
+<<<<<<< HEAD
 	submitQuizController,
+=======
+	getQuizWithQuestionsController,
+	getQuizByIdController,
+	getAllQuizzesController,
+>>>>>>> 1c765d3c43fecfafdb64dba6030c4542efafece8
 };

@@ -11,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
+  provider = "postgresql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
   url      = env("DATABASE_URL")
 }
 
@@ -44,6 +44,7 @@ model Teacher {
   created_at       DateTime                       @default(now())
   modified_at      DateTime                       @default(now()) @updatedAt
   teacher_subjects Relationship_teacher_subject[]
+  resumes          Resume[]
 
   @@map("teacher")
 }
@@ -54,6 +55,7 @@ model Subject {
   created_at       DateTime                       @default(now())
   modified_at      DateTime                       @default(now()) @updatedAt
   teacher_subjects Relationship_teacher_subject[]
+  resumes          Resume[]
 
   @@map("subject")
 }
@@ -86,6 +88,7 @@ model Class {
   modified_at             DateTime                             @default(now()) @updatedAt
   students                Student[]
   teacher_subject_classes Relationship_teacher_subject_class[]
+  resumes                 Resume[]
 
   @@unique([name, shift, course])
   @@map("class")
@@ -221,17 +224,35 @@ model Question_response {
 }
 
 model Video_assignment {
-  id          Int      @id @unique @default(autoincrement())
-  videoUrl    String   @unique
-  titulo      String
-  professor   String
-  duracao     String
-  categoria   String
-  descricao   String   @db.Text
-  thumbnail   String
-  videoId     String
-  created_at  DateTime @default(now())
-  modified_at DateTime @default(now()) @updatedAt
+  id             Int      @id @unique @default(autoincrement())
+  videoUrl       String   @unique
+  title_video    String
+  name_channel   String
+  duration_video String
+  font           String
+  description    String   @db.Text
+  thumbnail      String
+  videoId        String
+  created_at     DateTime @default(now())
+  modified_at    DateTime @default(now()) @updatedAt
 
   @@map("video_assignment")
+}
+
+model Resume {
+  id          Int      @id @unique @default(autoincrement())
+  teacher_id  Int
+  subject_id  Int
+  class_id    Int
+  title       String
+  icon        String
+  description String
+  resume      String   @db.Text
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now()) @updatedAt
+  teacher     Teacher  @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  subject     Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+  class       Class    @relation(fields: [class_id], references: [id], onDelete: Cascade)
+
+  @@map("resume")
 }

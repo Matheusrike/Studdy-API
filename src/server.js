@@ -6,6 +6,8 @@ import cors from 'cors';
 
 import authenticated from './middlewares/authenticated.js';
 import autorizeRole from './middlewares/authorizeRole.js';
+import blockAdmin from './middlewares/blockAdmin.js';
+import { getQuizByIdController, getAllQuizzesController } from './controllers/QuizController.js';
 
 // Routes
 import authRoute from './routes/authRoute.js';
@@ -31,6 +33,10 @@ app.use(
 
 // Login route
 app.use('/login', authRoute);
+
+// Quiz routes (accessible by Teachers and Students only)
+app.get('/quiz/:id', authenticated, blockAdmin, getQuizByIdController);
+app.get('/quizzes', authenticated, blockAdmin, getAllQuizzesController);
 
 // Admin route
 app.use('/admin', authenticated, autorizeRole('Admin'), adminRoute);
