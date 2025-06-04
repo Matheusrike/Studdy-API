@@ -28,7 +28,7 @@ async function getQuizzesOfTeacher(userId, classId, subjectId) {
 				id: true,
 				title: true,
 				description: true,
-				icon: true,	
+				icon: true,
 				duration_minutes: true,
 				visibility: true,
 			},
@@ -147,7 +147,7 @@ async function updateQuiz(quizId, quizData) {
 			const updatedQuiz = await tx.quiz.update({
 				where: { id: quizId },
 				data: {
-					title: quizData.title,	
+					title: quizData.title,
 					description: quizData.description,
 					icon: quizData.icon,
 					duration_minutes: quizData.duration_minutes,
@@ -206,10 +206,254 @@ async function deleteQuiz(quizId) {
 	}
 }
 
+// Consumir quizzes (Estudante)
+// Buscar informações de contexto (turma, matéria, professor)
+async function getStudentSubjectClassContext(subjectId, userId) {
+	try {
+		const context = await prisma.student.findUnique({
+			where: { user_id: userId },
+			include: {
+				class: {
+					include: {
+						teacher_subject_classes: {
+							where: {
+								teacher_subject: {
+									subject_id: subjectId,
+								},
+							},
+							include: {
+								teacher_subject: {
+									include: {
+										subject: true,
+										teacher: {
+											include: {
+												user: {
+													select: {
+														name: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!context || context.class.teacher_subject_classes.length === 0) {
+			return null;
+		}
+
+		const teacherSubjectClass = context.class.teacher_subject_classes[0];
+
+		return {
+			classInfo: {
+				id: context.class.id,
+				name: context.class.name,
+				shift: context.class.shift,
+				course: context.class.course,
+			},
+			subjectInfo: {
+				id: teacherSubjectClass.teacher_subject.subject.id,
+				name: teacherSubjectClass.teacher_subject.subject.name,
+			},
+			teacherInfo: {
+				id: teacherSubjectClass.teacher_subject.teacher.id,
+				name: teacherSubjectClass.teacher_subject.teacher.user.name,
+			},
+			teacherSubjectClassId: teacherSubjectClass.id,
+		};
+	} catch (error) {
+		throw new Error(
+			`Error getting student subject class context: ${error.message}`,
+		);
+	}
+}
+
+// Buscar todos os simulados de uma matéria para um estudante
+async function getQuizzesBySubject(subjectId, userId) {
+	try {
+		// Primeiro, encontrar o teacher_subject_class_id
+		const context = await getStudentSubjectClassContext(subjectId, userId);
+
+		if (!context) {
+			throw new Error('Student not found on this subject');
+		}
+
+		const student = await prisma.student.findUnique({
+			where: { user_id: userId },
+		});
+
+		// Buscar simulados com informações agregadas
+		const quizzes = await prisma.quiz.findMany({
+			where: {
+				teacher_subject_class_id: context.teacherSubjectClassId,
+				visibility: 'public',
+			},
+			include: {
+				_count: {
+					select: {
+						questions: true,
+					},
+				},
+				quiz_attempts: {
+					where: {
+						student_id: student.id,
+					},
+					orderBy: {
+						created_at: 'desc',
+					},
+				},
+			},
+			orderBy: {
+				created_at: 'desc',
+			},
+		});
+
+		// Processar dados dos simulados com status do estudante
+		const processedQuizzes = quizzes.map((quiz) => {
+			const attempts = quiz.quiz_attempts;
+			const completedAttempts = attempts.filter(
+				(attempt) => attempt.status === 'completed',
+			);
+			const inProgressAttempt = attempts.find(
+				(attempt) => attempt.status === 'in_progress',
+			);
+
+			let status = 'available';
+			if (inProgressAttempt) {
+				status = 'in_progress';
+			} else if (completedAttempts.length > 0) {
+				status = 'completed';
+			}
+
+			const bestScore =
+				completedAttempts.length > 0
+					? Math.max(
+							...completedAttempts.map((attempt) =>
+								parseFloat(attempt.total_score),
+							),
+						)
+					: null;
+
+			const lastAttemptDate =
+				attempts.length > 0
+					? attempts[0].finished_at || attempts[0].started_at
+					: null;
+
+			return {
+				id: quiz.id,
+				title: quiz.title,
+				description: quiz.description,
+				icon: quiz.icon,
+				duration_minutes: quiz.duration_minutes,
+				max_points: parseFloat(quiz.max_points),
+				max_attempt: quiz.max_attempt,
+				total_questions: quiz._count.questions,
+				created_at: quiz.created_at,
+				// Status do estudante
+				attempts_count: attempts.length,
+				completed_attempts_count: completedAttempts.length,
+				best_score: bestScore,
+				last_attempt_date: lastAttemptDate,
+				status: status,
+				in_progress_attempt_id: inProgressAttempt?.id || null,
+			};
+		});
+
+		return {
+			context,
+			quizzes: processedQuizzes,
+		};
+	} catch (error) {
+		throw new Error(`Error getting student quizzes: ${error.message}`);
+	}
+}
+
+// inicia uma tentativa
+async function startAttempt(quizId, userId) {
+	try {
+		const student = await prisma.student.findUnique({
+			where: { user_id: userId },
+		});
+
+		if (!student) {
+			throw new Error('Student not found');
+		}
+
+		const quiz = await prisma.quiz.findUnique({
+			where: { id: quizId },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				icon: true,
+				duration_minutes: true,
+				max_points: true,
+				max_attempt: true,
+				questions: {
+					select: {
+						id: true,
+						statement: true,
+						points: true,
+						alternatives: {
+							select: {
+								id: true,
+								response: true,
+							},
+						},
+					},
+				},
+			},
+		});
+
+		if (!quiz) {
+			throw new Error('Quiz not found');
+		}
+
+		const startedAttempt = await prisma.quiz_attempt.create({
+			data: {
+				quiz_id: quizId,
+				student_id: student.id,
+				total_score: 0,
+				status: 'in_progress',
+			},
+			select: {
+				id: true,
+				quiz_id: true,
+				student_id: true,
+				status: true,
+			},
+		});
+
+		return quiz;
+	} catch (error) {
+		throw error;
+	}
+}
+
+async function changeAttemptStatus(attemptId, status) {
+	try {
+		const updatedAttempt = await prisma.quiz_attempt.update({
+			where: { id: attemptId },
+			data: { status: status },
+		});
+		return updatedAttempt;
+	} catch (error) {
+		throw error;
+	}
+}
+
 export {
 	getQuizzesOfTeacher,
 	createQuiz,
 	updateQuiz,
 	updateQuizVisibility,
 	deleteQuiz,
+	getQuizzesBySubject,
+	startAttempt,
+	changeAttemptStatus,
 };
