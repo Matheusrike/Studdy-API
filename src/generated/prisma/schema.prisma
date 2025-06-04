@@ -11,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
+  provider = "mysql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
   url      = env("DATABASE_URL")
 }
 
@@ -38,24 +38,24 @@ enum Role {
 }
 
 model Teacher {
-  id               Int                            @id @unique @default(autoincrement())
-  user_id          Int                            @unique
-  user             User                           @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  created_at       DateTime                       @default(now())
-  modified_at      DateTime                       @default(now()) @updatedAt
-  teacher_subjects Relationship_teacher_subject[]
-  resumes          Resume[]
+  id                            Int                            @id @unique @default(autoincrement())
+  user_id                       Int                            @unique
+  user                          User                           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  created_at                    DateTime                       @default(now())
+  modified_at                   DateTime                       @default(now()) @updatedAt
+  teacher_subjects              Relationship_teacher_subject[]
+  teacher_subject_class_resumes TeacherSubjectClassResume[]
 
   @@map("teacher")
 }
 
 model Subject {
-  id               Int                            @id @unique @default(autoincrement())
-  name             String                         @unique
-  created_at       DateTime                       @default(now())
-  modified_at      DateTime                       @default(now()) @updatedAt
-  teacher_subjects Relationship_teacher_subject[]
-  resumes          Resume[]
+  id                            Int                            @id @unique @default(autoincrement())
+  name                          String                         @unique
+  created_at                    DateTime                       @default(now())
+  modified_at                   DateTime                       @default(now()) @updatedAt
+  teacher_subjects              Relationship_teacher_subject[]
+  teacher_subject_class_resumes TeacherSubjectClassResume[]
 
   @@map("subject")
 }
@@ -80,15 +80,15 @@ enum Shift {
 }
 
 model Class {
-  id                      Int                                  @id @unique @default(autoincrement())
-  name                    String
-  shift                   Shift
-  course                  String
-  created_at              DateTime                             @default(now())
-  modified_at             DateTime                             @default(now()) @updatedAt
-  students                Student[]
-  teacher_subject_classes Relationship_teacher_subject_class[]
-  resumes                 Resume[]
+  id                            Int                                  @id @unique @default(autoincrement())
+  name                          String
+  shift                         Shift
+  course                        String
+  created_at                    DateTime                             @default(now())
+  modified_at                   DateTime                             @default(now()) @updatedAt
+  students                      Student[]
+  teacher_subject_classes       Relationship_teacher_subject_class[]
+  teacher_subject_class_resumes TeacherSubjectClassResume[]
 
   @@unique([name, shift, course])
   @@map("class")
@@ -239,20 +239,32 @@ model Video_assignment {
   @@map("video_assignment")
 }
 
-model Resume {
+model TeacherSubjectClassResume {
   id          Int      @id @unique @default(autoincrement())
   teacher_id  Int
   subject_id  Int
   class_id    Int
-  title       String
-  icon        String
-  description String
-  resume      String   @db.Text
+  resume_id   Int      @unique
   created_at  DateTime @default(now())
   modified_at DateTime @default(now()) @updatedAt
   teacher     Teacher  @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
   subject     Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)
   class       Class    @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  resume      Resume   @relation(fields: [resume_id], references: [id], onDelete: Cascade)
+
+  @@unique([teacher_id, subject_id, class_id, resume_id])
+  @@map("teacher_subject_class_resume")
+}
+
+model Resume {
+  id                           Int                        @id @unique @default(autoincrement())
+  title                        String
+  icon                         String
+  description                  String
+  resume                       String                     @db.Text
+  created_at                   DateTime                   @default(now())
+  modified_at                  DateTime                   @default(now()) @updatedAt
+  teacher_subject_class_resume TeacherSubjectClassResume?
 
   @@map("resume")
 }
