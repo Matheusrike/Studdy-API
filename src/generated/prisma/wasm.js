@@ -239,53 +239,33 @@ exports.Prisma.Question_responseScalarFieldEnum = {
   modified_at: 'modified_at'
 };
 
+exports.Prisma.Video_assignmentScalarFieldEnum = {
+  id: 'id',
+  videoUrl: 'videoUrl',
+  titulo: 'titulo',
+  professor: 'professor',
+  duracao: 'duracao',
+  categoria: 'categoria',
+  descricao: 'descricao',
+  thumbnail: 'thumbnail',
+  videoId: 'videoId',
+  created_at: 'created_at',
+  modified_at: 'modified_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  cpf: 'cpf',
-  hashed_password: 'hashed_password'
-};
-
-exports.Prisma.SubjectOrderByRelevanceFieldEnum = {
-  name: 'name'
-};
-
-exports.Prisma.ClassOrderByRelevanceFieldEnum = {
-  name: 'name',
-  course: 'course'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  enrollment: 'enrollment'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.QuizOrderByRelevanceFieldEnum = {
-  title: 'title',
-  description: 'description',
-  icon: 'icon'
-};
-
-exports.Prisma.QuestionOrderByRelevanceFieldEnum = {
-  statement: 'statement'
-};
-
-exports.Prisma.AlternativeOrderByRelevanceFieldEnum = {
-  response: 'response'
-};
-
-exports.Prisma.Question_imagesOrderByRelevanceFieldEnum = {
-  image_path: 'image_path',
-  alt_text: 'alt_text'
 };
 exports.Role = exports.$Enums.Role = {
   Admin: 'Admin',
@@ -325,7 +305,8 @@ exports.Prisma.ModelName = {
   Alternative: 'Alternative',
   Question_images: 'Question_images',
   Quiz_attempt: 'Quiz_attempt',
-  Question_response: 'Question_response'
+  Question_response: 'Question_response',
+  Video_assignment: 'Video_assignment'
 };
 
 /**

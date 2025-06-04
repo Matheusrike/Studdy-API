@@ -11,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
+  provider = "postgresql" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations
   url      = env("DATABASE_URL")
 }
 
@@ -218,4 +218,20 @@ model Question_response {
   quiz_attempt          Quiz_attempt @relation(fields: [quiz_attempt_id], references: [id], onDelete: Cascade)
 
   @@map("question_response")
+}
+
+model Video_assignment {
+  id          Int      @id @unique @default(autoincrement())
+  videoUrl    String   @unique
+  titulo      String
+  professor   String
+  duracao     String
+  categoria   String
+  descricao   String   @db.Text
+  thumbnail   String
+  videoId     String
+  created_at  DateTime @default(now())
+  modified_at DateTime @default(now()) @updatedAt
+
+  @@map("video_assignment")
 }
