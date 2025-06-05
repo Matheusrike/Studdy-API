@@ -16,6 +16,7 @@ import teacherRoute from './routes/teacherRoute.js';
 import generateRoute from './routes/generateRoute.js';
 import studentRoute from './routes/studentRoute.js';
 import userRoute from './routes/userRoute.js';
+import quizRoute from './routes/quizRoute.js';
 
 // Config
 const app = express();
@@ -34,21 +35,22 @@ app.use(
 // Login route
 app.use('/login', authRoute);
 
-// Quiz routes (accessible by Teachers and Students only)
-app.get('/quiz/:id', authenticated, blockAdmin, getQuizByIdController);
-app.get('/quizzes', authenticated, blockAdmin, getAllQuizzesController);
 
 // Admin route
-app.use('/admin', authenticated, autorizeRole('Admin'), adminRoute);
+app.use('/admin', authenticated, autorizeRole(['Admin']), adminRoute);
 
 // Teacher route
-app.use('/teacher', authenticated, autorizeRole('Teacher'), teacherRoute);
+app.use('/teacher', authenticated, autorizeRole(['Teacher']), teacherRoute);
 
 // Generate route
-app.use('/generate', authenticated, autorizeRole('Teacher'), generateRoute);
+app.use('/generate', authenticated, autorizeRole(['Teacher']), generateRoute);
 
 // Student route
-app.use('/student', authenticated, autorizeRole('Student'), studentRoute);
+app.use('/student', authenticated, autorizeRole(['Student']), studentRoute);
+
+// Quiz route
+app.use('/quiz', quizRoute);
+
 // User Route
 app.use('/user', userRoute);
 

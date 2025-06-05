@@ -2,6 +2,7 @@ import express from 'express';
 import {
 	getStudentClassController,
 	getStudentSubjectsController,
+	getStudentQuizzesController,
 } from '../controllers/StudentController.js';
 import {
 	getQuizzesBySubjectController,
@@ -9,6 +10,7 @@ import {
 	startAttemptController,
 	changeAttemptStatusController,
 	submitQuizController,
+	getQuizAttemptResponsesController,
 } from '../controllers/QuizController.js';
 
 const router = express.Router();
@@ -18,6 +20,9 @@ router.get('/class', getStudentClassController);
 
 // Rota para obter as matérias da turma do aluno
 router.get('/subjects', getStudentSubjectsController);
+
+// Rota para obter todos os quizzes
+router.get('/quizzes', getStudentQuizzesController);
 
 // Rota para obter os quizzes de uma materia
 router.get('/subjects/:subjectId/quizzes', getQuizzesBySubjectController);
@@ -34,6 +39,10 @@ router.post(
 // rota para atualizar o status da tentativa
 router.put('/attempt/:attemptId', changeAttemptStatusController);
 
+// rota para enviar respostas
 router.post('/attempt/:attemptId/submit', submitQuizController);
+
+// rota para obter as respostas de uma tentativa
+router.get('/attempt/:attemptId/responses', getQuizAttemptResponsesController);
 
 export default router;

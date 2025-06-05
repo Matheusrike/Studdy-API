@@ -4,6 +4,7 @@ import {
 	createClass,
 	updateClass,
 	deleteClass,
+	getClassesByTeacherId,
 } from '../models/Class.js';
 import { classSchema } from '../schemas/class.schema.js';
 import { ZodError } from 'zod/v4';
@@ -144,10 +145,54 @@ async function deleteClassController(req, res) {
 	}
 }
 
+// Obter turmas de um professor
+async function getClassesByTeacherIdController(req, res) {
+	try {
+		const userId = req.user.id;
+
+		const classes = await getClassesByTeacherId(userId);
+
+		return res.status(200).json(classes);
+	} catch (error) {
+		console.error('Error getting teacher classes:', error);
+		return res.status(500).json({ error: error.message });
+	}
+}
+
+// Obter uma turma específica de um professor
+async function getTeacherClassByIdController(req, res) {
+	try {
+		const userId = req.user.id;
+		const classId = req.params.classId;
+
+		const teacherClass = await getClassById(classId);
+
+		if (!teacherClass) {
+			return res.status(404).json({ error: 'Turma não encontrada' });
+		}
+
+		// Verifica se o professor leciona nessa turma
+		const teacherSubjects = teacherClass.teachers.find(
+			(teacher) => teacher.teacher_id === userId
+		);
+
+		if (!teacherSubjects) {
+			return res.status(403).json({ error: 'Professor não leciona nesta turma' });
+		}
+
+		return res.status(200).json(teacherClass);
+	} catch (error) {
+		console.error('Error getting teacher class:', error);
+		return res.status(500).json({ error: error.message });
+	}
+}
+
 export {
 	getAllClassesController,
 	getClassByIdController,
 	createClassController,
 	updateClassController,
 	deleteClassController,
+	getClassesByTeacherIdController,
+	getTeacherClassByIdController,
 };

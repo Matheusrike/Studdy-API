@@ -3,6 +3,7 @@ import {
 	getTeacherClassesController,
 	getClassSubjectsByTeacherController,
 	getSubjectQuizzesController,
+	getTeacherClassByIdController,
 } from '../controllers/TeacherController.js';
 import {
 	createQuizController,
@@ -31,6 +32,9 @@ const router = express.Router();
 
 // Rota para obter as turmas de um professor
 router.get('/classes', getTeacherClassesController);
+
+// Rota para obter uma turma específica
+router.get('/classes/:classId', getTeacherClassByIdController);
 
 // Rota para obter as matérias que ele leciona naquela turma
 router.get('/classes/:classId/subjects', getClassSubjectsByTeacherController);

@@ -4,9 +4,10 @@ import {
 	createTeacher,
 	updateTeacher,
 	deleteTeacher,
+	getTeacherByUserId,
 } from '../models/Teacher.js';
 import { getClassSubjectsByTeacher } from '../models/Subject.js';
-import { getClassesByTeacherId } from '../models/Class.js';
+import { getClassesByTeacherId, getClassById } from '../models/Class.js';
 import { getQuizzesOfTeacher } from '../models/Quiz.js';
 import { teacherSchema } from '../schemas/teacher.schema.js';
 import { ZodError } from 'zod/v4';
@@ -184,6 +185,58 @@ async function getSubjectQuizzesController(req, res) {
 	}
 }
 
+// Obter uma turma específica de um professor
+async function getTeacherClassByIdController(req, res) {
+	try {
+		const userId = req.user.id;
+		const classId = parseInt(req.params.classId);
+
+		if (isNaN(classId)) {
+			return res.status(400).json({ error: 'ID da turma inválido' });
+		}
+
+		// Primeiro, obtém o ID do professor a partir do ID do usuário
+		const teacher = await getTeacherByUserId(userId);
+
+		if (!teacher) {
+			return res.status(404).json({ error: 'Professor não encontrado' });
+		}
+
+		const teacherClass = await getClassById(classId);
+
+		if (!teacherClass) {
+			return res.status(404).json({ error: 'Turma não encontrada' });
+		}
+
+		// Verifica se o professor leciona nessa turma
+		const teacherSubjects = teacherClass.teachers.find(
+			(t) => t.teacher_id === teacher.id
+		);
+
+		if (!teacherSubjects) {
+			return res.status(403).json({ error: 'Professor não leciona nesta turma' });
+		}
+
+		// Obtém os quizzes da turma para cada matéria que o professor leciona
+		const quizzes = [];
+		for (const subject of teacherSubjects.subjects) {
+			const subjectQuizzes = await getQuizzesOfTeacher(userId, classId, subject.id);
+			quizzes.push(...subjectQuizzes);
+		}
+
+		return res.status(200).json({
+			id: teacherClass.id,
+			name: teacherClass.name,
+			shift: teacherClass.shift,
+			course: teacherClass.course,
+			quizzes
+		});
+	} catch (error) {
+		console.error('Error getting teacher class:', error);
+		return res.status(500).json({ error: error.message });
+	}
+}
+
 export {
 	getAllTeachersController,
 	getTeacherByIdController,
@@ -193,4 +246,5 @@ export {
 	getTeacherClassesController,
 	getClassSubjectsByTeacherController,
 	getSubjectQuizzesController,
+	getTeacherClassByIdController,
 };

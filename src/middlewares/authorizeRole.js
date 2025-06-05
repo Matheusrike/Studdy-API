@@ -1,8 +1,8 @@
-export default function autorizeRole(role) {
+export default function autorizeRole(allowedRoles) {
 	return (req, res, next) => {
-		if (req.user.role !== role) {
+		if (!allowedRoles.includes(req.user.role)) {
 			return res.status(403).json({
-				message: `You don't have permission to access this route`,
+				message: 'You don\'t have permission to access this route',
 			});
 		}
 		next();

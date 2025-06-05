@@ -302,10 +302,24 @@ async function deleteTeacher(teacherId) {
 	}
 }
 
+async function getTeacherByUserId(userId) {
+	try {
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			select: { id: true }
+		});
+
+		return teacher;
+	} catch (error) {
+		throw error;
+	}
+}
+
 export {
 	getAllTeachers,
 	getTeacherById,
 	createTeacher,
 	updateTeacher,
 	deleteTeacher,
+	getTeacherByUserId,
 };

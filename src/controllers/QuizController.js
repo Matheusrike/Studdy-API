@@ -12,9 +12,11 @@ import {
 	getAllQuizzesForStudent,
 	getAllQuizzesForTeacher,
 	updateQuizVisibility,
+	getQuizAttemptResponses,
 } from '../models/Quiz.js';
 import { quizSchema, visibilitySchema } from '../schemas/quiz.schema.js';
 import { ZodError } from 'zod/v4';
+import prisma from '../generated/prisma/client.js';
 
 // Controller do /teacher
 // Controller para criar um novo quiz
@@ -304,11 +306,11 @@ async function getQuizWithQuestionsController(req, res) {
 	}
 }
 
-// GET /quiz/:id
+// GET /quiz/:quizId
 async function getQuizByIdController(req, res) {
 	try {
-		const { id } = req.params;
-		const quiz = await getQuizById(parseInt(id));
+		const { quizId } = req.params;
+		const quiz = await getQuizById(parseInt(quizId));
 		return res.status(200).json(quiz);
 	} catch (error) {
 		console.error('Error fetching quiz:', error);
@@ -327,13 +329,21 @@ async function getAllQuizzesController(req, res) {
 
 		let quizzes;
 		if (userRole === 'Student') {
-			quizzes = await getAllQuizzesForStudent(userId);
+			// Primeiro, busca o ID do estudante
+			const student = await prisma.student.findUnique({
+				where: { user_id: userId },
+				select: { id: true }
+			});
+
+			if (!student) {
+				return res.status(404).json({ message: 'Student not found' });
+			}
+
+			quizzes = await getAllQuizzesForStudent(student.id);
 		} else if (userRole === 'Teacher') {
 			quizzes = await getAllQuizzesForTeacher(userId);
 		} else {
-			return res
-				.status(403)
-				.json({ message: 'Access denied for this role' });
+			return res.status(403).json({ message: 'Access denied for this role' });
 		}
 
 		return res.status(200).json(quizzes);
@@ -343,6 +353,22 @@ async function getAllQuizzesController(req, res) {
 			return res.status(404).json({ message: error.message });
 		}
 		return res.status(500).json({ message: 'Error fetching quizzes' });
+	}
+}
+
+// GET /student/attempt/:attemptId/responses
+async function getQuizAttemptResponsesController(req, res) {
+	try {
+		const { attemptId } = req.params;
+		const userId = req.user.id;
+		const result = await getQuizAttemptResponses(attemptId, userId);
+		return res.status(200).json(result);
+	} catch (error) {
+		if (error.message === 'Tentativa não encontrada')
+			return res.status(404).json({ message: error.message });
+		if (error.message === 'Sem permissão')
+			return res.status(403).json({ message: error.message });
+		return res.status(500).json({ message: 'Erro ao buscar respostas da tentativa', error: error.message });
 	}
 }
 
@@ -359,4 +385,5 @@ export {
 	getQuizWithQuestionsController,
 	getQuizByIdController,
 	getAllQuizzesController,
+	getQuizAttemptResponsesController
 };

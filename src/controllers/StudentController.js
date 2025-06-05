@@ -9,6 +9,7 @@ import { getStudentClass } from '../models/Class.js';
 import { getSubjectsByStudent } from '../models/Subject.js';
 import { studentSchema } from '../schemas/student.schema.js';
 import { ZodError } from 'zod/v4';
+import { getQuizzesByStudent } from '../models/Quiz.js';
 
 // Controllers do /admin/student
 
@@ -158,6 +159,22 @@ async function getStudentSubjectsController(req, res) {
 	}
 }
 
+// Controller para obter todos os quizzes
+async function getStudentQuizzesController(req, res) {
+	try {
+		const studentQuizzes = await getQuizzesByStudent(req.user.id);
+		return res.status(200).json(studentQuizzes);
+	} catch (error) {
+		console.error(error);
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+		return res
+			.status(500)
+			.json({ message: 'Error fetching student quizzes' });
+	}
+}
+
 export {
 	getAllStudentsController,
 	getStudentByIdController,
@@ -166,4 +183,5 @@ export {
 	deleteStudentController,
 	getStudentClassController,
 	getStudentSubjectsController,
+	getStudentQuizzesController,
 };
