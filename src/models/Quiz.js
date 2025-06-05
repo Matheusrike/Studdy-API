@@ -343,7 +343,7 @@ async function getQuizzesBySubject(subjectId, userId) {
 				(attempt) => attempt.status === 'in_progress',
 			);
 
-			let status = 'available';
+			let status = 'in_progress';
 			if (inProgressAttempt) {
 				status = 'in_progress';
 			} else if (completedAttempts.length > 0) {
@@ -404,6 +404,27 @@ async function startAttempt(quizId, userId) {
 			throw new Error('Student not found');
 		}
 
+//finalizar  ja foi finalte uma tentativa em progresso para este aluno neste quiz
+		const existingAttempt = await prisma.quiz_attempt.findFirst({
+			where: {
+				quiz_id: quizId,
+				student_id: student.id,
+				status: 'in_progress'
+			}
+		});
+
+		if (existingAttempt) {
+			throw new Error('Você já tem uma tentativa em progresso para este quiz.');
+		}
+
+		// Verificar o limite máximo de tentativas
+		const totalAttempts = await prisma.quiz_attempt.count({
+			where: {
+				quiz_id: quizId,
+				student_id: student.id
+			}
+		});
+
 		const quiz = await prisma.quiz.findUnique({
 			where: { id: quizId },
 			select: {
@@ -432,6 +453,11 @@ async function startAttempt(quizId, userId) {
 
 		if (!quiz) {
 			throw new Error('Quiz not found');
+		}
+
+		// Verificar se o aluno já atingiu o limite máximo de tentativas
+		if (quiz.max_attempt && totalAttempts >= quiz.max_attempt) {
+			throw new Error(`Você já atingiu o limite máximo de ${quiz.max_attempt} tentativas para este quiz.`);
 		}
 
 		const startedAttempt = await prisma.quiz_attempt.create({
@@ -463,9 +489,19 @@ async function changeAttemptStatus(attemptId, status) {
 	}
 }
 
-async function submitAnswer(attemptId, responses) {
+async function submitAnswer(attemptId, responses, userId) {
 	try {
 		const result = await prisma.$transaction(async (tx) => {
+			// Buscar o aluno pelo userId
+			const student = await tx.student.findUnique({
+				where: { user_id: userId },
+				select: { id: true }
+			});
+
+			if (!student) {
+				throw new Error('Aluno não encontrado.');
+			}
+
 			const attempt = await tx.quiz_attempt.findUnique({
 				where: { id: Number(attemptId) },
 				include: { quiz: { include: { questions: true } } },
@@ -473,6 +509,12 @@ async function submitAnswer(attemptId, responses) {
 
 			if (!attempt) {
 				throw new Error('Tentativa não encontrada.');
+			}
+
+			// Verificar se a tentativa pertence ao estudante atual
+			if (attempt.student_id !== student.id) {
+				console.log(`Tentativa ${attemptId} pertence ao student ${attempt.student_id}, mas usuário atual é student ${student.id}`);
+				throw new Error('Você não tem permissão para finalizar esta tentativa.');
 			}
 
 			if (attempt.status !== 'in_progress') {
@@ -928,7 +970,8 @@ async function getQuizzesByStudent(userId) {
 					(attempt) => attempt.status === 'in_progress'
 				);
 
-				let status = 'available';
+				// Quiz status logic: in_progress by default, completed if actually completed
+				let status = 'in_progress';
 				if (inProgressAttempt) {
 					status = 'in_progress';
 				} else if (completedAttempts.length > 0) {

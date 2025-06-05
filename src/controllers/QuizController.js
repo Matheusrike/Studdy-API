@@ -266,6 +266,7 @@ async function submitQuizController(req, res) {
 	try {
 		const { attemptId } = req.params;
 		const { responses } = req.body;
+		const userId = req.user.id;
 
 		if (!Array.isArray(responses) || responses.length === 0) {
 			return res.status(400).json({
@@ -273,7 +274,7 @@ async function submitQuizController(req, res) {
 			});
 		}
 
-		const attempt = await submitAnswer(parseInt(attemptId), responses);
+		const attempt = await submitAnswer(parseInt(attemptId), responses, userId);
 		return res.status(200).json(attempt);
 	} catch (error) {
 		console.error('Error submitting answer:', error);
