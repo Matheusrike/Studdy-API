@@ -1,6 +1,7 @@
 import {
 	getAllUsers,
 	getUserById,
+	updateUser,
 } from '../models/User.js';
 
 async function getAllUsersController(req, res) {
@@ -28,8 +29,25 @@ async function getUserByIdController(req, res) {
 	}
 }
 
+async function updateUserController(req, res) {
+
+	try {
+		const user = await updateUser(parseInt(req.params.userId), req.body);
+
+		if (!user) {
+			return res.status(404).json({ message: 'Usuário não encontrado' });
+		}
+
+		return res.status(200).json(user);
+	} catch (error) {
+		console.error('Erro ao atualizar usuário:', error);
+		return res.status(500).json({ message: 'Erro ao atualizar usuário' });
+	}
+}
+
 
 export {
 	getAllUsersController,
-	getUserByIdController
+	getUserByIdController,
+	updateUserController,
 };
