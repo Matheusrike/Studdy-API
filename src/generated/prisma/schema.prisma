@@ -268,3 +268,33 @@ model Resume {
 
   @@map("resume")
 }
+
+model Contests {
+  id          Int      @id @unique @default(autoincrement())
+  title       String
+  link        String
+  type        String
+  icon        String
+  color       String
+  description String   @db.Text
+  date        DateTime
+  created_at  DateTime @default(now())
+  modified_at DateTime @updatedAt
+
+  @@map("contests")
+}
+
+model Entrance_exam {
+  id          Int      @id @unique @default(autoincrement())
+  title       String
+  link        String
+  type        String
+  icon        String
+  color       String
+  description String   @db.Text
+  date        DateTime
+  created_at  DateTime @default(now())
+  modified_at DateTime @updatedAt
+
+  @@map("entrance_exam")
+}

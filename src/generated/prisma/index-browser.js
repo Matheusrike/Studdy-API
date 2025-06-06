@@ -273,6 +273,32 @@ exports.Prisma.ResumeScalarFieldEnum = {
   modified_at: 'modified_at'
 };
 
+exports.Prisma.ContestsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  link: 'link',
+  type: 'type',
+  icon: 'icon',
+  color: 'color',
+  description: 'description',
+  date: 'date',
+  created_at: 'created_at',
+  modified_at: 'modified_at'
+};
+
+exports.Prisma.Entrance_examScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  link: 'link',
+  type: 'type',
+  icon: 'icon',
+  color: 'color',
+  description: 'description',
+  date: 'date',
+  created_at: 'created_at',
+  modified_at: 'modified_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -380,7 +406,9 @@ exports.Prisma.ModelName = {
   Question_response: 'Question_response',
   Video_assignment: 'Video_assignment',
   TeacherSubjectClassResume: 'TeacherSubjectClassResume',
-  Resume: 'Resume'
+  Resume: 'Resume',
+  Contests: 'Contests',
+  Entrance_exam: 'Entrance_exam'
 };
 
 /**

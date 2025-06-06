@@ -93,6 +93,16 @@ export type TeacherSubjectClassResume = $Result.DefaultSelection<Prisma.$Teacher
  * 
  */
 export type Resume = $Result.DefaultSelection<Prisma.$ResumePayload>
+/**
+ * Model Contests
+ * 
+ */
+export type Contests = $Result.DefaultSelection<Prisma.$ContestsPayload>
+/**
+ * Model Entrance_exam
+ * 
+ */
+export type Entrance_exam = $Result.DefaultSelection<Prisma.$Entrance_examPayload>
 
 /**
  * Enums
@@ -436,6 +446,26 @@ export class PrismaClient<
     * ```
     */
   get resume(): Prisma.ResumeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.contests`: Exposes CRUD operations for the **Contests** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Contests
+    * const contests = await prisma.contests.findMany()
+    * ```
+    */
+  get contests(): Prisma.ContestsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.entrance_exam`: Exposes CRUD operations for the **Entrance_exam** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Entrance_exams
+    * const entrance_exams = await prisma.entrance_exam.findMany()
+    * ```
+    */
+  get entrance_exam(): Prisma.Entrance_examDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -891,7 +921,9 @@ export namespace Prisma {
     Question_response: 'Question_response',
     Video_assignment: 'Video_assignment',
     TeacherSubjectClassResume: 'TeacherSubjectClassResume',
-    Resume: 'Resume'
+    Resume: 'Resume',
+    Contests: 'Contests',
+    Entrance_exam: 'Entrance_exam'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -910,7 +942,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "teacher" | "subject" | "relationship_teacher_subject" | "class" | "student" | "relationship_teacher_subject_class" | "quiz" | "question" | "alternative" | "question_images" | "quiz_attempt" | "question_response" | "video_assignment" | "teacherSubjectClassResume" | "resume"
+      modelProps: "user" | "teacher" | "subject" | "relationship_teacher_subject" | "class" | "student" | "relationship_teacher_subject_class" | "quiz" | "question" | "alternative" | "question_images" | "quiz_attempt" | "question_response" | "video_assignment" | "teacherSubjectClassResume" | "resume" | "contests" | "entrance_exam"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1970,6 +2002,154 @@ export namespace Prisma {
           }
         }
       }
+      Contests: {
+        payload: Prisma.$ContestsPayload<ExtArgs>
+        fields: Prisma.ContestsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ContestsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ContestsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>
+          }
+          findFirst: {
+            args: Prisma.ContestsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ContestsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>
+          }
+          findMany: {
+            args: Prisma.ContestsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>[]
+          }
+          create: {
+            args: Prisma.ContestsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>
+          }
+          createMany: {
+            args: Prisma.ContestsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ContestsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>[]
+          }
+          delete: {
+            args: Prisma.ContestsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>
+          }
+          update: {
+            args: Prisma.ContestsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>
+          }
+          deleteMany: {
+            args: Prisma.ContestsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ContestsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ContestsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>[]
+          }
+          upsert: {
+            args: Prisma.ContestsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ContestsPayload>
+          }
+          aggregate: {
+            args: Prisma.ContestsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateContests>
+          }
+          groupBy: {
+            args: Prisma.ContestsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ContestsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ContestsCountArgs<ExtArgs>
+            result: $Utils.Optional<ContestsCountAggregateOutputType> | number
+          }
+        }
+      }
+      Entrance_exam: {
+        payload: Prisma.$Entrance_examPayload<ExtArgs>
+        fields: Prisma.Entrance_examFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.Entrance_examFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.Entrance_examFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>
+          }
+          findFirst: {
+            args: Prisma.Entrance_examFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.Entrance_examFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>
+          }
+          findMany: {
+            args: Prisma.Entrance_examFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>[]
+          }
+          create: {
+            args: Prisma.Entrance_examCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>
+          }
+          createMany: {
+            args: Prisma.Entrance_examCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.Entrance_examCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>[]
+          }
+          delete: {
+            args: Prisma.Entrance_examDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>
+          }
+          update: {
+            args: Prisma.Entrance_examUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>
+          }
+          deleteMany: {
+            args: Prisma.Entrance_examDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.Entrance_examUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.Entrance_examUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>[]
+          }
+          upsert: {
+            args: Prisma.Entrance_examUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Entrance_examPayload>
+          }
+          aggregate: {
+            args: Prisma.Entrance_examAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEntrance_exam>
+          }
+          groupBy: {
+            args: Prisma.Entrance_examGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Entrance_examGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.Entrance_examCountArgs<ExtArgs>
+            result: $Utils.Optional<Entrance_examCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2070,6 +2250,8 @@ export namespace Prisma {
     video_assignment?: Video_assignmentOmit
     teacherSubjectClassResume?: TeacherSubjectClassResumeOmit
     resume?: ResumeOmit
+    contests?: ContestsOmit
+    entrance_exam?: Entrance_examOmit
   }
 
   /* Types for Logging */
@@ -18862,6 +19044,2194 @@ export namespace Prisma {
 
 
   /**
+   * Model Contests
+   */
+
+  export type AggregateContests = {
+    _count: ContestsCountAggregateOutputType | null
+    _avg: ContestsAvgAggregateOutputType | null
+    _sum: ContestsSumAggregateOutputType | null
+    _min: ContestsMinAggregateOutputType | null
+    _max: ContestsMaxAggregateOutputType | null
+  }
+
+  export type ContestsAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ContestsSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type ContestsMinAggregateOutputType = {
+    id: number | null
+    title: string | null
+    link: string | null
+    type: string | null
+    icon: string | null
+    color: string | null
+    description: string | null
+    date: Date | null
+    created_at: Date | null
+    modified_at: Date | null
+  }
+
+  export type ContestsMaxAggregateOutputType = {
+    id: number | null
+    title: string | null
+    link: string | null
+    type: string | null
+    icon: string | null
+    color: string | null
+    description: string | null
+    date: Date | null
+    created_at: Date | null
+    modified_at: Date | null
+  }
+
+  export type ContestsCountAggregateOutputType = {
+    id: number
+    title: number
+    link: number
+    type: number
+    icon: number
+    color: number
+    description: number
+    date: number
+    created_at: number
+    modified_at: number
+    _all: number
+  }
+
+
+  export type ContestsAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type ContestsSumAggregateInputType = {
+    id?: true
+  }
+
+  export type ContestsMinAggregateInputType = {
+    id?: true
+    title?: true
+    link?: true
+    type?: true
+    icon?: true
+    color?: true
+    description?: true
+    date?: true
+    created_at?: true
+    modified_at?: true
+  }
+
+  export type ContestsMaxAggregateInputType = {
+    id?: true
+    title?: true
+    link?: true
+    type?: true
+    icon?: true
+    color?: true
+    description?: true
+    date?: true
+    created_at?: true
+    modified_at?: true
+  }
+
+  export type ContestsCountAggregateInputType = {
+    id?: true
+    title?: true
+    link?: true
+    type?: true
+    icon?: true
+    color?: true
+    description?: true
+    date?: true
+    created_at?: true
+    modified_at?: true
+    _all?: true
+  }
+
+  export type ContestsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contests to aggregate.
+     */
+    where?: ContestsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contests to fetch.
+     */
+    orderBy?: ContestsOrderByWithRelationInput | ContestsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ContestsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Contests
+    **/
+    _count?: true | ContestsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ContestsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ContestsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ContestsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ContestsMaxAggregateInputType
+  }
+
+  export type GetContestsAggregateType<T extends ContestsAggregateArgs> = {
+        [P in keyof T & keyof AggregateContests]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateContests[P]>
+      : GetScalarType<T[P], AggregateContests[P]>
+  }
+
+
+
+
+  export type ContestsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContestsWhereInput
+    orderBy?: ContestsOrderByWithAggregationInput | ContestsOrderByWithAggregationInput[]
+    by: ContestsScalarFieldEnum[] | ContestsScalarFieldEnum
+    having?: ContestsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ContestsCountAggregateInputType | true
+    _avg?: ContestsAvgAggregateInputType
+    _sum?: ContestsSumAggregateInputType
+    _min?: ContestsMinAggregateInputType
+    _max?: ContestsMaxAggregateInputType
+  }
+
+  export type ContestsGroupByOutputType = {
+    id: number
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date
+    created_at: Date
+    modified_at: Date
+    _count: ContestsCountAggregateOutputType | null
+    _avg: ContestsAvgAggregateOutputType | null
+    _sum: ContestsSumAggregateOutputType | null
+    _min: ContestsMinAggregateOutputType | null
+    _max: ContestsMaxAggregateOutputType | null
+  }
+
+  type GetContestsGroupByPayload<T extends ContestsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ContestsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ContestsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ContestsGroupByOutputType[P]>
+            : GetScalarType<T[P], ContestsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ContestsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }, ExtArgs["result"]["contests"]>
+
+  export type ContestsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }, ExtArgs["result"]["contests"]>
+
+  export type ContestsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }, ExtArgs["result"]["contests"]>
+
+  export type ContestsSelectScalar = {
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }
+
+  export type ContestsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "link" | "type" | "icon" | "color" | "description" | "date" | "created_at" | "modified_at", ExtArgs["result"]["contests"]>
+
+  export type $ContestsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Contests"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      title: string
+      link: string
+      type: string
+      icon: string
+      color: string
+      description: string
+      date: Date
+      created_at: Date
+      modified_at: Date
+    }, ExtArgs["result"]["contests"]>
+    composites: {}
+  }
+
+  type ContestsGetPayload<S extends boolean | null | undefined | ContestsDefaultArgs> = $Result.GetResult<Prisma.$ContestsPayload, S>
+
+  type ContestsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ContestsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ContestsCountAggregateInputType | true
+    }
+
+  export interface ContestsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Contests'], meta: { name: 'Contests' } }
+    /**
+     * Find zero or one Contests that matches the filter.
+     * @param {ContestsFindUniqueArgs} args - Arguments to find a Contests
+     * @example
+     * // Get one Contests
+     * const contests = await prisma.contests.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ContestsFindUniqueArgs>(args: SelectSubset<T, ContestsFindUniqueArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Contests that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ContestsFindUniqueOrThrowArgs} args - Arguments to find a Contests
+     * @example
+     * // Get one Contests
+     * const contests = await prisma.contests.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ContestsFindUniqueOrThrowArgs>(args: SelectSubset<T, ContestsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsFindFirstArgs} args - Arguments to find a Contests
+     * @example
+     * // Get one Contests
+     * const contests = await prisma.contests.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ContestsFindFirstArgs>(args?: SelectSubset<T, ContestsFindFirstArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Contests that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsFindFirstOrThrowArgs} args - Arguments to find a Contests
+     * @example
+     * // Get one Contests
+     * const contests = await prisma.contests.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ContestsFindFirstOrThrowArgs>(args?: SelectSubset<T, ContestsFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Contests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Contests
+     * const contests = await prisma.contests.findMany()
+     * 
+     * // Get first 10 Contests
+     * const contests = await prisma.contests.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const contestsWithIdOnly = await prisma.contests.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ContestsFindManyArgs>(args?: SelectSubset<T, ContestsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Contests.
+     * @param {ContestsCreateArgs} args - Arguments to create a Contests.
+     * @example
+     * // Create one Contests
+     * const Contests = await prisma.contests.create({
+     *   data: {
+     *     // ... data to create a Contests
+     *   }
+     * })
+     * 
+     */
+    create<T extends ContestsCreateArgs>(args: SelectSubset<T, ContestsCreateArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Contests.
+     * @param {ContestsCreateManyArgs} args - Arguments to create many Contests.
+     * @example
+     * // Create many Contests
+     * const contests = await prisma.contests.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ContestsCreateManyArgs>(args?: SelectSubset<T, ContestsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Contests and returns the data saved in the database.
+     * @param {ContestsCreateManyAndReturnArgs} args - Arguments to create many Contests.
+     * @example
+     * // Create many Contests
+     * const contests = await prisma.contests.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Contests and only return the `id`
+     * const contestsWithIdOnly = await prisma.contests.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ContestsCreateManyAndReturnArgs>(args?: SelectSubset<T, ContestsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Contests.
+     * @param {ContestsDeleteArgs} args - Arguments to delete one Contests.
+     * @example
+     * // Delete one Contests
+     * const Contests = await prisma.contests.delete({
+     *   where: {
+     *     // ... filter to delete one Contests
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ContestsDeleteArgs>(args: SelectSubset<T, ContestsDeleteArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Contests.
+     * @param {ContestsUpdateArgs} args - Arguments to update one Contests.
+     * @example
+     * // Update one Contests
+     * const contests = await prisma.contests.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ContestsUpdateArgs>(args: SelectSubset<T, ContestsUpdateArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Contests.
+     * @param {ContestsDeleteManyArgs} args - Arguments to filter Contests to delete.
+     * @example
+     * // Delete a few Contests
+     * const { count } = await prisma.contests.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ContestsDeleteManyArgs>(args?: SelectSubset<T, ContestsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Contests
+     * const contests = await prisma.contests.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ContestsUpdateManyArgs>(args: SelectSubset<T, ContestsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Contests and returns the data updated in the database.
+     * @param {ContestsUpdateManyAndReturnArgs} args - Arguments to update many Contests.
+     * @example
+     * // Update many Contests
+     * const contests = await prisma.contests.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Contests and only return the `id`
+     * const contestsWithIdOnly = await prisma.contests.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ContestsUpdateManyAndReturnArgs>(args: SelectSubset<T, ContestsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Contests.
+     * @param {ContestsUpsertArgs} args - Arguments to update or create a Contests.
+     * @example
+     * // Update or create a Contests
+     * const contests = await prisma.contests.upsert({
+     *   create: {
+     *     // ... data to create a Contests
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Contests we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ContestsUpsertArgs>(args: SelectSubset<T, ContestsUpsertArgs<ExtArgs>>): Prisma__ContestsClient<$Result.GetResult<Prisma.$ContestsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Contests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsCountArgs} args - Arguments to filter Contests to count.
+     * @example
+     * // Count the number of Contests
+     * const count = await prisma.contests.count({
+     *   where: {
+     *     // ... the filter for the Contests we want to count
+     *   }
+     * })
+    **/
+    count<T extends ContestsCountArgs>(
+      args?: Subset<T, ContestsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ContestsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Contests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ContestsAggregateArgs>(args: Subset<T, ContestsAggregateArgs>): Prisma.PrismaPromise<GetContestsAggregateType<T>>
+
+    /**
+     * Group by Contests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ContestsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ContestsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ContestsGroupByArgs['orderBy'] }
+        : { orderBy?: ContestsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ContestsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContestsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Contests model
+   */
+  readonly fields: ContestsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Contests.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ContestsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Contests model
+   */
+  interface ContestsFieldRefs {
+    readonly id: FieldRef<"Contests", 'Int'>
+    readonly title: FieldRef<"Contests", 'String'>
+    readonly link: FieldRef<"Contests", 'String'>
+    readonly type: FieldRef<"Contests", 'String'>
+    readonly icon: FieldRef<"Contests", 'String'>
+    readonly color: FieldRef<"Contests", 'String'>
+    readonly description: FieldRef<"Contests", 'String'>
+    readonly date: FieldRef<"Contests", 'DateTime'>
+    readonly created_at: FieldRef<"Contests", 'DateTime'>
+    readonly modified_at: FieldRef<"Contests", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Contests findUnique
+   */
+  export type ContestsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * Filter, which Contests to fetch.
+     */
+    where: ContestsWhereUniqueInput
+  }
+
+  /**
+   * Contests findUniqueOrThrow
+   */
+  export type ContestsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * Filter, which Contests to fetch.
+     */
+    where: ContestsWhereUniqueInput
+  }
+
+  /**
+   * Contests findFirst
+   */
+  export type ContestsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * Filter, which Contests to fetch.
+     */
+    where?: ContestsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contests to fetch.
+     */
+    orderBy?: ContestsOrderByWithRelationInput | ContestsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contests.
+     */
+    cursor?: ContestsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contests.
+     */
+    distinct?: ContestsScalarFieldEnum | ContestsScalarFieldEnum[]
+  }
+
+  /**
+   * Contests findFirstOrThrow
+   */
+  export type ContestsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * Filter, which Contests to fetch.
+     */
+    where?: ContestsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contests to fetch.
+     */
+    orderBy?: ContestsOrderByWithRelationInput | ContestsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Contests.
+     */
+    cursor?: ContestsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Contests.
+     */
+    distinct?: ContestsScalarFieldEnum | ContestsScalarFieldEnum[]
+  }
+
+  /**
+   * Contests findMany
+   */
+  export type ContestsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * Filter, which Contests to fetch.
+     */
+    where?: ContestsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Contests to fetch.
+     */
+    orderBy?: ContestsOrderByWithRelationInput | ContestsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Contests.
+     */
+    cursor?: ContestsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Contests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Contests.
+     */
+    skip?: number
+    distinct?: ContestsScalarFieldEnum | ContestsScalarFieldEnum[]
+  }
+
+  /**
+   * Contests create
+   */
+  export type ContestsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Contests.
+     */
+    data: XOR<ContestsCreateInput, ContestsUncheckedCreateInput>
+  }
+
+  /**
+   * Contests createMany
+   */
+  export type ContestsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Contests.
+     */
+    data: ContestsCreateManyInput | ContestsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Contests createManyAndReturn
+   */
+  export type ContestsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Contests.
+     */
+    data: ContestsCreateManyInput | ContestsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Contests update
+   */
+  export type ContestsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Contests.
+     */
+    data: XOR<ContestsUpdateInput, ContestsUncheckedUpdateInput>
+    /**
+     * Choose, which Contests to update.
+     */
+    where: ContestsWhereUniqueInput
+  }
+
+  /**
+   * Contests updateMany
+   */
+  export type ContestsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Contests.
+     */
+    data: XOR<ContestsUpdateManyMutationInput, ContestsUncheckedUpdateManyInput>
+    /**
+     * Filter which Contests to update
+     */
+    where?: ContestsWhereInput
+    /**
+     * Limit how many Contests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contests updateManyAndReturn
+   */
+  export type ContestsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * The data used to update Contests.
+     */
+    data: XOR<ContestsUpdateManyMutationInput, ContestsUncheckedUpdateManyInput>
+    /**
+     * Filter which Contests to update
+     */
+    where?: ContestsWhereInput
+    /**
+     * Limit how many Contests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contests upsert
+   */
+  export type ContestsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Contests to update in case it exists.
+     */
+    where: ContestsWhereUniqueInput
+    /**
+     * In case the Contests found by the `where` argument doesn't exist, create a new Contests with this data.
+     */
+    create: XOR<ContestsCreateInput, ContestsUncheckedCreateInput>
+    /**
+     * In case the Contests was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ContestsUpdateInput, ContestsUncheckedUpdateInput>
+  }
+
+  /**
+   * Contests delete
+   */
+  export type ContestsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+    /**
+     * Filter which Contests to delete.
+     */
+    where: ContestsWhereUniqueInput
+  }
+
+  /**
+   * Contests deleteMany
+   */
+  export type ContestsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Contests to delete
+     */
+    where?: ContestsWhereInput
+    /**
+     * Limit how many Contests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Contests without action
+   */
+  export type ContestsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contests
+     */
+    select?: ContestsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contests
+     */
+    omit?: ContestsOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Entrance_exam
+   */
+
+  export type AggregateEntrance_exam = {
+    _count: Entrance_examCountAggregateOutputType | null
+    _avg: Entrance_examAvgAggregateOutputType | null
+    _sum: Entrance_examSumAggregateOutputType | null
+    _min: Entrance_examMinAggregateOutputType | null
+    _max: Entrance_examMaxAggregateOutputType | null
+  }
+
+  export type Entrance_examAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Entrance_examSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Entrance_examMinAggregateOutputType = {
+    id: number | null
+    title: string | null
+    link: string | null
+    type: string | null
+    icon: string | null
+    color: string | null
+    description: string | null
+    date: Date | null
+    created_at: Date | null
+    modified_at: Date | null
+  }
+
+  export type Entrance_examMaxAggregateOutputType = {
+    id: number | null
+    title: string | null
+    link: string | null
+    type: string | null
+    icon: string | null
+    color: string | null
+    description: string | null
+    date: Date | null
+    created_at: Date | null
+    modified_at: Date | null
+  }
+
+  export type Entrance_examCountAggregateOutputType = {
+    id: number
+    title: number
+    link: number
+    type: number
+    icon: number
+    color: number
+    description: number
+    date: number
+    created_at: number
+    modified_at: number
+    _all: number
+  }
+
+
+  export type Entrance_examAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Entrance_examSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Entrance_examMinAggregateInputType = {
+    id?: true
+    title?: true
+    link?: true
+    type?: true
+    icon?: true
+    color?: true
+    description?: true
+    date?: true
+    created_at?: true
+    modified_at?: true
+  }
+
+  export type Entrance_examMaxAggregateInputType = {
+    id?: true
+    title?: true
+    link?: true
+    type?: true
+    icon?: true
+    color?: true
+    description?: true
+    date?: true
+    created_at?: true
+    modified_at?: true
+  }
+
+  export type Entrance_examCountAggregateInputType = {
+    id?: true
+    title?: true
+    link?: true
+    type?: true
+    icon?: true
+    color?: true
+    description?: true
+    date?: true
+    created_at?: true
+    modified_at?: true
+    _all?: true
+  }
+
+  export type Entrance_examAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Entrance_exam to aggregate.
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Entrance_exams to fetch.
+     */
+    orderBy?: Entrance_examOrderByWithRelationInput | Entrance_examOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: Entrance_examWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Entrance_exams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Entrance_exams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Entrance_exams
+    **/
+    _count?: true | Entrance_examCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Entrance_examAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Entrance_examSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Entrance_examMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Entrance_examMaxAggregateInputType
+  }
+
+  export type GetEntrance_examAggregateType<T extends Entrance_examAggregateArgs> = {
+        [P in keyof T & keyof AggregateEntrance_exam]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEntrance_exam[P]>
+      : GetScalarType<T[P], AggregateEntrance_exam[P]>
+  }
+
+
+
+
+  export type Entrance_examGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Entrance_examWhereInput
+    orderBy?: Entrance_examOrderByWithAggregationInput | Entrance_examOrderByWithAggregationInput[]
+    by: Entrance_examScalarFieldEnum[] | Entrance_examScalarFieldEnum
+    having?: Entrance_examScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Entrance_examCountAggregateInputType | true
+    _avg?: Entrance_examAvgAggregateInputType
+    _sum?: Entrance_examSumAggregateInputType
+    _min?: Entrance_examMinAggregateInputType
+    _max?: Entrance_examMaxAggregateInputType
+  }
+
+  export type Entrance_examGroupByOutputType = {
+    id: number
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date
+    created_at: Date
+    modified_at: Date
+    _count: Entrance_examCountAggregateOutputType | null
+    _avg: Entrance_examAvgAggregateOutputType | null
+    _sum: Entrance_examSumAggregateOutputType | null
+    _min: Entrance_examMinAggregateOutputType | null
+    _max: Entrance_examMaxAggregateOutputType | null
+  }
+
+  type GetEntrance_examGroupByPayload<T extends Entrance_examGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Entrance_examGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Entrance_examGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Entrance_examGroupByOutputType[P]>
+            : GetScalarType<T[P], Entrance_examGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type Entrance_examSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }, ExtArgs["result"]["entrance_exam"]>
+
+  export type Entrance_examSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }, ExtArgs["result"]["entrance_exam"]>
+
+  export type Entrance_examSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }, ExtArgs["result"]["entrance_exam"]>
+
+  export type Entrance_examSelectScalar = {
+    id?: boolean
+    title?: boolean
+    link?: boolean
+    type?: boolean
+    icon?: boolean
+    color?: boolean
+    description?: boolean
+    date?: boolean
+    created_at?: boolean
+    modified_at?: boolean
+  }
+
+  export type Entrance_examOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "link" | "type" | "icon" | "color" | "description" | "date" | "created_at" | "modified_at", ExtArgs["result"]["entrance_exam"]>
+
+  export type $Entrance_examPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Entrance_exam"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      title: string
+      link: string
+      type: string
+      icon: string
+      color: string
+      description: string
+      date: Date
+      created_at: Date
+      modified_at: Date
+    }, ExtArgs["result"]["entrance_exam"]>
+    composites: {}
+  }
+
+  type Entrance_examGetPayload<S extends boolean | null | undefined | Entrance_examDefaultArgs> = $Result.GetResult<Prisma.$Entrance_examPayload, S>
+
+  type Entrance_examCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<Entrance_examFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Entrance_examCountAggregateInputType | true
+    }
+
+  export interface Entrance_examDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Entrance_exam'], meta: { name: 'Entrance_exam' } }
+    /**
+     * Find zero or one Entrance_exam that matches the filter.
+     * @param {Entrance_examFindUniqueArgs} args - Arguments to find a Entrance_exam
+     * @example
+     * // Get one Entrance_exam
+     * const entrance_exam = await prisma.entrance_exam.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends Entrance_examFindUniqueArgs>(args: SelectSubset<T, Entrance_examFindUniqueArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Entrance_exam that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {Entrance_examFindUniqueOrThrowArgs} args - Arguments to find a Entrance_exam
+     * @example
+     * // Get one Entrance_exam
+     * const entrance_exam = await prisma.entrance_exam.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends Entrance_examFindUniqueOrThrowArgs>(args: SelectSubset<T, Entrance_examFindUniqueOrThrowArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Entrance_exam that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examFindFirstArgs} args - Arguments to find a Entrance_exam
+     * @example
+     * // Get one Entrance_exam
+     * const entrance_exam = await prisma.entrance_exam.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends Entrance_examFindFirstArgs>(args?: SelectSubset<T, Entrance_examFindFirstArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Entrance_exam that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examFindFirstOrThrowArgs} args - Arguments to find a Entrance_exam
+     * @example
+     * // Get one Entrance_exam
+     * const entrance_exam = await prisma.entrance_exam.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends Entrance_examFindFirstOrThrowArgs>(args?: SelectSubset<T, Entrance_examFindFirstOrThrowArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Entrance_exams that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Entrance_exams
+     * const entrance_exams = await prisma.entrance_exam.findMany()
+     * 
+     * // Get first 10 Entrance_exams
+     * const entrance_exams = await prisma.entrance_exam.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const entrance_examWithIdOnly = await prisma.entrance_exam.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends Entrance_examFindManyArgs>(args?: SelectSubset<T, Entrance_examFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Entrance_exam.
+     * @param {Entrance_examCreateArgs} args - Arguments to create a Entrance_exam.
+     * @example
+     * // Create one Entrance_exam
+     * const Entrance_exam = await prisma.entrance_exam.create({
+     *   data: {
+     *     // ... data to create a Entrance_exam
+     *   }
+     * })
+     * 
+     */
+    create<T extends Entrance_examCreateArgs>(args: SelectSubset<T, Entrance_examCreateArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Entrance_exams.
+     * @param {Entrance_examCreateManyArgs} args - Arguments to create many Entrance_exams.
+     * @example
+     * // Create many Entrance_exams
+     * const entrance_exam = await prisma.entrance_exam.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends Entrance_examCreateManyArgs>(args?: SelectSubset<T, Entrance_examCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Entrance_exams and returns the data saved in the database.
+     * @param {Entrance_examCreateManyAndReturnArgs} args - Arguments to create many Entrance_exams.
+     * @example
+     * // Create many Entrance_exams
+     * const entrance_exam = await prisma.entrance_exam.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Entrance_exams and only return the `id`
+     * const entrance_examWithIdOnly = await prisma.entrance_exam.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends Entrance_examCreateManyAndReturnArgs>(args?: SelectSubset<T, Entrance_examCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Entrance_exam.
+     * @param {Entrance_examDeleteArgs} args - Arguments to delete one Entrance_exam.
+     * @example
+     * // Delete one Entrance_exam
+     * const Entrance_exam = await prisma.entrance_exam.delete({
+     *   where: {
+     *     // ... filter to delete one Entrance_exam
+     *   }
+     * })
+     * 
+     */
+    delete<T extends Entrance_examDeleteArgs>(args: SelectSubset<T, Entrance_examDeleteArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Entrance_exam.
+     * @param {Entrance_examUpdateArgs} args - Arguments to update one Entrance_exam.
+     * @example
+     * // Update one Entrance_exam
+     * const entrance_exam = await prisma.entrance_exam.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends Entrance_examUpdateArgs>(args: SelectSubset<T, Entrance_examUpdateArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Entrance_exams.
+     * @param {Entrance_examDeleteManyArgs} args - Arguments to filter Entrance_exams to delete.
+     * @example
+     * // Delete a few Entrance_exams
+     * const { count } = await prisma.entrance_exam.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends Entrance_examDeleteManyArgs>(args?: SelectSubset<T, Entrance_examDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Entrance_exams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Entrance_exams
+     * const entrance_exam = await prisma.entrance_exam.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends Entrance_examUpdateManyArgs>(args: SelectSubset<T, Entrance_examUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Entrance_exams and returns the data updated in the database.
+     * @param {Entrance_examUpdateManyAndReturnArgs} args - Arguments to update many Entrance_exams.
+     * @example
+     * // Update many Entrance_exams
+     * const entrance_exam = await prisma.entrance_exam.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Entrance_exams and only return the `id`
+     * const entrance_examWithIdOnly = await prisma.entrance_exam.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends Entrance_examUpdateManyAndReturnArgs>(args: SelectSubset<T, Entrance_examUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Entrance_exam.
+     * @param {Entrance_examUpsertArgs} args - Arguments to update or create a Entrance_exam.
+     * @example
+     * // Update or create a Entrance_exam
+     * const entrance_exam = await prisma.entrance_exam.upsert({
+     *   create: {
+     *     // ... data to create a Entrance_exam
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Entrance_exam we want to update
+     *   }
+     * })
+     */
+    upsert<T extends Entrance_examUpsertArgs>(args: SelectSubset<T, Entrance_examUpsertArgs<ExtArgs>>): Prisma__Entrance_examClient<$Result.GetResult<Prisma.$Entrance_examPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Entrance_exams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examCountArgs} args - Arguments to filter Entrance_exams to count.
+     * @example
+     * // Count the number of Entrance_exams
+     * const count = await prisma.entrance_exam.count({
+     *   where: {
+     *     // ... the filter for the Entrance_exams we want to count
+     *   }
+     * })
+    **/
+    count<T extends Entrance_examCountArgs>(
+      args?: Subset<T, Entrance_examCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Entrance_examCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Entrance_exam.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Entrance_examAggregateArgs>(args: Subset<T, Entrance_examAggregateArgs>): Prisma.PrismaPromise<GetEntrance_examAggregateType<T>>
+
+    /**
+     * Group by Entrance_exam.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Entrance_examGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends Entrance_examGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: Entrance_examGroupByArgs['orderBy'] }
+        : { orderBy?: Entrance_examGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, Entrance_examGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEntrance_examGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Entrance_exam model
+   */
+  readonly fields: Entrance_examFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Entrance_exam.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__Entrance_examClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Entrance_exam model
+   */
+  interface Entrance_examFieldRefs {
+    readonly id: FieldRef<"Entrance_exam", 'Int'>
+    readonly title: FieldRef<"Entrance_exam", 'String'>
+    readonly link: FieldRef<"Entrance_exam", 'String'>
+    readonly type: FieldRef<"Entrance_exam", 'String'>
+    readonly icon: FieldRef<"Entrance_exam", 'String'>
+    readonly color: FieldRef<"Entrance_exam", 'String'>
+    readonly description: FieldRef<"Entrance_exam", 'String'>
+    readonly date: FieldRef<"Entrance_exam", 'DateTime'>
+    readonly created_at: FieldRef<"Entrance_exam", 'DateTime'>
+    readonly modified_at: FieldRef<"Entrance_exam", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Entrance_exam findUnique
+   */
+  export type Entrance_examFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * Filter, which Entrance_exam to fetch.
+     */
+    where: Entrance_examWhereUniqueInput
+  }
+
+  /**
+   * Entrance_exam findUniqueOrThrow
+   */
+  export type Entrance_examFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * Filter, which Entrance_exam to fetch.
+     */
+    where: Entrance_examWhereUniqueInput
+  }
+
+  /**
+   * Entrance_exam findFirst
+   */
+  export type Entrance_examFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * Filter, which Entrance_exam to fetch.
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Entrance_exams to fetch.
+     */
+    orderBy?: Entrance_examOrderByWithRelationInput | Entrance_examOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Entrance_exams.
+     */
+    cursor?: Entrance_examWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Entrance_exams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Entrance_exams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Entrance_exams.
+     */
+    distinct?: Entrance_examScalarFieldEnum | Entrance_examScalarFieldEnum[]
+  }
+
+  /**
+   * Entrance_exam findFirstOrThrow
+   */
+  export type Entrance_examFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * Filter, which Entrance_exam to fetch.
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Entrance_exams to fetch.
+     */
+    orderBy?: Entrance_examOrderByWithRelationInput | Entrance_examOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Entrance_exams.
+     */
+    cursor?: Entrance_examWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Entrance_exams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Entrance_exams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Entrance_exams.
+     */
+    distinct?: Entrance_examScalarFieldEnum | Entrance_examScalarFieldEnum[]
+  }
+
+  /**
+   * Entrance_exam findMany
+   */
+  export type Entrance_examFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * Filter, which Entrance_exams to fetch.
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Entrance_exams to fetch.
+     */
+    orderBy?: Entrance_examOrderByWithRelationInput | Entrance_examOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Entrance_exams.
+     */
+    cursor?: Entrance_examWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Entrance_exams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Entrance_exams.
+     */
+    skip?: number
+    distinct?: Entrance_examScalarFieldEnum | Entrance_examScalarFieldEnum[]
+  }
+
+  /**
+   * Entrance_exam create
+   */
+  export type Entrance_examCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Entrance_exam.
+     */
+    data: XOR<Entrance_examCreateInput, Entrance_examUncheckedCreateInput>
+  }
+
+  /**
+   * Entrance_exam createMany
+   */
+  export type Entrance_examCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Entrance_exams.
+     */
+    data: Entrance_examCreateManyInput | Entrance_examCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Entrance_exam createManyAndReturn
+   */
+  export type Entrance_examCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * The data used to create many Entrance_exams.
+     */
+    data: Entrance_examCreateManyInput | Entrance_examCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Entrance_exam update
+   */
+  export type Entrance_examUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Entrance_exam.
+     */
+    data: XOR<Entrance_examUpdateInput, Entrance_examUncheckedUpdateInput>
+    /**
+     * Choose, which Entrance_exam to update.
+     */
+    where: Entrance_examWhereUniqueInput
+  }
+
+  /**
+   * Entrance_exam updateMany
+   */
+  export type Entrance_examUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Entrance_exams.
+     */
+    data: XOR<Entrance_examUpdateManyMutationInput, Entrance_examUncheckedUpdateManyInput>
+    /**
+     * Filter which Entrance_exams to update
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * Limit how many Entrance_exams to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Entrance_exam updateManyAndReturn
+   */
+  export type Entrance_examUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * The data used to update Entrance_exams.
+     */
+    data: XOR<Entrance_examUpdateManyMutationInput, Entrance_examUncheckedUpdateManyInput>
+    /**
+     * Filter which Entrance_exams to update
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * Limit how many Entrance_exams to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Entrance_exam upsert
+   */
+  export type Entrance_examUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Entrance_exam to update in case it exists.
+     */
+    where: Entrance_examWhereUniqueInput
+    /**
+     * In case the Entrance_exam found by the `where` argument doesn't exist, create a new Entrance_exam with this data.
+     */
+    create: XOR<Entrance_examCreateInput, Entrance_examUncheckedCreateInput>
+    /**
+     * In case the Entrance_exam was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<Entrance_examUpdateInput, Entrance_examUncheckedUpdateInput>
+  }
+
+  /**
+   * Entrance_exam delete
+   */
+  export type Entrance_examDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+    /**
+     * Filter which Entrance_exam to delete.
+     */
+    where: Entrance_examWhereUniqueInput
+  }
+
+  /**
+   * Entrance_exam deleteMany
+   */
+  export type Entrance_examDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Entrance_exams to delete
+     */
+    where?: Entrance_examWhereInput
+    /**
+     * Limit how many Entrance_exams to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Entrance_exam without action
+   */
+  export type Entrance_examDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Entrance_exam
+     */
+    select?: Entrance_examSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Entrance_exam
+     */
+    omit?: Entrance_examOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -19074,6 +21444,38 @@ export namespace Prisma {
   };
 
   export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
+  export const ContestsScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    link: 'link',
+    type: 'type',
+    icon: 'icon',
+    color: 'color',
+    description: 'description',
+    date: 'date',
+    created_at: 'created_at',
+    modified_at: 'modified_at'
+  };
+
+  export type ContestsScalarFieldEnum = (typeof ContestsScalarFieldEnum)[keyof typeof ContestsScalarFieldEnum]
+
+
+  export const Entrance_examScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    link: 'link',
+    type: 'type',
+    icon: 'icon',
+    color: 'color',
+    description: 'description',
+    date: 'date',
+    created_at: 'created_at',
+    modified_at: 'modified_at'
+  };
+
+  export type Entrance_examScalarFieldEnum = (typeof Entrance_examScalarFieldEnum)[keyof typeof Entrance_examScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -20380,6 +22782,164 @@ export namespace Prisma {
     modified_at?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
   }
 
+  export type ContestsWhereInput = {
+    AND?: ContestsWhereInput | ContestsWhereInput[]
+    OR?: ContestsWhereInput[]
+    NOT?: ContestsWhereInput | ContestsWhereInput[]
+    id?: IntFilter<"Contests"> | number
+    title?: StringFilter<"Contests"> | string
+    link?: StringFilter<"Contests"> | string
+    type?: StringFilter<"Contests"> | string
+    icon?: StringFilter<"Contests"> | string
+    color?: StringFilter<"Contests"> | string
+    description?: StringFilter<"Contests"> | string
+    date?: DateTimeFilter<"Contests"> | Date | string
+    created_at?: DateTimeFilter<"Contests"> | Date | string
+    modified_at?: DateTimeFilter<"Contests"> | Date | string
+  }
+
+  export type ContestsOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type ContestsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: ContestsWhereInput | ContestsWhereInput[]
+    OR?: ContestsWhereInput[]
+    NOT?: ContestsWhereInput | ContestsWhereInput[]
+    title?: StringFilter<"Contests"> | string
+    link?: StringFilter<"Contests"> | string
+    type?: StringFilter<"Contests"> | string
+    icon?: StringFilter<"Contests"> | string
+    color?: StringFilter<"Contests"> | string
+    description?: StringFilter<"Contests"> | string
+    date?: DateTimeFilter<"Contests"> | Date | string
+    created_at?: DateTimeFilter<"Contests"> | Date | string
+    modified_at?: DateTimeFilter<"Contests"> | Date | string
+  }, "id" | "id">
+
+  export type ContestsOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+    _count?: ContestsCountOrderByAggregateInput
+    _avg?: ContestsAvgOrderByAggregateInput
+    _max?: ContestsMaxOrderByAggregateInput
+    _min?: ContestsMinOrderByAggregateInput
+    _sum?: ContestsSumOrderByAggregateInput
+  }
+
+  export type ContestsScalarWhereWithAggregatesInput = {
+    AND?: ContestsScalarWhereWithAggregatesInput | ContestsScalarWhereWithAggregatesInput[]
+    OR?: ContestsScalarWhereWithAggregatesInput[]
+    NOT?: ContestsScalarWhereWithAggregatesInput | ContestsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Contests"> | number
+    title?: StringWithAggregatesFilter<"Contests"> | string
+    link?: StringWithAggregatesFilter<"Contests"> | string
+    type?: StringWithAggregatesFilter<"Contests"> | string
+    icon?: StringWithAggregatesFilter<"Contests"> | string
+    color?: StringWithAggregatesFilter<"Contests"> | string
+    description?: StringWithAggregatesFilter<"Contests"> | string
+    date?: DateTimeWithAggregatesFilter<"Contests"> | Date | string
+    created_at?: DateTimeWithAggregatesFilter<"Contests"> | Date | string
+    modified_at?: DateTimeWithAggregatesFilter<"Contests"> | Date | string
+  }
+
+  export type Entrance_examWhereInput = {
+    AND?: Entrance_examWhereInput | Entrance_examWhereInput[]
+    OR?: Entrance_examWhereInput[]
+    NOT?: Entrance_examWhereInput | Entrance_examWhereInput[]
+    id?: IntFilter<"Entrance_exam"> | number
+    title?: StringFilter<"Entrance_exam"> | string
+    link?: StringFilter<"Entrance_exam"> | string
+    type?: StringFilter<"Entrance_exam"> | string
+    icon?: StringFilter<"Entrance_exam"> | string
+    color?: StringFilter<"Entrance_exam"> | string
+    description?: StringFilter<"Entrance_exam"> | string
+    date?: DateTimeFilter<"Entrance_exam"> | Date | string
+    created_at?: DateTimeFilter<"Entrance_exam"> | Date | string
+    modified_at?: DateTimeFilter<"Entrance_exam"> | Date | string
+  }
+
+  export type Entrance_examOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type Entrance_examWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: Entrance_examWhereInput | Entrance_examWhereInput[]
+    OR?: Entrance_examWhereInput[]
+    NOT?: Entrance_examWhereInput | Entrance_examWhereInput[]
+    title?: StringFilter<"Entrance_exam"> | string
+    link?: StringFilter<"Entrance_exam"> | string
+    type?: StringFilter<"Entrance_exam"> | string
+    icon?: StringFilter<"Entrance_exam"> | string
+    color?: StringFilter<"Entrance_exam"> | string
+    description?: StringFilter<"Entrance_exam"> | string
+    date?: DateTimeFilter<"Entrance_exam"> | Date | string
+    created_at?: DateTimeFilter<"Entrance_exam"> | Date | string
+    modified_at?: DateTimeFilter<"Entrance_exam"> | Date | string
+  }, "id" | "id">
+
+  export type Entrance_examOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+    _count?: Entrance_examCountOrderByAggregateInput
+    _avg?: Entrance_examAvgOrderByAggregateInput
+    _max?: Entrance_examMaxOrderByAggregateInput
+    _min?: Entrance_examMinOrderByAggregateInput
+    _sum?: Entrance_examSumOrderByAggregateInput
+  }
+
+  export type Entrance_examScalarWhereWithAggregatesInput = {
+    AND?: Entrance_examScalarWhereWithAggregatesInput | Entrance_examScalarWhereWithAggregatesInput[]
+    OR?: Entrance_examScalarWhereWithAggregatesInput[]
+    NOT?: Entrance_examScalarWhereWithAggregatesInput | Entrance_examScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Entrance_exam"> | number
+    title?: StringWithAggregatesFilter<"Entrance_exam"> | string
+    link?: StringWithAggregatesFilter<"Entrance_exam"> | string
+    type?: StringWithAggregatesFilter<"Entrance_exam"> | string
+    icon?: StringWithAggregatesFilter<"Entrance_exam"> | string
+    color?: StringWithAggregatesFilter<"Entrance_exam"> | string
+    description?: StringWithAggregatesFilter<"Entrance_exam"> | string
+    date?: DateTimeWithAggregatesFilter<"Entrance_exam"> | Date | string
+    created_at?: DateTimeWithAggregatesFilter<"Entrance_exam"> | Date | string
+    modified_at?: DateTimeWithAggregatesFilter<"Entrance_exam"> | Date | string
+  }
+
   export type UserCreateInput = {
     name: string
     email: string
@@ -21461,6 +24021,182 @@ export namespace Prisma {
     icon?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     resume?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContestsCreateInput = {
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date | string
+    created_at?: Date | string
+    modified_at?: Date | string
+  }
+
+  export type ContestsUncheckedCreateInput = {
+    id?: number
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date | string
+    created_at?: Date | string
+    modified_at?: Date | string
+  }
+
+  export type ContestsUpdateInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContestsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContestsCreateManyInput = {
+    id?: number
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date | string
+    created_at?: Date | string
+    modified_at?: Date | string
+  }
+
+  export type ContestsUpdateManyMutationInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContestsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Entrance_examCreateInput = {
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date | string
+    created_at?: Date | string
+    modified_at?: Date | string
+  }
+
+  export type Entrance_examUncheckedCreateInput = {
+    id?: number
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date | string
+    created_at?: Date | string
+    modified_at?: Date | string
+  }
+
+  export type Entrance_examUpdateInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Entrance_examUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Entrance_examCreateManyInput = {
+    id?: number
+    title: string
+    link: string
+    type: string
+    icon: string
+    color: string
+    description: string
+    date: Date | string
+    created_at?: Date | string
+    modified_at?: Date | string
+  }
+
+  export type Entrance_examUpdateManyMutationInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Entrance_examUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    link?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    icon?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     modified_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22609,6 +25345,100 @@ export namespace Prisma {
   }
 
   export type ResumeSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ContestsCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type ContestsAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type ContestsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type ContestsMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type ContestsSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type Entrance_examCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type Entrance_examAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type Entrance_examMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type Entrance_examMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    link?: SortOrder
+    type?: SortOrder
+    icon?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+    modified_at?: SortOrder
+  }
+
+  export type Entrance_examSumOrderByAggregateInput = {
     id?: SortOrder
   }
 

@@ -17,6 +17,7 @@ import generateRoute from './routes/generateRoute.js';
 import studentRoute from './routes/studentRoute.js';
 import userRoute from './routes/userRoute.js';
 import quizRoute from './routes/quizRoute.js';
+import ContestsEntraceRoute from './routes/contestsEntrace.js';
 
 // Config
 const app = express();
@@ -53,6 +54,9 @@ app.use('/quiz', quizRoute);
 
 // User Route
 app.use('/user', userRoute);
+
+// Contests Entrace Route
+app.use('/contestsEntrace', ContestsEntraceRoute);
 
 // Start server
 try {
