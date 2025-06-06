@@ -4,6 +4,7 @@ import {
 	createStudent,
 	updateStudent,
 	deleteStudent,
+	getStudentStatistics,
 } from '../models/Student.js';
 import { getStudentClass } from '../models/Class.js';
 import { getSubjectsByStudent } from '../models/Subject.js';
@@ -175,6 +176,26 @@ async function getStudentQuizzesController(req, res) {
 	}
 }
 
+// Controller para obter as estatísticas gerais do aluno
+async function getStudentStatisticsController(req, res) {
+	try {
+		const userId = req.user.id;
+
+		const statistics = await getStudentStatistics(userId);
+
+		res.json(statistics);
+	} catch (error) {
+		console.error(error);
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+
+		res.status(500).json({
+			message: 'Erro interno do servidor',
+		});
+	}
+}
+
 export {
 	getAllStudentsController,
 	getStudentByIdController,
@@ -184,4 +205,5 @@ export {
 	getStudentClassController,
 	getStudentSubjectsController,
 	getStudentQuizzesController,
+	getStudentStatisticsController,
 };

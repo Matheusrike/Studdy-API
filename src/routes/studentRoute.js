@@ -3,6 +3,7 @@ import {
 	getStudentClassController,
 	getStudentSubjectsController,
 	getStudentQuizzesController,
+	getStudentStatisticsController,
 } from '../controllers/StudentController.js';
 import {
 	getQuizzesBySubjectController,
@@ -44,5 +45,8 @@ router.post('/attempt/:attemptId/submit', submitQuizController);
 
 // rota para obter as respostas de uma tentativa
 router.get('/attempt/:attemptId/responses', getQuizAttemptResponsesController);
+
+// Rota para obter as estatísticas do aluno
+router.get('/status', getStudentStatisticsController);
 
 export default router;
