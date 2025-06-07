@@ -115,10 +115,10 @@ async function updateQuiz(quizId, quizData) {
 			include: {
 				questions: {
 					include: {
-						alternatives: true
-					}
-				}
-			}
+						alternatives: true,
+					},
+				},
+			},
 		});
 
 		if (!existingQuiz) {
@@ -130,13 +130,13 @@ async function updateQuiz(quizId, quizData) {
 			// 1. Deleta todas as alternativas existentes
 			for (const question of existingQuiz.questions) {
 				await tx.alternative.deleteMany({
-					where: { question_id: question.id }
+					where: { question_id: question.id },
 				});
 			}
 
 			// 2. Deleta todas as questões existentes
 			await tx.question.deleteMany({
-				where: { quiz_id: quizId }
+				where: { quiz_id: quizId },
 			});
 
 			// 3. Atualiza os dados básicos do quiz
@@ -147,8 +147,8 @@ async function updateQuiz(quizId, quizData) {
 					description: quizData.description,
 					icon: quizData.icon,
 					duration_minutes: quizData.duration_minutes,
-					visibility: quizData.visibility
-				}
+					visibility: quizData.visibility,
+				},
 			});
 
 			// 4. Cria as novas questões e alternativas
@@ -157,17 +157,17 @@ async function updateQuiz(quizId, quizData) {
 					data: {
 						statement: questionData.statement,
 						points: questionData.points,
-						quiz_id: quizId
-					}
+						quiz_id: quizId,
+					},
 				});
 
 				// Cria as alternativas para a questão
 				await tx.alternative.createMany({
-					data: questionData.alternatives.map(alt => ({
+					data: questionData.alternatives.map((alt) => ({
 						question_id: question.id,
 						response: alt.response,
-						correct_alternative: alt.correct_alternative
-					}))
+						correct_alternative: alt.correct_alternative,
+					})),
 				});
 			}
 
@@ -177,10 +177,10 @@ async function updateQuiz(quizId, quizData) {
 				include: {
 					questions: {
 						include: {
-							alternatives: true
-						}
-					}
-				}
+							alternatives: true,
+						},
+					},
+				},
 			});
 		});
 	} catch (error) {
@@ -404,25 +404,27 @@ async function startAttempt(quizId, userId) {
 			throw new Error('Student not found');
 		}
 
-//finalizar  ja foi finalte uma tentativa em progresso para este aluno neste quiz
+		//finalizar  ja foi finalte uma tentativa em progresso para este aluno neste quiz
 		const existingAttempt = await prisma.quiz_attempt.findFirst({
 			where: {
 				quiz_id: quizId,
 				student_id: student.id,
-				status: 'in_progress'
-			}
+				status: 'in_progress',
+			},
 		});
 
 		if (existingAttempt) {
-			throw new Error('Você já tem uma tentativa em progresso para este quiz.');
+			throw new Error(
+				'You already have an attempt in progress for this quiz.',
+			);
 		}
 
 		// Verificar o limite máximo de tentativas
 		const totalAttempts = await prisma.quiz_attempt.count({
 			where: {
 				quiz_id: quizId,
-				student_id: student.id
-			}
+				student_id: student.id,
+			},
 		});
 
 		const quiz = await prisma.quiz.findUnique({
@@ -457,7 +459,9 @@ async function startAttempt(quizId, userId) {
 
 		// Verificar se o aluno já atingiu o limite máximo de tentativas
 		if (quiz.max_attempt && totalAttempts >= quiz.max_attempt) {
-			throw new Error(`Você já atingiu o limite máximo de ${quiz.max_attempt} tentativas para este quiz.`);
+			throw new Error(
+				`You have already reached the maximum limit of ${quiz.max_attempt} attempts for this quiz.`,
+			);
 		}
 
 		const startedAttempt = await prisma.quiz_attempt.create({
@@ -495,7 +499,7 @@ async function submitAnswer(attemptId, responses, userId) {
 			// Buscar o aluno pelo userId
 			const student = await tx.student.findUnique({
 				where: { user_id: userId },
-				select: { id: true }
+				select: { id: true },
 			});
 
 			if (!student) {
@@ -513,8 +517,12 @@ async function submitAnswer(attemptId, responses, userId) {
 
 			// Verificar se a tentativa pertence ao estudante atual
 			if (attempt.student_id !== student.id) {
-				console.log(`Tentativa ${attemptId} pertence ao student ${attempt.student_id}, mas usuário atual é student ${student.id}`);
-				throw new Error('Você não tem permissão para finalizar esta tentativa.');
+				console.log(
+					`Tentativa ${attemptId} pertence ao student ${attempt.student_id}, mas usuário atual é student ${student.id}`,
+				);
+				throw new Error(
+					'Você não tem permissão para finalizar esta tentativa.',
+				);
 			}
 
 			if (attempt.status !== 'in_progress') {
@@ -694,20 +702,20 @@ async function getQuizById(quizId) {
 								subject: {
 									select: {
 										id: true,
-										name: true
-									}
-								}
-							}
+										name: true,
+									},
+								},
+							},
 						},
 						class: {
 							select: {
 								id: true,
 								name: true,
 								shift: true,
-								course: true
-							}
-						}
-					}
+								course: true,
+							},
+						},
+					},
 				},
 				questions: {
 					select: {
@@ -735,7 +743,7 @@ async function getQuizById(quizId) {
 			...quiz,
 			subject: quiz.teacher_subject_class.teacher_subject.subject,
 			class: quiz.teacher_subject_class.class,
-			teacher_subject_class: undefined // Remove o campo original
+			teacher_subject_class: undefined, // Remove o campo original
 		};
 	} catch (error) {
 		throw error;
@@ -749,8 +757,8 @@ async function getAllQuizzesForStudent(studentId) {
 		const student = await prisma.student.findUnique({
 			where: { id: studentId },
 			select: {
-				class_id: true
-			}
+				class_id: true,
+			},
 		});
 
 		if (!student) {
@@ -761,9 +769,9 @@ async function getAllQuizzesForStudent(studentId) {
 		const quizzes = await prisma.quiz.findMany({
 			where: {
 				teacher_subject_class: {
-					class_id: student.class_id
+					class_id: student.class_id,
 				},
-				visibility: 'public'
+				visibility: 'public',
 			},
 			select: {
 				id: true,
@@ -779,20 +787,20 @@ async function getAllQuizzesForStudent(studentId) {
 								subject: {
 									select: {
 										id: true,
-										name: true
-									}
-								}
-							}
+										name: true,
+									},
+								},
+							},
 						},
 						class: {
 							select: {
 								id: true,
 								name: true,
 								shift: true,
-								course: true
-							}
-						}
-					}
+								course: true,
+							},
+						},
+					},
 				},
 				questions: {
 					select: {
@@ -803,20 +811,20 @@ async function getAllQuizzesForStudent(studentId) {
 							select: {
 								id: true,
 								response: true,
-								correct_alternative: true
-							}
-						}
-					}
-				}
-			}
+								correct_alternative: true,
+							},
+						},
+					},
+				},
+			},
 		});
 
 		// Reorganiza o objeto para um formato mais amigável
-		return quizzes.map(quiz => ({
+		return quizzes.map((quiz) => ({
 			...quiz,
 			subject: quiz.teacher_subject_class.teacher_subject.subject,
 			class: quiz.teacher_subject_class.class,
-			teacher_subject_class: undefined
+			teacher_subject_class: undefined,
 		}));
 	} catch (error) {
 		console.error('Error fetching student quizzes:', error);
@@ -902,16 +910,16 @@ async function getQuizzesByStudent(userId) {
 		// Primeiro, busca a turma do estudante usando o user_id
 		const student = await prisma.student.findUnique({
 			where: { user_id: userId },
-			select: { 
+			select: {
 				id: true,
 				class_id: true,
 				class: {
 					select: {
 						id: true,
-						name: true
-					}
-				}
-			}
+						name: true,
+					},
+				},
+			},
 		});
 
 		if (!student) {
@@ -922,9 +930,9 @@ async function getQuizzesByStudent(userId) {
 		const quizzes = await prisma.quiz.findMany({
 			where: {
 				teacher_subject_class: {
-					class_id: student.class_id
+					class_id: student.class_id,
 				},
-				visibility: 'public'
+				visibility: 'public',
 			},
 			select: {
 				id: true,
@@ -940,34 +948,34 @@ async function getQuizzesByStudent(userId) {
 								subject: {
 									select: {
 										id: true,
-										name: true
-									}
-								}
-							}
-						}
-					}
+										name: true,
+									},
+								},
+							},
+						},
+					},
 				},
 				quiz_attempts: {
 					where: {
-						student_id: student.id
+						student_id: student.id,
 					},
 					orderBy: {
-						created_at: 'desc'
-					}
-				}
-			}
+						created_at: 'desc',
+					},
+				},
+			},
 		});
 
 		// Formata os dados para retornar
 		return {
 			class: student.class,
-			quizzes: quizzes.map(quiz => {
+			quizzes: quizzes.map((quiz) => {
 				const attempts = quiz.quiz_attempts;
 				const completedAttempts = attempts.filter(
-					(attempt) => attempt.status === 'completed'
+					(attempt) => attempt.status === 'completed',
 				);
 				const inProgressAttempt = attempts.find(
-					(attempt) => attempt.status === 'in_progress'
+					(attempt) => attempt.status === 'in_progress',
 				);
 
 				// Quiz status logic: in_progress by default, completed if actually completed
@@ -978,9 +986,14 @@ async function getQuizzesByStudent(userId) {
 					status = 'completed';
 				}
 
-				const bestScore = completedAttempts.length > 0
-					? Math.max(...completedAttempts.map(attempt => parseFloat(attempt.total_score)))
-					: null;
+				const bestScore =
+					completedAttempts.length > 0
+						? Math.max(
+								...completedAttempts.map((attempt) =>
+									parseFloat(attempt.total_score),
+								),
+							)
+						: null;
 
 				return {
 					id: quiz.id,
@@ -995,9 +1008,13 @@ async function getQuizzesByStudent(userId) {
 					completed_attempts_count: completedAttempts.length,
 					best_score: bestScore,
 					in_progress_attempt_id: inProgressAttempt?.id || null,
-					attempt_id: inProgressAttempt?.id || (completedAttempts.length > 0 ? completedAttempts[0].id : null)
+					attempt_id:
+						inProgressAttempt?.id ||
+						(completedAttempts.length > 0
+							? completedAttempts[0].id
+							: null),
 				};
-			})
+			}),
 		};
 	} catch (error) {
 		console.error('Error in getQuizzesByStudent:', error);
@@ -1015,15 +1032,25 @@ async function getQuizAttemptResponses(attemptId, userId) {
 					question: {
 						include: {
 							alternatives: {
-								select: { id: true, response: true, correct_alternative: true }
-							}
-						}
+								select: {
+									id: true,
+									response: true,
+									correct_alternative: true,
+								},
+							},
+						},
 					},
-					marked_alternative: { select: { id: true, response: true, correct_alternative: true } }
-				}
+					marked_alternative: {
+						select: {
+							id: true,
+							response: true,
+							correct_alternative: true,
+						},
+					},
+				},
 			},
-			quiz: { select: { id: true, title: true, description: true } }
-		}
+			quiz: { select: { id: true, title: true, description: true } },
+		},
 	});
 
 	if (!attempt) throw new Error('Tentativa não encontrada');
@@ -1035,13 +1062,13 @@ async function getQuizAttemptResponses(attemptId, userId) {
 		total_score: attempt.total_score,
 		started_at: attempt.started_at,
 		finished_at: attempt.finished_at,
-		responses: attempt.question_responses.map(response => ({
+		responses: attempt.question_responses.map((response) => ({
 			question: response.question,
 			marked_alternative: response.marked_alternative,
 			is_correct: response.is_correct,
 			points_earned: response.points_earned,
-			alternatives: response.question.alternatives
-		}))
+			alternatives: response.question.alternatives,
+		})),
 	};
 }
 
@@ -1060,5 +1087,5 @@ export {
 	getAllQuizzesForStudent,
 	getAllQuizzesForTeacher,
 	getQuizzesByStudent,
-	getQuizAttemptResponses
+	getQuizAttemptResponses,
 };

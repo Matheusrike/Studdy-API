@@ -1,5 +1,8 @@
 import prisma from '../../prisma/client.js';
 
+// Funções de estatísticas do aluno
+
+// Calcula a média de acertos do aluno
 async function averageCorrectResponses(student) {
 	try {
 		const attempts = await prisma.quiz_attempt.findMany({
@@ -24,6 +27,7 @@ async function averageCorrectResponses(student) {
 	}
 }
 
+// Quantidade de quizzes disponíveis e concluidos
 async function availableQuizzesXCompletedQuizzes(student) {
 	try {
 		const availableQuizzes = await prisma.quiz.count({
@@ -46,6 +50,7 @@ async function availableQuizzesXCompletedQuizzes(student) {
 	}
 }
 
+// Quantidade de quizzes completados por materia
 async function completedQuizzesBySubject(studentId) {
 	try {
 		const student = await prisma.student.findUnique({
@@ -134,6 +139,7 @@ async function completedQuizzesBySubject(studentId) {
 	}
 }
 
+// Tempo gasto nos quizzes
 async function timeSpentOnQuizzes(studentId) {
 	try {
 		const attempts = await prisma.quiz_attempt.findMany({
@@ -165,6 +171,7 @@ async function timeSpentOnQuizzes(studentId) {
 	}
 }
 
+// Ultimos quizzes completados
 async function lastsCompletedQuizzes(studentId, limit = 5) {
 	try {
 		const attempts = await prisma.quiz_attempt.findMany({
@@ -229,10 +236,170 @@ async function lastsCompletedQuizzes(studentId, limit = 5) {
 	}
 }
 
+// Funções de estatísticas do Professor
+
+// Calcula o total de alunos de todas as turmas que o professor leciona
+async function getTotalStudents(teacherId) {
+	const result = await prisma.student.count({
+		where: {
+			class: {
+				teacher_subject_classes: {
+					some: {
+						teacher_subject: {
+							teacher_id: teacherId,
+						},
+					},
+				},
+			},
+		},
+	});
+
+	return result;
+}
+
+// Calcula o percentual de quizzes públicos que receberam ao menos uma tentativa concluída
+async function getQuizCompletionRate(teacherId) {
+	// Total de quizzes públicos do professor
+	const totalPublicQuizzes = await prisma.quiz.count({
+		where: {
+			visibility: 'public',
+			teacher_subject_class: {
+				teacher_subject: {
+					teacher_id: teacherId,
+				},
+			},
+		},
+	});
+
+	if (totalPublicQuizzes === 0) {
+		return 0;
+	}
+
+	// Quizzes públicos que receberam ao menos uma tentativa concluída
+	const completedQuizzes = await prisma.quiz.count({
+		where: {
+			visibility: 'public',
+			teacher_subject_class: {
+				teacher_subject: {
+					teacher_id: teacherId,
+				},
+			},
+			quiz_attempts: {
+				some: {
+					status: 'completed',
+				},
+			},
+		},
+	});
+
+	return (completedQuizzes / totalPublicQuizzes) * 100;
+}
+
+// Calcula a média global de total_score de todas as tentativas concluídas
+async function getClassAverageScoreGlobal(teacherId) {
+	const result = await prisma.quiz_attempt.aggregate({
+		_avg: {
+			total_score: true,
+		},
+		where: {
+			status: 'completed',
+			quiz: {
+				teacher_subject_class: {
+					teacher_subject: {
+						teacher_id: teacherId,
+					},
+				},
+			},
+		},
+	});
+
+	return result._avg.total_score ? parseFloat(result._avg.total_score) : 0;
+}
+
+// Calcula o percentual de acertos por matéria que o professor leciona em suas turmas
+async function getPerformanceBySubject(teacherId) {
+	// Busca todas as matérias do professor com suas respostas
+	const subjectsData = await prisma.subject.findMany({
+		where: {
+			teacher_subjects: {
+				some: {
+					teacher_id: teacherId,
+				},
+			},
+		},
+		include: {
+			teacher_subjects: {
+				where: {
+					teacher_id: teacherId,
+				},
+				include: {
+					teacher_subject_classes: {
+						include: {
+							quizzes: {
+								include: {
+									quiz_attempts: {
+										where: {
+											status: 'completed',
+										},
+										include: {
+											question_responses: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	});
+
+	const performanceBySubject = [];
+
+	for (const subject of subjectsData) {
+		let totalResponses = 0;
+		let correctResponses = 0;
+
+		// Percorre todas as relações professor-matéria
+		for (const teacherSubject of subject.teacher_subjects) {
+			// Percorre todas as turmas da matéria
+			for (const teacherSubjectClass of teacherSubject.teacher_subject_classes) {
+				// Percorre todos os quizzes da turma
+				for (const quiz of teacherSubjectClass.quizzes) {
+					// Percorre todas as tentativas concluídas do quiz
+					for (const attempt of quiz.quiz_attempts) {
+						// Conta todas as respostas da tentativa
+						for (const response of attempt.question_responses) {
+							totalResponses++;
+							if (response.is_correct) {
+								correctResponses++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		const accuracy =
+			totalResponses > 0 ? (correctResponses / totalResponses) * 100 : 0;
+
+		performanceBySubject.push({
+			subjectName: subject.name,
+			accuracy: parseFloat(accuracy.toFixed(1)),
+		});
+	}
+
+	return performanceBySubject;
+}
+
 export {
 	averageCorrectResponses,
 	availableQuizzesXCompletedQuizzes,
 	completedQuizzesBySubject,
 	timeSpentOnQuizzes,
 	lastsCompletedQuizzes,
+	getTotalStudents,
+	getQuizCompletionRate,
+	getClassAverageScoreGlobal,
+	getPerformanceBySubject,
 };

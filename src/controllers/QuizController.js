@@ -231,7 +231,20 @@ async function startAttemptController(req, res) {
 		const attempt = await startAttempt(parseInt(quizId), userId);
 		return res.status(200).json(attempt);
 	} catch (error) {
-		console.error('Error starting attempt:', error);
+		console.error(error);
+
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+
+		if (error.message.includes('attempt in progress')) {
+			return res.status(400).json({ message: error.message });
+		}
+
+		if (error.message.includes('maximum limit')) {
+			return res.status(400).json({ message: error.message });
+		}
+
 		return res.status(500).json({ message: 'Internal server error' });
 	}
 }
@@ -274,7 +287,11 @@ async function submitQuizController(req, res) {
 			});
 		}
 
-		const attempt = await submitAnswer(parseInt(attemptId), responses, userId);
+		const attempt = await submitAnswer(
+			parseInt(attemptId),
+			responses,
+			userId,
+		);
 		return res.status(200).json(attempt);
 	} catch (error) {
 		console.error('Error submitting answer:', error);
@@ -333,7 +350,7 @@ async function getAllQuizzesController(req, res) {
 			// Primeiro, busca o ID do estudante
 			const student = await prisma.student.findUnique({
 				where: { user_id: userId },
-				select: { id: true }
+				select: { id: true },
 			});
 
 			if (!student) {
@@ -344,7 +361,9 @@ async function getAllQuizzesController(req, res) {
 		} else if (userRole === 'Teacher') {
 			quizzes = await getAllQuizzesForTeacher(userId);
 		} else {
-			return res.status(403).json({ message: 'Access denied for this role' });
+			return res
+				.status(403)
+				.json({ message: 'Access denied for this role' });
 		}
 
 		return res.status(200).json(quizzes);
@@ -369,7 +388,10 @@ async function getQuizAttemptResponsesController(req, res) {
 			return res.status(404).json({ message: error.message });
 		if (error.message === 'Sem permissão')
 			return res.status(403).json({ message: error.message });
-		return res.status(500).json({ message: 'Erro ao buscar respostas da tentativa', error: error.message });
+		return res.status(500).json({
+			message: 'Erro ao buscar respostas da tentativa',
+			error: error.message,
+		});
 	}
 }
 
@@ -386,5 +408,5 @@ export {
 	getQuizWithQuestionsController,
 	getQuizByIdController,
 	getAllQuizzesController,
-	getQuizAttemptResponsesController
+	getQuizAttemptResponsesController,
 };

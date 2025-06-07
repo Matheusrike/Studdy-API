@@ -4,13 +4,14 @@ import {
 	getClassSubjectsByTeacherController,
 	getSubjectQuizzesController,
 	getTeacherClassByIdController,
+	getTeacherStatisticsController,
 } from '../controllers/TeacherController.js';
 import {
 	createQuizController,
 	updateQuizController,
 	updateQuizVisibilityController,
 	deleteQuizController,
- 		getQuizWithQuestionsController,
+	getQuizWithQuestionsController,
 } from '../controllers/QuizController.js';
 import {
 	createVideoController,
@@ -21,14 +22,16 @@ import {
 } from '../controllers/VideoController.js';
 import {
 	getAllResumesController,
-    getResumeByIdController,
-    createResumeController,
-    updateResumeController,
-    deleteResumeController,
-} from '../controllers/ResumeController.js'
-
+	getResumeByIdController,
+	createResumeController,
+	updateResumeController,
+	deleteResumeController,
+} from '../controllers/ResumeController.js';
 
 const router = express.Router();
+
+// rota para obter as estatísticas do professor
+router.get('/status', getTeacherStatisticsController);
 
 // Rota para obter as turmas de um professor
 router.get('/classes', getTeacherClassesController);
@@ -94,6 +97,6 @@ router.post('/resumes', createResumeController);
 router.put('/resumes/:resumeId', updateResumeController);
 
 // Rota para deletar um resumo
-router.delete('/resumes/:resumeId', deleteResumeController);	
+router.delete('/resumes/:resumeId', deleteResumeController);
 
 export default router;

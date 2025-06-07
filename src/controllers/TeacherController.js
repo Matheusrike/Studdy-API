@@ -5,6 +5,7 @@ import {
 	updateTeacher,
 	deleteTeacher,
 	getTeacherByUserId,
+	getTeacherStatistics,
 } from '../models/Teacher.js';
 import { getClassSubjectsByTeacher } from '../models/Subject.js';
 import { getClassesByTeacherId, getClassById } from '../models/Class.js';
@@ -210,17 +211,23 @@ async function getTeacherClassByIdController(req, res) {
 
 		// Verifica se o professor leciona nessa turma
 		const teacherSubjects = teacherClass.teachers.find(
-			(t) => t.teacher_id === teacher.id
+			(t) => t.teacher_id === teacher.id,
 		);
 
 		if (!teacherSubjects) {
-			return res.status(403).json({ error: 'Professor não leciona nesta turma' });
+			return res
+				.status(403)
+				.json({ error: 'Professor não leciona nesta turma' });
 		}
 
 		// Obtém os quizzes da turma para cada matéria que o professor leciona
 		const quizzes = [];
 		for (const subject of teacherSubjects.subjects) {
-			const subjectQuizzes = await getQuizzesOfTeacher(userId, classId, subject.id);
+			const subjectQuizzes = await getQuizzesOfTeacher(
+				userId,
+				classId,
+				subject.id,
+			);
 			quizzes.push(...subjectQuizzes);
 		}
 
@@ -229,11 +236,27 @@ async function getTeacherClassByIdController(req, res) {
 			name: teacherClass.name,
 			shift: teacherClass.shift,
 			course: teacherClass.course,
-			quizzes
+			quizzes,
 		});
 	} catch (error) {
 		console.error('Error getting teacher class:', error);
 		return res.status(500).json({ error: error.message });
+	}
+}
+
+// Obter as estatísticas de um professor
+async function getTeacherStatisticsController(req, res) {
+	try {
+		const statistics = await getTeacherStatistics(req.user.id);
+		return res.status(200).json(statistics);
+	} catch (error) {
+		console.error(error);
+		if (error.message.includes('not found')) {
+			return res.status(404).json({ message: error.message });
+		}
+		return res
+			.status(500)
+			.json({ message: 'Error fetching teacher statistics' });
 	}
 }
 
@@ -247,4 +270,5 @@ export {
 	getClassSubjectsByTeacherController,
 	getSubjectQuizzesController,
 	getTeacherClassByIdController,
+	getTeacherStatisticsController,
 };
