@@ -1,6 +1,6 @@
 import prisma from '../../prisma/client.js';
 import {
-	getTotalStudents,
+	countStudentsByTeacherId,
 	getQuizCompletionRate,
 	getClassAverageScoreGlobal,
 	getPerformanceBySubject,
@@ -330,12 +330,12 @@ async function getTeacherStatistics(userId) {
 	});
 
 	if (!teacher) {
-		throw new Error('Professor não encontrado');
+		throw new Error('Teacher not found');
 	}
 
 	const teacherId = teacher.id;
 
-	// Executa todas as consultas em paralelo para melhor performance
+	// Consulta as estatísticas
 	const [
 		totalStudents,
 		quizCompletionRate,

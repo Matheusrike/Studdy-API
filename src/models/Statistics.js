@@ -239,7 +239,7 @@ async function lastsCompletedQuizzes(studentId, limit = 5) {
 // Funções de estatísticas do Professor
 
 // Calcula o total de alunos de todas as turmas que o professor leciona
-async function getTotalStudents(teacherId) {
+async function countStudentsByTeacherId(teacherId) {
 	const result = await prisma.student.count({
 		where: {
 			class: {
@@ -392,14 +392,29 @@ async function getPerformanceBySubject(teacherId) {
 	return performanceBySubject;
 }
 
+// Função de estatísticas do admin
+async function getSystemStatistics() {
+	const usersCount = await prisma.user.count();
+	const teachersCount = await prisma.teacher.count();
+	const studentsCount = await prisma.student.count();
+
+	const result = {
+		totalUsers: usersCount,
+		totalTeachers: teachersCount,
+		totalStudents: studentsCount,
+	};
+	return result;
+}
+
 export {
 	averageCorrectResponses,
 	availableQuizzesXCompletedQuizzes,
 	completedQuizzesBySubject,
 	timeSpentOnQuizzes,
 	lastsCompletedQuizzes,
-	getTotalStudents,
+	countStudentsByTeacherId,
 	getQuizCompletionRate,
 	getClassAverageScoreGlobal,
 	getPerformanceBySubject,
+	getSystemStatistics,
 };

@@ -274,7 +274,7 @@ async function getStudentStatistics(userId) {
 			throw new Error('Student not found');
 		}
 
-		// Executar todas as consultas
+		// Consulta as estatísticas
 		const [
 			averageCorrect,
 			quizzesCount,
