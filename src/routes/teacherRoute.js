@@ -58,10 +58,7 @@ router.get(
 router.post('/classes/:classId/subjects/:subjectId/quiz', createQuizController);
 
 // Rota para atualizar questionários
-router.put(
-	'/classes/:classId/subjects/:subjectId/quiz/:quizId',
-	updateQuizController,
-);
+router.put('/quiz/:quizId', updateQuizController);
 
 // Rota para atualizar a visibilidade de um questionário
 router.patch('/quiz/:quizId/visibility', updateQuizVisibilityController);

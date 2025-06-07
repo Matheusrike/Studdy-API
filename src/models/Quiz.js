@@ -120,26 +120,28 @@ async function updateQuiz(quizId, quizData) {
 				},
 			},
 		});
-
 		if (!existingQuiz) {
 			throw new Error('Quiz not found');
 		}
-
 		// Atualiza o quiz usando uma transação
 		return await prisma.$transaction(async (tx) => {
+			// Calcula o total de pontos com base nos pontos das questões
+			let totalPoints = 0;
+			quizData.questions.forEach((question) => {
+				totalPoints += question.points;
+			});
+
 			// 1. Deleta todas as alternativas existentes
 			for (const question of existingQuiz.questions) {
 				await tx.alternative.deleteMany({
 					where: { question_id: question.id },
 				});
 			}
-
 			// 2. Deleta todas as questões existentes
 			await tx.question.deleteMany({
 				where: { quiz_id: quizId },
 			});
-
-			// 3. Atualiza os dados básicos do quiz
+			// 3. Atualiza os dados básicos do quiz (incluindo max_points calculado)
 			const updatedQuiz = await tx.quiz.update({
 				where: { id: quizId },
 				data: {
@@ -147,10 +149,10 @@ async function updateQuiz(quizId, quizData) {
 					description: quizData.description,
 					icon: quizData.icon,
 					duration_minutes: quizData.duration_minutes,
+					max_points: totalPoints, // Adiciona o cálculo automático do max_points
 					visibility: quizData.visibility,
 				},
 			});
-
 			// 4. Cria as novas questões e alternativas
 			for (const questionData of quizData.questions) {
 				const question = await tx.question.create({
@@ -160,7 +162,6 @@ async function updateQuiz(quizId, quizData) {
 						quiz_id: quizId,
 					},
 				});
-
 				// Cria as alternativas para a questão
 				await tx.alternative.createMany({
 					data: questionData.alternatives.map((alt) => ({
@@ -170,7 +171,6 @@ async function updateQuiz(quizId, quizData) {
 					})),
 				});
 			}
-
 			// 5. Retorna o quiz atualizado com todas as relações
 			return await tx.quiz.findUnique({
 				where: { id: quizId },

@@ -342,7 +342,7 @@ async function getTeacherStatistics(userId) {
 		classAverageScoreGlobal,
 		performanceBySubject,
 	] = await Promise.all([
-		getTotalStudents(teacherId),
+		countStudentsByTeacherId(teacherId),
 		getQuizCompletionRate(teacherId),
 		getClassAverageScoreGlobal(teacherId),
 		getPerformanceBySubject(teacherId),
