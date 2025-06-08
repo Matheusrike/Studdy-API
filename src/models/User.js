@@ -57,18 +57,12 @@ async function createUser(userData, tx = prisma) {
 
 async function updateUser(tx = prisma, userId, userData) {
 	try {
-		// 1. Faz o hash da senha
-		const hashed_password = await generateHashPassword(userData.password);
-		userData.password = hashed_password;
-		// 2. Substitui o password pelo hashed_password
 		const { password, ...rest } = userData;
-		const user = { ...rest, hashed_password: password };
-		return await tx.user.update({
-			where: { id: userId },
-			data: {
-				...user,
-			},
-		});
+		const data = { ...rest };
+		if (password) {
+			data.hashed_password = await generateHashPassword(password);
+		}
+		return tx.user.update({ where: { id: userId }, data });
 	} catch (error) {
 		throw error;
 	}

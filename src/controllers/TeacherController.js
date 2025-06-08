@@ -10,7 +10,10 @@ import {
 import { getClassSubjectsByTeacher } from '../models/Subject.js';
 import { getClassesByTeacherId, getClassById } from '../models/Class.js';
 import { getQuizzesOfTeacher } from '../models/Quiz.js';
-import { teacherSchema } from '../schemas/teacher.schema.js';
+import {
+	teacherSchema,
+	updateTeacherSchema,
+} from '../schemas/teacher.schema.js';
 import { ZodError } from 'zod/v4';
 
 // Controllers do /admin/teacher
@@ -72,7 +75,7 @@ async function updateTeacherController(req, res) {
 	let teacher;
 
 	try {
-		teacher = teacherSchema.parse(req.body);
+		teacher = updateTeacherSchema.parse(req.body);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const formatted = error['issues'].map((err) => ({

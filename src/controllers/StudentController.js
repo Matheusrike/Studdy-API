@@ -8,7 +8,10 @@ import {
 } from '../models/Student.js';
 import { getStudentClass } from '../models/Class.js';
 import { getSubjectsByStudent } from '../models/Subject.js';
-import { studentSchema } from '../schemas/student.schema.js';
+import {
+	studentSchema,
+	updateStudentSchema,
+} from '../schemas/student.schema.js';
 import { ZodError } from 'zod/v4';
 import { getQuizzesByStudent } from '../models/Quiz.js';
 
@@ -76,7 +79,7 @@ async function updateStudentController(req, res) {
 	let student;
 
 	try {
-		student = studentSchema.parse(req.body);
+		student = updateStudentSchema.parse(req.body);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const formatted = error['issues'].map((err) => ({
