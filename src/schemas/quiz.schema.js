@@ -16,7 +16,7 @@ export const quizSchema = z.object({
 		error: 'At least one question must be provided',
 	}),
 	duration_minutes: z.number().positive({ error: 'Invalid duration' }),
-	max_attempts: z.number().positive({ error: 'Invalid max attempts' }),
+	max_attempt: z.number().positive({ error: 'Invalid max attempts' }),
 	visibility: z.enum(['draft', 'public', 'archived'], {
 		error: 'Invalid visibility',
 	}),

@@ -239,6 +239,8 @@ async function getTeacherClassByIdController(req, res) {
 			name: teacherClass.name,
 			shift: teacherClass.shift,
 			course: teacherClass.course,
+			students: teacherClass.students,
+			teachers: teacherClass.teachers,
 			quizzes,
 		});
 	} catch (error) {

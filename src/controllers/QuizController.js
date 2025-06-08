@@ -1,3 +1,4 @@
+import prisma from '../../prisma/client.js';
 import {
 	getQuizzesOfTeacher,
 	createQuiz,
@@ -13,10 +14,11 @@ import {
 	getAllQuizzesForTeacher,
 	updateQuizVisibility,
 	getQuizAttemptResponses,
+	getQuizResults,
 } from '../models/Quiz.js';
 import { quizSchema, visibilitySchema } from '../schemas/quiz.schema.js';
 import { ZodError } from 'zod/v4';
-import prisma from '../generated/prisma/client.js';
+import { getClassById } from '../models/Class.js';
 
 // Controller do /teacher
 // Controller para criar um novo quiz
@@ -395,6 +397,45 @@ async function getQuizAttemptResponsesController(req, res) {
 	}
 }
 
+// GET /teacher/classes/:classId/quizzes/:quizId/results
+async function getQuizResultsController(req, res) {
+	try {
+		const { classId, quizId } = req.params;
+		const userId = req.user.id;
+
+		// Verificar se o professor tem acesso à turma
+		const teacherClass = await getClassById(parseInt(classId));
+		if (!teacherClass) {
+			return res.status(404).json({ error: 'Turma não encontrada' });
+		}
+
+		// Buscar o ID do professor pelo user_id
+		const teacher = await prisma.teacher.findUnique({
+			where: { user_id: userId },
+			select: { id: true }
+		});
+
+		if (!teacher) {
+			return res.status(403).json({ error: 'Professor não encontrado' });
+		}
+
+		// Verificar se o professor leciona nesta turma
+		const teacherSubjects = teacherClass.teachers.find(
+			(t) => t.teacher_id === teacher.id
+		);
+
+		if (!teacherSubjects) {
+			return res.status(403).json({ error: 'Professor não leciona nesta turma' });
+		}
+
+		const results = await getQuizResults(parseInt(quizId), parseInt(classId));
+		return res.status(200).json(results);
+	} catch (error) {
+		console.error('Error getting quiz results:', error);
+		return res.status(500).json({ error: error.message });
+	}
+}
+
 export {
 	createQuizController,
 	updateQuizController,
@@ -409,4 +450,5 @@ export {
 	getQuizByIdController,
 	getAllQuizzesController,
 	getQuizAttemptResponsesController,
+	getQuizResultsController
 };

@@ -304,84 +304,14 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  cpf: 'cpf',
-  hashed_password: 'hashed_password'
-};
-
-exports.Prisma.SubjectOrderByRelevanceFieldEnum = {
-  name: 'name'
-};
-
-exports.Prisma.ClassOrderByRelevanceFieldEnum = {
-  name: 'name',
-  course: 'course'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  enrollment: 'enrollment'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.QuizOrderByRelevanceFieldEnum = {
-  title: 'title',
-  description: 'description',
-  icon: 'icon'
-};
-
-exports.Prisma.QuestionOrderByRelevanceFieldEnum = {
-  statement: 'statement'
-};
-
-exports.Prisma.AlternativeOrderByRelevanceFieldEnum = {
-  response: 'response'
-};
-
-exports.Prisma.Question_imagesOrderByRelevanceFieldEnum = {
-  image_path: 'image_path',
-  alt_text: 'alt_text'
-};
-
-exports.Prisma.Video_assignmentOrderByRelevanceFieldEnum = {
-  videoUrl: 'videoUrl',
-  title_video: 'title_video',
-  name_channel: 'name_channel',
-  duration_video: 'duration_video',
-  font: 'font',
-  description: 'description',
-  thumbnail: 'thumbnail',
-  videoId: 'videoId'
-};
-
-exports.Prisma.ResumeOrderByRelevanceFieldEnum = {
-  title: 'title',
-  icon: 'icon',
-  description: 'description',
-  resume: 'resume'
-};
-
-exports.Prisma.ContestsOrderByRelevanceFieldEnum = {
-  title: 'title',
-  link: 'link',
-  type: 'type',
-  icon: 'icon',
-  color: 'color',
-  description: 'description'
-};
-
-exports.Prisma.Entrance_examOrderByRelevanceFieldEnum = {
-  title: 'title',
-  link: 'link',
-  type: 'type',
-  icon: 'icon',
-  color: 'color',
-  description: 'description'
 };
 exports.Role = exports.$Enums.Role = {
   Admin: 'Admin',

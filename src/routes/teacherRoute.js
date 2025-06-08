@@ -27,6 +27,9 @@ import {
 	updateResumeController,
 	deleteResumeController,
 } from '../controllers/ResumeController.js';
+import {
+	getQuizResultsController,
+} from '../controllers/QuizController.js';
 
 const router = express.Router();
 
@@ -52,6 +55,12 @@ router.get(
 router.get(
 	'/classes/:classId/subjects/:subjectId/quiz/:quizId',
 	getQuizWithQuestionsController,
+);
+
+// Rota para obter os resultados dos alunos em um quiz
+router.get(
+	'/classes/:classId/quizzes/:quizId/results',
+	getQuizResultsController
 );
 
 // Rota para criar questionários

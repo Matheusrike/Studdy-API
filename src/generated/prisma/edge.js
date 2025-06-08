@@ -276,84 +276,14 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  cpf: 'cpf',
-  hashed_password: 'hashed_password'
-};
-
-exports.Prisma.SubjectOrderByRelevanceFieldEnum = {
-  name: 'name'
-};
-
-exports.Prisma.ClassOrderByRelevanceFieldEnum = {
-  name: 'name',
-  course: 'course'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  enrollment: 'enrollment'
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.QuizOrderByRelevanceFieldEnum = {
-  title: 'title',
-  description: 'description',
-  icon: 'icon'
-};
-
-exports.Prisma.QuestionOrderByRelevanceFieldEnum = {
-  statement: 'statement'
-};
-
-exports.Prisma.AlternativeOrderByRelevanceFieldEnum = {
-  response: 'response'
-};
-
-exports.Prisma.Question_imagesOrderByRelevanceFieldEnum = {
-  image_path: 'image_path',
-  alt_text: 'alt_text'
-};
-
-exports.Prisma.Video_assignmentOrderByRelevanceFieldEnum = {
-  videoUrl: 'videoUrl',
-  title_video: 'title_video',
-  name_channel: 'name_channel',
-  duration_video: 'duration_video',
-  font: 'font',
-  description: 'description',
-  thumbnail: 'thumbnail',
-  videoId: 'videoId'
-};
-
-exports.Prisma.ResumeOrderByRelevanceFieldEnum = {
-  title: 'title',
-  icon: 'icon',
-  description: 'description',
-  resume: 'resume'
-};
-
-exports.Prisma.ContestsOrderByRelevanceFieldEnum = {
-  title: 'title',
-  link: 'link',
-  type: 'type',
-  icon: 'icon',
-  color: 'color',
-  description: 'description'
-};
-
-exports.Prisma.Entrance_examOrderByRelevanceFieldEnum = {
-  title: 'title',
-  link: 'link',
-  type: 'type',
-  icon: 'icon',
-  color: 'color',
-  description: 'description'
 };
 exports.Role = exports.$Enums.Role = {
   Admin: 'Admin',
@@ -411,7 +341,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/matheus/projects/Studdy-API/src/generated/prisma",
+      "value": "C:\\Users\\menle\\OneDrive\\Documentos\\GitHub\\Studdy-API\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -420,7 +350,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-1.1.x",
+        "value": "windows",
         "native": true
       },
       {
@@ -429,7 +359,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/matheus/projects/Studdy-API/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\menle\\OneDrive\\Documentos\\GitHub\\Studdy-API\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -442,7 +372,8 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "mysql",
+  "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -451,8 +382,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"mysql\" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id              Int      @id @unique @default(autoincrement())\n  name            String\n  email           String   @unique\n  birth_date      DateTime\n  cpf             String   @unique\n  created_at      DateTime @default(now())\n  modified_at     DateTime @default(now()) @updatedAt\n  role            Role\n  hashed_password String\n  teacher         Teacher?\n  student         Student?\n\n  @@map(\"user\")\n}\n\nenum Role {\n  Admin\n  Student\n  Teacher\n}\n\nmodel Teacher {\n  id                            Int                            @id @unique @default(autoincrement())\n  user_id                       Int                            @unique\n  user                          User                           @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  created_at                    DateTime                       @default(now())\n  modified_at                   DateTime                       @default(now()) @updatedAt\n  teacher_subjects              Relationship_teacher_subject[]\n  teacher_subject_class_resumes TeacherSubjectClassResume[]\n\n  @@map(\"teacher\")\n}\n\nmodel Subject {\n  id                            Int                            @id @unique @default(autoincrement())\n  name                          String                         @unique\n  created_at                    DateTime                       @default(now())\n  modified_at                   DateTime                       @default(now()) @updatedAt\n  teacher_subjects              Relationship_teacher_subject[]\n  teacher_subject_class_resumes TeacherSubjectClassResume[]\n\n  @@map(\"subject\")\n}\n\nmodel Relationship_teacher_subject {\n  id                      Int                                  @id @unique @default(autoincrement())\n  subject_id              Int\n  teacher_id              Int\n  subject                 Subject                              @relation(fields: [subject_id], references: [id], onDelete: Cascade)\n  teacher                 Teacher                              @relation(fields: [teacher_id], references: [id], onDelete: Cascade)\n  teacher_subject_classes Relationship_teacher_subject_class[]\n\n  @@unique([teacher_id, subject_id])\n  @@map(\"relationship_teacher_subject\")\n}\n\nenum Shift {\n  Morning\n  Afternoon\n  Evening\n  Full\n}\n\nmodel Class {\n  id                            Int                                  @id @unique @default(autoincrement())\n  name                          String\n  shift                         Shift\n  course                        String\n  created_at                    DateTime                             @default(now())\n  modified_at                   DateTime                             @default(now()) @updatedAt\n  students                      Student[]\n  teacher_subject_classes       Relationship_teacher_subject_class[]\n  teacher_subject_class_resumes TeacherSubjectClassResume[]\n\n  @@unique([name, shift, course])\n  @@map(\"class\")\n}\n\nmodel Student {\n  id            Int            @id @unique @default(autoincrement())\n  enrollment    String         @unique\n  user_id       Int            @unique\n  class_id      Int\n  created_at    DateTime       @default(now())\n  modified_at   DateTime       @default(now()) @updatedAt\n  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  class         Class          @relation(fields: [class_id], references: [id])\n  quiz_attempts Quiz_attempt[]\n\n  @@map(\"student\")\n}\n\nmodel Relationship_teacher_subject_class {\n  id                 Int                          @id @unique @default(autoincrement())\n  class_id           Int\n  teacher_subject_id Int\n  class              Class                        @relation(fields: [class_id], references: [id], onDelete: Cascade)\n  teacher_subject    Relationship_teacher_subject @relation(fields: [teacher_subject_id], references: [id], onDelete: Cascade)\n  quizzes            Quiz[]\n\n  @@unique([teacher_subject_id, class_id])\n  @@map(\"relationship_teacher_subject_class\")\n}\n\nmodel Quiz {\n  id                       Int                                @id @unique @default(autoincrement())\n  title                    String\n  description              String\n  icon                     String\n  duration_minutes         Int?\n  max_points               Decimal                            @default(0)\n  max_attempt              Int?\n  visibility               QuizVisibility                     @default(draft)\n  created_at               DateTime                           @default(now())\n  modified_at              DateTime                           @default(now()) @updatedAt\n  teacher_subject_class_id Int\n  teacher_subject_class    Relationship_teacher_subject_class @relation(fields: [teacher_subject_class_id], references: [id], onDelete: Cascade)\n  questions                Question[]\n  quiz_attempts            Quiz_attempt[]\n\n  @@map(\"quiz\")\n}\n\nenum QuizVisibility {\n  draft\n  public\n  archived\n}\n\nmodel Question {\n  id                 Int                 @id @unique @default(autoincrement())\n  statement          String              @db.Text\n  points             Decimal\n  quiz_id            Int\n  created_at         DateTime            @default(now())\n  modified_at        DateTime            @default(now()) @updatedAt\n  quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)\n  alternatives       Alternative[]\n  question_images    Question_images[]\n  question_responses Question_response[]\n\n  @@map(\"question\")\n}\n\nmodel Alternative {\n  id                  Int                 @id @unique @default(autoincrement())\n  question_id         Int\n  response            String\n  correct_alternative Boolean             @default(false)\n  created_at          DateTime            @default(now())\n  modified_at         DateTime            @default(now()) @updatedAt\n  question            Question            @relation(fields: [question_id], references: [id], onDelete: Cascade)\n  question_responses  Question_response[]\n\n  @@map(\"alternative\")\n}\n\nmodel Question_images {\n  id          Int      @id @unique @default(autoincrement())\n  image_path  String\n  alt_text    String\n  question_id Int\n  created_at  DateTime @default(now())\n  question    Question @relation(fields: [question_id], references: [id], onDelete: Cascade)\n\n  @@map(\"question_images\")\n}\n\nmodel Quiz_attempt {\n  id                 Int                 @id @unique @default(autoincrement())\n  student_id         Int\n  quiz_id            Int\n  started_at         DateTime            @default(now())\n  finished_at        DateTime?\n  status             AttemptStatus       @default(in_progress)\n  total_score        Decimal             @default(0)\n  created_at         DateTime            @default(now())\n  modified_at        DateTime            @default(now()) @updatedAt\n  student            Student             @relation(fields: [student_id], references: [id], onDelete: Cascade)\n  quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)\n  question_responses Question_response[]\n\n  @@map(\"quiz_attempt\")\n}\n\nenum AttemptStatus {\n  in_progress\n  completed\n  abandoned\n}\n\nmodel Question_response {\n  id                    Int          @id @unique @default(autoincrement())\n  question_id           Int\n  marked_alternative_id Int\n  quiz_attempt_id       Int\n  is_correct            Boolean\n  points_earned         Decimal      @default(0)\n  created_at            DateTime     @default(now())\n  modified_at           DateTime     @default(now()) @updatedAt\n  question              Question     @relation(fields: [question_id], references: [id], onDelete: Cascade)\n  marked_alternative    Alternative  @relation(fields: [marked_alternative_id], references: [id], onDelete: Cascade)\n  quiz_attempt          Quiz_attempt @relation(fields: [quiz_attempt_id], references: [id], onDelete: Cascade)\n\n  @@map(\"question_response\")\n}\n\nmodel Video_assignment {\n  id             Int      @id @unique @default(autoincrement())\n  videoUrl       String   @unique\n  title_video    String\n  name_channel   String\n  duration_video String\n  font           String\n  description    String   @db.Text\n  thumbnail      String\n  videoId        String\n  created_at     DateTime @default(now())\n  modified_at    DateTime @default(now()) @updatedAt\n\n  @@map(\"video_assignment\")\n}\n\nmodel TeacherSubjectClassResume {\n  id          Int      @id @unique @default(autoincrement())\n  teacher_id  Int\n  subject_id  Int\n  class_id    Int\n  resume_id   Int      @unique\n  created_at  DateTime @default(now())\n  modified_at DateTime @default(now()) @updatedAt\n  teacher     Teacher  @relation(fields: [teacher_id], references: [id], onDelete: Cascade)\n  subject     Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)\n  class       Class    @relation(fields: [class_id], references: [id], onDelete: Cascade)\n  resume      Resume   @relation(fields: [resume_id], references: [id], onDelete: Cascade)\n\n  @@unique([teacher_id, subject_id, class_id, resume_id])\n  @@map(\"teacher_subject_class_resume\")\n}\n\nmodel Resume {\n  id                           Int                        @id @unique @default(autoincrement())\n  title                        String\n  icon                         String\n  description                  String\n  resume                       String                     @db.Text\n  created_at                   DateTime                   @default(now())\n  modified_at                  DateTime                   @default(now()) @updatedAt\n  teacher_subject_class_resume TeacherSubjectClassResume?\n\n  @@map(\"resume\")\n}\n\nmodel Contests {\n  id          Int      @id @unique @default(autoincrement())\n  title       String\n  link        String\n  type        String\n  icon        String\n  color       String\n  description String   @db.Text\n  date        DateTime\n  created_at  DateTime @default(now())\n  modified_at DateTime @updatedAt\n\n  @@map(\"contests\")\n}\n\nmodel Entrance_exam {\n  id          Int      @id @unique @default(autoincrement())\n  title       String\n  link        String\n  type        String\n  icon        String\n  color       String\n  description String   @db.Text\n  date        DateTime\n  created_at  DateTime @default(now())\n  modified_at DateTime @updatedAt\n\n  @@map(\"entrance_exam\")\n}\n",
-  "inlineSchemaHash": "d7aabfa37bdbbcabe8e4084672c6eda5169cc76687485c984f53ab6c80ae6fe7",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\" // <- Mudar para PostgreSQL quando for subir a API e deletar a pasta migrations\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id              Int      @id @unique @default(autoincrement())\n  name            String\n  email           String   @unique\n  birth_date      DateTime\n  cpf             String   @unique\n  created_at      DateTime @default(now())\n  modified_at     DateTime @default(now()) @updatedAt\n  role            Role\n  hashed_password String\n  teacher         Teacher?\n  student         Student?\n\n  @@map(\"user\")\n}\n\nenum Role {\n  Admin\n  Student\n  Teacher\n}\n\nmodel Teacher {\n  id                            Int                            @id @unique @default(autoincrement())\n  user_id                       Int                            @unique\n  user                          User                           @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  created_at                    DateTime                       @default(now())\n  modified_at                   DateTime                       @default(now()) @updatedAt\n  teacher_subjects              Relationship_teacher_subject[]\n  teacher_subject_class_resumes TeacherSubjectClassResume[]\n\n  @@map(\"teacher\")\n}\n\nmodel Subject {\n  id                            Int                            @id @unique @default(autoincrement())\n  name                          String                         @unique\n  created_at                    DateTime                       @default(now())\n  modified_at                   DateTime                       @default(now()) @updatedAt\n  teacher_subjects              Relationship_teacher_subject[]\n  teacher_subject_class_resumes TeacherSubjectClassResume[]\n\n  @@map(\"subject\")\n}\n\nmodel Relationship_teacher_subject {\n  id                      Int                                  @id @unique @default(autoincrement())\n  subject_id              Int\n  teacher_id              Int\n  subject                 Subject                              @relation(fields: [subject_id], references: [id], onDelete: Cascade)\n  teacher                 Teacher                              @relation(fields: [teacher_id], references: [id], onDelete: Cascade)\n  teacher_subject_classes Relationship_teacher_subject_class[]\n\n  @@unique([teacher_id, subject_id])\n  @@map(\"relationship_teacher_subject\")\n}\n\nenum Shift {\n  Morning\n  Afternoon\n  Evening\n  Full\n}\n\nmodel Class {\n  id                            Int                                  @id @unique @default(autoincrement())\n  name                          String\n  shift                         Shift\n  course                        String\n  created_at                    DateTime                             @default(now())\n  modified_at                   DateTime                             @default(now()) @updatedAt\n  students                      Student[]\n  teacher_subject_classes       Relationship_teacher_subject_class[]\n  teacher_subject_class_resumes TeacherSubjectClassResume[]\n\n  @@unique([name, shift, course])\n  @@map(\"class\")\n}\n\nmodel Student {\n  id            Int            @id @unique @default(autoincrement())\n  enrollment    String         @unique\n  user_id       Int            @unique\n  class_id      Int\n  created_at    DateTime       @default(now())\n  modified_at   DateTime       @default(now()) @updatedAt\n  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  class         Class          @relation(fields: [class_id], references: [id])\n  quiz_attempts Quiz_attempt[]\n\n  @@map(\"student\")\n}\n\nmodel Relationship_teacher_subject_class {\n  id                 Int                          @id @unique @default(autoincrement())\n  class_id           Int\n  teacher_subject_id Int\n  class              Class                        @relation(fields: [class_id], references: [id], onDelete: Cascade)\n  teacher_subject    Relationship_teacher_subject @relation(fields: [teacher_subject_id], references: [id], onDelete: Cascade)\n  quizzes            Quiz[]\n\n  @@unique([teacher_subject_id, class_id])\n  @@map(\"relationship_teacher_subject_class\")\n}\n\nmodel Quiz {\n  id                       Int                                @id @unique @default(autoincrement())\n  title                    String\n  description              String\n  icon                     String\n  duration_minutes         Int?\n  max_points               Decimal                            @default(0)\n  max_attempt              Int?\n  visibility               QuizVisibility                     @default(draft)\n  created_at               DateTime                           @default(now())\n  modified_at              DateTime                           @default(now()) @updatedAt\n  teacher_subject_class_id Int\n  teacher_subject_class    Relationship_teacher_subject_class @relation(fields: [teacher_subject_class_id], references: [id], onDelete: Cascade)\n  questions                Question[]\n  quiz_attempts            Quiz_attempt[]\n\n  @@map(\"quiz\")\n}\n\nenum QuizVisibility {\n  draft\n  public\n  archived\n}\n\nmodel Question {\n  id                 Int                 @id @unique @default(autoincrement())\n  statement          String              @db.Text\n  points             Decimal\n  quiz_id            Int\n  created_at         DateTime            @default(now())\n  modified_at        DateTime            @default(now()) @updatedAt\n  quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)\n  alternatives       Alternative[]\n  question_images    Question_images[]\n  question_responses Question_response[]\n\n  @@map(\"question\")\n}\n\nmodel Alternative {\n  id                  Int                 @id @unique @default(autoincrement())\n  question_id         Int\n  response            String\n  correct_alternative Boolean             @default(false)\n  created_at          DateTime            @default(now())\n  modified_at         DateTime            @default(now()) @updatedAt\n  question            Question            @relation(fields: [question_id], references: [id], onDelete: Cascade)\n  question_responses  Question_response[]\n\n  @@map(\"alternative\")\n}\n\nmodel Question_images {\n  id          Int      @id @unique @default(autoincrement())\n  image_path  String\n  alt_text    String\n  question_id Int\n  created_at  DateTime @default(now())\n  question    Question @relation(fields: [question_id], references: [id], onDelete: Cascade)\n\n  @@map(\"question_images\")\n}\n\nmodel Quiz_attempt {\n  id                 Int                 @id @unique @default(autoincrement())\n  student_id         Int\n  quiz_id            Int\n  started_at         DateTime            @default(now())\n  finished_at        DateTime?\n  status             AttemptStatus       @default(in_progress)\n  total_score        Decimal             @default(0)\n  created_at         DateTime            @default(now())\n  modified_at        DateTime            @default(now()) @updatedAt\n  student            Student             @relation(fields: [student_id], references: [id], onDelete: Cascade)\n  quiz               Quiz                @relation(fields: [quiz_id], references: [id], onDelete: Cascade)\n  question_responses Question_response[]\n\n  @@map(\"quiz_attempt\")\n}\n\nenum AttemptStatus {\n  in_progress\n  completed\n  abandoned\n}\n\nmodel Question_response {\n  id                    Int          @id @unique @default(autoincrement())\n  question_id           Int\n  marked_alternative_id Int\n  quiz_attempt_id       Int\n  is_correct            Boolean\n  points_earned         Decimal      @default(0)\n  created_at            DateTime     @default(now())\n  modified_at           DateTime     @default(now()) @updatedAt\n  question              Question     @relation(fields: [question_id], references: [id], onDelete: Cascade)\n  marked_alternative    Alternative  @relation(fields: [marked_alternative_id], references: [id], onDelete: Cascade)\n  quiz_attempt          Quiz_attempt @relation(fields: [quiz_attempt_id], references: [id], onDelete: Cascade)\n\n  @@map(\"question_response\")\n}\n\nmodel Video_assignment {\n  id             Int      @id @unique @default(autoincrement())\n  videoUrl       String   @unique\n  title_video    String\n  name_channel   String\n  duration_video String\n  font           String\n  description    String   @db.Text\n  thumbnail      String\n  videoId        String\n  created_at     DateTime @default(now())\n  modified_at    DateTime @default(now()) @updatedAt\n\n  @@map(\"video_assignment\")\n}\n\nmodel TeacherSubjectClassResume {\n  id          Int      @id @unique @default(autoincrement())\n  teacher_id  Int\n  subject_id  Int\n  class_id    Int\n  resume_id   Int      @unique\n  created_at  DateTime @default(now())\n  modified_at DateTime @default(now()) @updatedAt\n  teacher     Teacher  @relation(fields: [teacher_id], references: [id], onDelete: Cascade)\n  subject     Subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade)\n  class       Class    @relation(fields: [class_id], references: [id], onDelete: Cascade)\n  resume      Resume   @relation(fields: [resume_id], references: [id], onDelete: Cascade)\n\n  @@unique([teacher_id, subject_id, class_id, resume_id])\n  @@map(\"teacher_subject_class_resume\")\n}\n\nmodel Resume {\n  id                           Int                        @id @unique @default(autoincrement())\n  title                        String\n  icon                         String\n  description                  String\n  resume                       String                     @db.Text\n  created_at                   DateTime                   @default(now())\n  modified_at                  DateTime                   @default(now()) @updatedAt\n  teacher_subject_class_resume TeacherSubjectClassResume?\n\n  @@map(\"resume\")\n}\n\nmodel Contests {\n  id          Int      @id @unique @default(autoincrement())\n  title       String\n  link        String\n  type        String\n  icon        String\n  color       String\n  description String   @db.Text\n  date        DateTime\n  created_at  DateTime @default(now())\n  modified_at DateTime @updatedAt\n\n  @@map(\"contests\")\n}\n\nmodel Entrance_exam {\n  id          Int      @id @unique @default(autoincrement())\n  title       String\n  link        String\n  type        String\n  icon        String\n  color       String\n  description String   @db.Text\n  date        DateTime\n  created_at  DateTime @default(now())\n  modified_at DateTime @updatedAt\n\n  @@map(\"entrance_exam\")\n}\n",
+  "inlineSchemaHash": "09d7e6ce5516e1e9a25c6989b42b422c25af617f28a93f0a91a862918bbcdf8a",
   "copyEngine": true
 }
 config.dirname = '/'

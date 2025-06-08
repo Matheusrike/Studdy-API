@@ -1072,6 +1072,109 @@ async function getQuizAttemptResponses(attemptId, userId) {
 	};
 }
 
+async function getQuizResults(quizId, classId) {
+	try {
+		// Buscar todos os alunos da turma
+		const students = await prisma.student.findMany({
+			where: { class_id: classId },
+			select: {
+				id: true,
+				enrollment: true,
+				user: {
+					select: {
+						name: true,
+						email: true
+					}
+				}
+			}
+		});
+
+		// Buscar todas as tentativas do quiz
+		const attempts = await prisma.quiz_attempt.findMany({
+			where: { 
+				quiz_id: quizId,
+				student_id: { in: students.map(s => s.id) }
+			},
+			include: {
+				question_responses: {
+					select: {
+						is_correct: true,
+						points_earned: true
+					}
+				}
+			}
+		});
+
+		// Buscar informações do quiz
+		const quiz = await prisma.quiz.findUnique({
+			where: { id: quizId },
+			select: {
+				title: true,
+				max_points: true,
+				questions: {
+					select: {
+						id: true
+					}
+				}
+			}
+		});
+
+		if (!quiz) {
+			throw new Error('Quiz não encontrado');
+		}
+
+		const totalQuestions = quiz.questions.length;
+
+		// Mapear resultados para cada aluno
+		const results = students.map(student => {
+			const studentAttempt = attempts.find(a => a.student_id === student.id);
+			
+			if (!studentAttempt) {
+				return {
+					student_id: student.id,
+					name: student.user.name,
+					email: student.user.email,
+					enrollment: student.enrollment,
+					status: 'not_started',
+					score: 0,
+					score_percentage: 0,
+					correct_answers: 0,
+					total_questions: totalQuestions
+				};
+			}
+
+			const correctAnswers = studentAttempt.question_responses.filter(r => r.is_correct).length;
+			const score = parseFloat(studentAttempt.total_score);
+			const scorePercentage = quiz.max_points > 0 
+				? (score / parseFloat(quiz.max_points)) * 100 
+				: 0;
+
+			return {
+				student_id: student.id,
+				name: student.user.name,
+				email: student.user.email,
+				enrollment: student.enrollment,
+				status: studentAttempt.status,
+				score: score,
+				score_percentage: Math.round(scorePercentage * 100) / 100,
+				correct_answers: correctAnswers,
+				total_questions: totalQuestions,
+				started_at: studentAttempt.started_at,
+				finished_at: studentAttempt.finished_at
+			};
+		});
+
+		return {
+			quiz_title: quiz.title,
+			max_points: parseFloat(quiz.max_points),
+			total_questions: totalQuestions,
+			results: results
+		};
+	} catch (error) {
+		throw error;
+	}
+}
+
 export {
 	getQuizzesOfTeacher,
 	createQuiz,
@@ -1088,4 +1191,5 @@ export {
 	getAllQuizzesForTeacher,
 	getQuizzesByStudent,
 	getQuizAttemptResponses,
+	getQuizResults
 };
