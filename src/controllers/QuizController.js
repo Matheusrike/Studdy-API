@@ -15,6 +15,7 @@ import {
 	updateQuizVisibility,
 	getQuizAttemptResponses,
 	getQuizResults,
+	checkExistingAttempt,
 } from '../models/Quiz.js';
 import { quizSchema, visibilitySchema } from '../schemas/quiz.schema.js';
 import { ZodError } from 'zod/v4';
@@ -436,6 +437,33 @@ async function getQuizResultsController(req, res) {
 	}
 }
 
+// Controller para verificar se existe uma tentativa para um quiz específico
+async function checkExistingAttemptController(req, res) {
+	try {
+		const { quizId } = req.params;
+		const userId = req.user.id;
+
+		if (!quizId) {
+			return res.status(400).json({
+				message: 'Quiz ID é obrigatório',
+			});
+		}
+
+		const attemptInfo = await checkExistingAttempt(userId, quizId);
+
+		return res.status(200).json({
+			message: 'Informações da tentativa obtidas com sucesso',
+			data: attemptInfo,
+		});
+	} catch (error) {
+		console.error('Erro ao verificar tentativa existente:', error);
+		return res.status(500).json({
+			message: 'Erro interno do servidor',
+			error: error.message,
+		});
+	}
+}
+
 export {
 	createQuizController,
 	updateQuizController,
@@ -450,5 +478,6 @@ export {
 	getQuizByIdController,
 	getAllQuizzesController,
 	getQuizAttemptResponsesController,
-	getQuizResultsController
+	getQuizResultsController,
+	checkExistingAttemptController,
 };

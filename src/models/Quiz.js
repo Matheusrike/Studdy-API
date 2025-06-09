@@ -20,7 +20,7 @@ async function getQuizzesOfTeacher(userId, classId, subjectId) {
 					class: { id: classId },
 					teacher_subject: {
 						subject: { id: subjectId },
-						teacher_id: teacher.id,
+						teacher_id: teacher.id,	
 					},
 				},
 			},
@@ -131,17 +131,22 @@ async function updateQuiz(quizId, quizData) {
 				totalPoints += question.points;
 			});
 
-			// 1. Deleta todas as alternativas existentes
+			// 1. Deleta todas as tentativas do quiz (isso também deleta as respostas por cascade)
+			await tx.quiz_attempt.deleteMany({
+				where: { quiz_id: quizId },
+			});
+
+			// 2. Deleta todas as alternativas existentes
 			for (const question of existingQuiz.questions) {
 				await tx.alternative.deleteMany({
 					where: { question_id: question.id },
 				});
 			}
-			// 2. Deleta todas as questões existentes
+			// 3. Deleta todas as questões existentes
 			await tx.question.deleteMany({
 				where: { quiz_id: quizId },
 			});
-			// 3. Atualiza os dados básicos do quiz (incluindo max_points calculado)
+			// 4. Atualiza os dados básicos do quiz (incluindo max_points calculado)
 			const updatedQuiz = await tx.quiz.update({
 				where: { id: quizId },
 				data: {
@@ -153,7 +158,7 @@ async function updateQuiz(quizId, quizData) {
 					visibility: quizData.visibility,
 				},
 			});
-			// 4. Cria as novas questões e alternativas
+			// 5. Cria as novas questões e alternativas
 			for (const questionData of quizData.questions) {
 				const question = await tx.question.create({
 					data: {
@@ -171,7 +176,7 @@ async function updateQuiz(quizId, quizData) {
 					})),
 				});
 			}
-			// 5. Retorna o quiz atualizado com todas as relações
+			// 6. Retorna o quiz atualizado com todas as relações
 			return await tx.quiz.findUnique({
 				where: { id: quizId },
 				include: {
@@ -192,6 +197,24 @@ async function updateQuiz(quizId, quizData) {
 // Atualiza a visibilidade de um quiz
 async function updateQuizVisibility(quizId, visibility) {
 	try {
+				// Primeiro, busca o quiz atual para verificar a visibilidade anterior
+		const currentQuiz = await prisma.quiz.findUnique({
+			where: { id: quizId },
+			select: { visibility: true },
+		});
+
+		if (!currentQuiz) {
+			throw new Error('Quiz not found');
+		}
+
+		// Se o quiz estava 'public' e agora vai para 'draft', deletar todas as tentativas
+		if (currentQuiz.visibility === 'public' && visibility.visibility === 'draft') {
+			// Deleta todas as tentativas do quiz (as respostas são deletadas automaticamente por cascade)
+			await prisma.quiz_attempt.deleteMany({
+				where: { quiz_id: quizId },
+			});
+		}
+
 		const updated = await prisma.quiz.update({
 			where: { id: quizId },
 			data: { visibility: visibility.visibility },
@@ -202,10 +225,6 @@ async function updateQuizVisibility(quizId, visibility) {
 				visibility: true,
 			},
 		});
-
-		if (!updated) {
-			throw new Error('Quiz not found');
-		}
 
 		return updated;
 	} catch (error) {
@@ -413,17 +432,16 @@ async function startAttempt(quizId, userId) {
 			},
 		});
 
-		if (existingAttempt) {
-			throw new Error(
-				'You already have an attempt in progress for this quiz.',
-			);
-		}
+		
 
-		// Verificar o limite máximo de tentativas
+		// Verificar o limite máximo de tentativas (excluindo tentativas abandonadas)
 		const totalAttempts = await prisma.quiz_attempt.count({
 			where: {
 				quiz_id: quizId,
 				student_id: student.id,
+				status: {
+					not: 'abandoned',
+				},
 			},
 		});
 
@@ -978,12 +996,12 @@ async function getQuizzesByStudent(userId) {
 					(attempt) => attempt.status === 'in_progress',
 				);
 
-				// Quiz status logic: in_progress by default, completed if actually completed
-				let status = 'in_progress';
-				if (inProgressAttempt) {
-					status = 'in_progress';
-				} else if (completedAttempts.length > 0) {
+				// Quiz status logic: prioritize completed over in_progress
+				let status = 'not_started';
+				if (completedAttempts.length > 0) {
 					status = 'completed';
+				} else if (inProgressAttempt) {
+					status = 'in_progress';
 				}
 
 				const bestScore =
@@ -1009,10 +1027,9 @@ async function getQuizzesByStudent(userId) {
 					best_score: bestScore,
 					in_progress_attempt_id: inProgressAttempt?.id || null,
 					attempt_id:
-						inProgressAttempt?.id ||
-						(completedAttempts.length > 0
+						completedAttempts.length > 0
 							? completedAttempts[0].id
-							: null),
+							: inProgressAttempt?.id || null,
 				};
 			}),
 		};
@@ -1089,7 +1106,7 @@ async function getQuizResults(quizId, classId) {
 			}
 		});
 
-		// Buscar todas as tentativas do quiz
+		// Buscar todas as tentativas do quiz ordenadas por data (mais recente primeiro)
 		const attempts = await prisma.quiz_attempt.findMany({
 			where: { 
 				quiz_id: quizId,
@@ -1102,6 +1119,9 @@ async function getQuizResults(quizId, classId) {
 						points_earned: true
 					}
 				}
+			},
+			orderBy: {
+				created_at: 'desc'
 			}
 		});
 
@@ -1127,6 +1147,7 @@ async function getQuizResults(quizId, classId) {
 
 		// Mapear resultados para cada aluno
 		const results = students.map(student => {
+			// Buscar a tentativa mais recente do estudante (primeira na lista ordenada)
 			const studentAttempt = attempts.find(a => a.student_id === student.id);
 			
 			if (!studentAttempt) {
@@ -1175,6 +1196,72 @@ async function getQuizResults(quizId, classId) {
 	}
 }
 
+// Função para verificar se existe uma tentativa para um quiz específico
+async function checkExistingAttempt(userId, quizId) {
+	try {
+		// Buscar o aluno pelo userId
+		const student = await prisma.student.findUnique({
+			where: { user_id: userId },
+			select: { id: true },
+		});
+
+		if (!student) {
+			throw new Error('Aluno não encontrado.');
+		}
+
+		// Verificar se existe uma tentativa em progresso
+		const inProgressAttempt = await prisma.quiz_attempt.findFirst({
+			where: {
+				quiz_id: Number(quizId),
+				student_id: student.id,
+				status: 'in_progress',
+			},
+			select: {
+				id: true,
+				started_at: true,
+				status: true,
+			},
+		});
+
+		// Contar total de tentativas (excluindo abandonadas)
+		const totalAttempts = await prisma.quiz_attempt.count({
+			where: {
+				quiz_id: Number(quizId),
+				student_id: student.id,
+				status: {
+					not: 'abandoned',
+				},
+			},
+		});
+
+		// Buscar informações do quiz
+		const quiz = await prisma.quiz.findUnique({
+			where: { id: Number(quizId) },
+			select: {
+				id: true,
+				title: true,
+				max_attempt: true,
+			},
+		});
+
+		if (!quiz) {
+			throw new Error('Quiz não encontrado.');
+		}
+
+		return {
+			hasInProgressAttempt: !!inProgressAttempt,
+			inProgressAttempt: inProgressAttempt,
+			totalAttempts: totalAttempts,
+			maxAttempts: quiz.max_attempt,
+			canStartNewAttempt: !inProgressAttempt && (quiz.max_attempt === null || totalAttempts < quiz.max_attempt),
+			quizTitle: quiz.title,
+		};
+	} catch (error) {
+		console.error('Erro ao verificar tentativa existente:', error);
+		throw error;
+	}
+}
+
 export {
 	getQuizzesOfTeacher,
 	createQuiz,
@@ -1191,5 +1278,6 @@ export {
 	getAllQuizzesForTeacher,
 	getQuizzesByStudent,
 	getQuizAttemptResponses,
-	getQuizResults
+	getQuizResults,
+	checkExistingAttempt
 };

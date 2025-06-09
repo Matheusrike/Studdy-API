@@ -524,8 +524,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.9.0
-   * Query Engine version: 81e4af48011447c3cc503a190e86995b66d2a28e
+   * Prisma Client JS version: 6.8.2
+   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
    */
   export type PrismaVersion = {
     client: string
@@ -24689,6 +24689,7 @@ export namespace Prisma {
 
   export type Question_responseWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    question_id_quiz_attempt_id?: Question_responseQuestion_idQuiz_attempt_idCompoundUniqueInput
     AND?: Question_responseWhereInput | Question_responseWhereInput[]
     OR?: Question_responseWhereInput[]
     NOT?: Question_responseWhereInput | Question_responseWhereInput[]
@@ -24702,7 +24703,7 @@ export namespace Prisma {
     question?: XOR<QuestionScalarRelationFilter, QuestionWhereInput>
     marked_alternative?: XOR<AlternativeScalarRelationFilter, AlternativeWhereInput>
     quiz_attempt?: XOR<Quiz_attemptScalarRelationFilter, Quiz_attemptWhereInput>
-  }, "id" | "id">
+  }, "id" | "id" | "question_id_quiz_attempt_id">
 
   export type Question_responseOrderByWithAggregationInput = {
     id?: SortOrder
@@ -27266,6 +27267,11 @@ export namespace Prisma {
   export type Quiz_attemptScalarRelationFilter = {
     is?: Quiz_attemptWhereInput
     isNot?: Quiz_attemptWhereInput
+  }
+
+  export type Question_responseQuestion_idQuiz_attempt_idCompoundUniqueInput = {
+    question_id: number
+    quiz_attempt_id: number
   }
 
   export type Question_responseCountOrderByAggregateInput = {

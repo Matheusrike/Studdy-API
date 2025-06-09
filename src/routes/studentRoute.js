@@ -12,6 +12,7 @@ import {
 	changeAttemptStatusController,
 	submitQuizController,
 	getQuizAttemptResponsesController,
+	checkExistingAttemptController,
 } from '../controllers/QuizController.js';
 
 const router = express.Router();
@@ -36,6 +37,9 @@ router.post(
 	'/subjects/:subjectId/quizzes/:quizId/start',
 	startAttemptController,
 );
+
+// rota para verificar se existe uma tentativa para um quiz específico
+router.get('/attempt/:quizId', checkExistingAttemptController);
 
 // rota para atualizar o status da tentativa
 router.put('/attempt/:attemptId', changeAttemptStatusController);

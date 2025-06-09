@@ -220,6 +220,7 @@ model Question_response {
   marked_alternative    Alternative  @relation(fields: [marked_alternative_id], references: [id], onDelete: Cascade)
   quiz_attempt          Quiz_attempt @relation(fields: [quiz_attempt_id], references: [id], onDelete: Cascade)
 
+  @@unique([question_id, quiz_attempt_id])
   @@map("question_response")
 }
 
