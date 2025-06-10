@@ -585,19 +585,12 @@ async function submitAnswer(attemptId, responses, userId) {
 					},
 				});
 
-				if (
-					!markedAlternative ||
-					markedAlternative.question_id !== questionId
-				) {
-					throw new Error(
-						`Alternativa ${markedAlternativeId} inválida para a questão ${questionId}.`,
-					);
+				if (!markedAlternative || markedAlternative.question_id !== questionId) {
+					throw new Error(`Alternativa ${markedAlternativeId} inválida para a questão ${questionId}.`);
 				}
 
 				const isCorrect = markedAlternative.correct_alternative;
-				const pointsEarned = isCorrect
-					? Number(markedAlternative.question.points)
-					: 0;
+				const pointsEarned = isCorrect ? Number(markedAlternative.question.points) : 0;
 
 				await tx.question_response.create({
 					data: {
@@ -614,36 +607,32 @@ async function submitAnswer(attemptId, responses, userId) {
 
 				summary.details.push({
 					questionId,
-					question: markedAlternative.question.question,
+					question: markedAlternative.question.statement,
 					isCorrect,
 					pointsEarned,
 					markedAlternative: {
 						id: markedAlternative.id,
 						description: markedAlternative.response,
 					},
-					correctAlternative: markedAlternative.question
-						.alternatives[0]
+					correctAlternative: markedAlternative.question.alternatives[0]
 						? {
-								id: markedAlternative.question.alternatives[0]
-									.id,
-								description:
-									markedAlternative.question.alternatives[0]
-										.response,
-							}
+							id: markedAlternative.question.alternatives[0].id,
+							description: markedAlternative.question.alternatives[0].response,
+						}
 						: null,
 				});
 			}
 
-			// Calcular a porcentagem final
+			// Calcular a porcentagem final (limitada a 100%)
 			const finalScore = totalPossiblePoints > 0 
-				? Math.round((summary.totalScore / totalPossiblePoints) * 100)
+				? Math.min(Math.round((summary.totalScore / totalPossiblePoints) * 100), 100)
 				: 0;
 
-			// Atualizar a tentativa com a pontuação final
+			// Atualizar a tentativa com a pontuação total
 			await tx.quiz_attempt.update({
 				where: { id: Number(attemptId) },
 				data: {
-					total_score: finalScore,
+					total_score: summary.totalScore,
 					status: 'completed',
 					finished_at: new Date(),
 				},
@@ -651,7 +640,8 @@ async function submitAnswer(attemptId, responses, userId) {
 
 			return {
 				...summary,
-				totalScore: finalScore,
+				finalScore,
+				totalPossiblePoints,
 			};
 		});
 

@@ -327,7 +327,8 @@ async function getClassAverageScoreGlobal(teacherId) {
 		const totalPercentage = attempts.reduce((sum, attempt) => {
 			const score = parseFloat(attempt.total_score);
 			const maxPoints = parseFloat(attempt.quiz.max_points);
-			const percentage = maxPoints > 0 ? (score / maxPoints) * 100 : 0;
+			// Garantir que a porcentagem não ultrapasse 100%
+			const percentage = maxPoints > 0 ? Math.min((score / maxPoints) * 100, 100) : 0;
 			return sum + percentage;
 		}, 0);
 
