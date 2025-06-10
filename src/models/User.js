@@ -21,6 +21,7 @@ async function getUserById(userId) {
 				cpf: true,
 				birth_date: true,
 				role: true,
+				created_at: true,
 			},
 		});
 
@@ -31,6 +32,7 @@ async function getUserById(userId) {
 		return {
 			...user,
 			birth_date: formatDateBR(user.birth_date),
+			created_at: formatDateBR(user.created_at),
 		};
 	} catch (error) {
 		throw error;
@@ -55,7 +57,7 @@ async function createUser(userData, tx = prisma) {
 	}
 }
 
-async function updateUser(tx = prisma, userId, userData) {
+async function updateUser(userId, userData, tx = prisma) {
 	try {
 		const { password, ...rest } = userData;
 		const data = { ...rest };

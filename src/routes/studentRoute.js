@@ -14,6 +14,14 @@ import {
 	getQuizAttemptResponsesController,
 	checkExistingAttemptController,
 } from '../controllers/QuizController.js';
+import {
+	getAllResumesController,
+	getResumeByIdController,
+} from '../controllers/ResumeController.js';
+import {
+	getVideoByIdController,
+	getAllVideosController
+} from '../controllers/VideoController.js';
 
 const router = express.Router();
 
@@ -50,6 +58,19 @@ router.post('/attempt/:attemptId/submit', submitQuizController);
 // rota para obter as respostas de uma tentativa
 router.get('/attempt/:attemptId/responses', getQuizAttemptResponsesController);
 
+
+// Rota para obter um resumo
+router.get('/resumes', getAllResumesController);
+
+// Rota para obter um resumo pelo ID do aluno
+router.get('/resumes/:resumeId', getResumeByIdController);
+
+// Rota para obter todos os vídeos
+router.get('/videos', getAllVideosController);
+
+// Rota para obter um vídeo pelo ID
+router.get('/videos/:videoId', getVideoByIdController);
+	
 // Rota para obter as estatísticas do aluno
 router.get('/status', getStudentStatisticsController);
 

@@ -3,6 +3,8 @@ import {
 	getUserById,
 	updateUser,
 } from '../models/User.js';
+import { userUpdateSchema } from '../schemas/user.schema.js';
+import { ZodError } from 'zod/v4';
 
 async function getAllUsersController(req, res) {
 	try {
@@ -30,9 +32,26 @@ async function getUserByIdController(req, res) {
 }
 
 async function updateUserController(req, res) {
+	let userData;
 
 	try {
-		const user = await updateUser(parseInt(req.params.userId), req.body);
+		userData = userUpdateSchema.parse(req.body);
+	} catch (error) {
+		if (error instanceof ZodError) {
+			const formatted = error['issues'].map((err) => ({
+				path: err.path.join('.'),
+				message: err.message,
+			}));
+
+			return res.status(400).json({
+				message: 'Invalid request body',
+				errors: formatted,
+			});
+		}
+	}
+
+	try {
+		const user = await updateUser(parseInt(req.params.userId), userData);
 
 		if (!user) {
 			return res.status(404).json({ message: 'Usuário não encontrado' });

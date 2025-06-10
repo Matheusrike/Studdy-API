@@ -6,6 +6,7 @@ import {
 	completedQuizzesBySubject,
 	timeSpentOnQuizzes,
 	lastsCompletedQuizzes,
+	availableQuizzes
 } from './Statistics.js';
 import { generateEnrollment } from '../utils/generateEnrollment.js';
 
@@ -281,12 +282,14 @@ async function getStudentStatistics(userId) {
 			completionBySubject,
 			totalTimeSpent,
 			lastQuizzes,
+			availableQuizzesCount
 		] = await Promise.all([
 			averageCorrectResponses(student),
 			availableQuizzesXCompletedQuizzes(student),
 			completedQuizzesBySubject(student.id),
 			timeSpentOnQuizzes(student.id),
 			lastsCompletedQuizzes(student.id, 5),
+			availableQuizzes(student.id)
 		]);
 
 		return {
@@ -305,6 +308,7 @@ async function getStudentStatistics(userId) {
 			completionPercentageBySubject: completionBySubject,
 			totalTimeSpentMinutes: totalTimeSpent,
 			lastCompletedQuizzes: lastQuizzes,
+			availableQuizzesCount: availableQuizzesCount
 		};
 	} catch (error) {
 		throw error;

@@ -526,7 +526,13 @@ async function submitAnswer(attemptId, responses, userId) {
 
 			const attempt = await tx.quiz_attempt.findUnique({
 				where: { id: Number(attemptId) },
-				include: { quiz: { include: { questions: true } } },
+				include: { 
+					quiz: { 
+						include: { 
+							questions: true 
+						} 
+					} 
+				},
 			});
 
 			if (!attempt) {
@@ -553,6 +559,9 @@ async function submitAnswer(attemptId, responses, userId) {
 				totalQuestions: responses.length,
 				details: [],
 			};
+
+			// Calcular a pontuação total possível
+			const totalPossiblePoints = attempt.quiz.questions.reduce((sum, question) => sum + question.points, 0);
 
 			for (const { questionId, markedAlternativeId } of responses) {
 				const markedAlternative = await tx.alternative.findUnique({
@@ -625,16 +634,25 @@ async function submitAnswer(attemptId, responses, userId) {
 				});
 			}
 
+			// Calcular a porcentagem final
+			const finalScore = totalPossiblePoints > 0 
+				? Math.round((summary.totalScore / totalPossiblePoints) * 100)
+				: 0;
+
+			// Atualizar a tentativa com a pontuação final
 			await tx.quiz_attempt.update({
 				where: { id: Number(attemptId) },
 				data: {
+					total_score: finalScore,
 					status: 'completed',
 					finished_at: new Date(),
-					total_score: summary.totalScore,
 				},
 			});
 
-			return summary;
+			return {
+				...summary,
+				totalScore: finalScore,
+			};
 		});
 
 		return result;

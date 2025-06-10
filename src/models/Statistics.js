@@ -297,23 +297,44 @@ async function getQuizCompletionRate(teacherId) {
 
 // Calcula a média global de total_score de todas as tentativas concluídas
 async function getClassAverageScoreGlobal(teacherId) {
-	const result = await prisma.quiz_attempt.aggregate({
-		_avg: {
-			total_score: true,
-		},
-		where: {
-			status: 'completed',
-			quiz: {
-				teacher_subject_class: {
-					teacher_subject: {
-						teacher_id: teacherId,
+	try {
+		// Buscar todas as tentativas concluídas com os quizzes
+		const attempts = await prisma.quiz_attempt.findMany({
+			where: {
+				status: 'completed',
+				quiz: {
+					teacher_subject_class: {
+						teacher_subject: {
+							teacher_id: teacherId,
+						},
 					},
 				},
 			},
-		},
-	});
+			include: {
+				quiz: {
+					select: {
+						max_points: true
+					}
+				}
+			}
+		});
 
-	return result._avg.total_score ? parseFloat(result._avg.total_score) : 0;
+		if (attempts.length === 0) {
+			return 0;
+		}
+
+		// Calcular a média de porcentagem
+		const totalPercentage = attempts.reduce((sum, attempt) => {
+			const score = parseFloat(attempt.total_score);
+			const maxPoints = parseFloat(attempt.quiz.max_points);
+			const percentage = maxPoints > 0 ? (score / maxPoints) * 100 : 0;
+			return sum + percentage;
+		}, 0);
+
+		return Math.round((totalPercentage / attempts.length) * 100) / 100;
+	} catch (error) {
+		throw error;
+	}
 }
 
 // Calcula o percentual de acertos por matéria que o professor leciona em suas turmas
@@ -406,6 +427,43 @@ async function getSystemStatistics() {
 	return result;
 }
 
+// Quizzes disponíveis para o aluno
+async function availableQuizzes(studentId) {
+	try {
+		const student = await prisma.student.findUnique({
+			where: { id: studentId },
+			select: { class_id: true }
+		});
+
+		if (!student) {
+			throw new Error('Student not found');
+		}
+
+		// Buscar todos os quizzes disponíveis para a turma do aluno
+		const availableQuizzes = await prisma.quiz.count({
+			where: {
+				visibility: 'public',
+				teacher_subject_class: {
+					class_id: student.class_id
+				}
+			}
+		});
+
+		// Buscar os quizzes que o aluno já completou
+		const completedQuizzes = await prisma.quiz_attempt.count({
+			where: {
+				student_id: studentId,
+				status: 'completed'
+			}
+		});
+
+		// Retorna apenas o número de quizzes disponíveis
+		return availableQuizzes - completedQuizzes;
+	} catch (error) {
+		throw error;
+	}
+}
+
 export {
 	averageCorrectResponses,
 	availableQuizzesXCompletedQuizzes,
@@ -417,4 +475,5 @@ export {
 	getClassAverageScoreGlobal,
 	getPerformanceBySubject,
 	getSystemStatistics,
+	availableQuizzes,
 };
