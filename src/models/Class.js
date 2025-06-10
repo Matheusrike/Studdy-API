@@ -7,6 +7,7 @@ async function getAllClasses() {
 			name: true,
 			shift: true,
 			course: true,
+			created_at: true,
 		},
 	});
 }
