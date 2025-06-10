@@ -5,6 +5,7 @@ import {
     updateResume,
     deleteResume,
 } from '../models/Resume.js';
+import { getTeacherByUserId } from '../models/Teacher.js';
 
 async function getAllResumesController(req, res) {
     try {
@@ -33,16 +34,21 @@ async function getResumeByIdController(req, res) {
 
 async function createResumeController(req, res) {
     try {
-        const { teacher_id, subject_id, class_id, title, icon, description, resume } = req.body;
+        const { subject_id, class_id, title, icon, description, resume } = req.body;
+        const teacher = await getTeacherByUserId(req.user.id);
 
-        if (!teacher_id || !subject_id || !class_id || !title || !icon || !description || !resume) {
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        if (!subject_id || !class_id || !title || !icon || !description || !resume) {
             return res.status(400).json({ 
-                message: 'teacher_id, subject_id, class_id, title, icon, description and resume fields are required.' 
+                message: 'subject_id, class_id, title, icon, description and resume fields are required.' 
             });
         }
 
         const resumeData = {
-            teacher_id: parseInt(teacher_id),
+            teacher_id: teacher.id,
             subject_id: parseInt(subject_id),
             class_id: parseInt(class_id),
             title,
