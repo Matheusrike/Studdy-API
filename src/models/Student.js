@@ -301,9 +301,8 @@ async function getStudentStatistics(userId) {
 					? Math.round(
 							(quizzesCount.completedQuizzes /
 								quizzesCount.availableQuizzes) *
-								100 *
 								100,
-						) / 100
+						)
 					: 0,
 			completionPercentageBySubject: completionBySubject,
 			totalTimeSpentMinutes: totalTimeSpent,

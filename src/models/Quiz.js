@@ -1185,7 +1185,7 @@ async function getQuizResults(quizId, classId) {
 				enrollment: student.enrollment,
 				status: studentAttempt.status,
 				score: score,
-				score_percentage: Math.round(scorePercentage * 100) / 100,
+				score_percentage: Math.round(scorePercentage),
 				correct_answers: correctAnswers,
 				total_questions: totalQuestions,
 				started_at: studentAttempt.started_at,

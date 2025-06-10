@@ -120,9 +120,8 @@ async function completedQuizzesBySubject(studentId) {
 				availableQuizzes > 0
 					? Math.round(
 							(completedQuizzesCount / availableQuizzes) *
-								100 *
 								100,
-						) / 100
+						)
 					: 0;
 
 			return {
@@ -219,14 +218,13 @@ async function lastsCompletedQuizzes(studentId, limit = 5) {
 				score: parseFloat(attempt.total_score),
 				maxScore: parseFloat(attempt.quiz.max_points),
 				scorePercentage:
-					attempt.quiz.max_points > 0
-						? Math.round(
-								(attempt.total_score /
-									attempt.quiz.max_points) *
-									100 *
-									100,
-							) / 100
-						: 0,
+				attempt.quiz.max_points > 0
+					? Math.round(
+							(attempt.total_score /
+								attempt.quiz.max_points) *
+								100,
+						)
+					: 0,
 				completedAt: attempt.finished_at,
 				timeSpentMinutes: timeSpent,
 			};
@@ -450,16 +448,20 @@ async function availableQuizzes(studentId) {
 			}
 		});
 
-		// Buscar os quizzes que o aluno já completou
-		const completedQuizzes = await prisma.quiz_attempt.count({
+		// Buscar os quizzes únicos que o aluno já completou
+		const completedQuizzes = await prisma.quiz_attempt.findMany({
 			where: {
 				student_id: studentId,
 				status: 'completed'
-			}
+			},
+			select: {
+				quiz_id: true
+			},
+			distinct: ['quiz_id']
 		});
 
 		// Retorna apenas o número de quizzes disponíveis
-		return availableQuizzes - completedQuizzes;
+		return availableQuizzes - completedQuizzes.length;
 	} catch (error) {
 		throw error;
 	}

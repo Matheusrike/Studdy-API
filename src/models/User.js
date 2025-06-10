@@ -22,6 +22,16 @@ async function getUserById(userId) {
 				birth_date: true,
 				role: true,
 				created_at: true,
+				teacher: {
+					select: {
+						id: true,
+					},
+				},
+				student: {
+					select: {
+						id: true,
+					},
+				},
 			},
 		});
 
@@ -29,11 +39,24 @@ async function getUserById(userId) {
 			return null;
 		}
 
-		return {
-			...user,
+		const result = {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			cpf: user.cpf,
 			birth_date: formatDateBR(user.birth_date),
+			role: user.role,
 			created_at: formatDateBR(user.created_at),
 		};
+
+		// Adiciona apenas o ID relevante baseado no role
+		if (user.role === 'Teacher' && user.teacher) {
+			result.teacher_id = user.teacher.id;
+		} else if (user.role === 'Student' && user.student) {
+			result.student_id = user.student.id;
+		}
+
+		return result;
 	} catch (error) {
 		throw error;
 	}
