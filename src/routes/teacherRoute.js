@@ -1,3 +1,7 @@
+/**
+ * Rotas específicas para funcionalidades do professor
+ * Gerencia turmas, matérias, quizzes, vídeos, resumos e estatísticas
+ */
 import express from 'express';
 import {
 	getTeacherClassesController,

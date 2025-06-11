@@ -2,6 +2,17 @@ import prisma from '../../prisma/client.js';
 import { generateHashPassword } from '../utils/hash.js';
 import { formatDateBR } from '../utils/parseDate.js';
 
+/**
+ * Model para operações relacionadas a usuários do sistema
+ * Gerencia CRUD de usuários base (Admin, Professor, Estudante)
+ * Contém validações de autenticação e dados pessoais
+ */
+
+/**
+ * Obtém todos os usuários do sistema
+ * @returns {Array} - Lista completa de usuários
+ * @throws {Error} - Erro ao buscar usuários
+ */
 async function getAllUsers() {
 	try {
 		return await prisma.user.findMany();

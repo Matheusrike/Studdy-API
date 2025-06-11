@@ -1,7 +1,20 @@
 import prisma from '../../prisma/client.js';
 import { createQuestion } from './Question.js';
 
-// Busca os quizzes relacionados ao professor, turma e disciplina
+/**
+ * Model para operações relacionadas a quizzes/questionários
+ * Gerencia CRUD completo de quizzes, questões, tentativas e resultados
+ * Inclui funcionalidades para professores e estudantes
+ */
+
+/**
+ * Busca os quizzes relacionados ao professor, turma e disciplina
+ * @param {number} userId - ID do usuário professor
+ * @param {number} classId - ID da turma
+ * @param {number} subjectId - ID da disciplina
+ * @returns {Array} - Lista de quizzes do professor para a turma e disciplina específicas
+ * @throws {Error} - Se o professor não for encontrado
+ */
 async function getQuizzesOfTeacher(userId, classId, subjectId) {
 	try {
 		const teacher = await prisma.teacher.findUnique({
@@ -40,7 +53,15 @@ async function getQuizzesOfTeacher(userId, classId, subjectId) {
 	}
 }
 
-// Cria um novo quiz
+/**
+ * Cria um novo quiz com questões e alternativas
+ * @param {number} userId - ID do usuário professor
+ * @param {number} classId - ID da turma
+ * @param {number} subjectId - ID da disciplina
+ * @param {Object} quizData - Dados do quiz (title, description, questions, etc.)
+ * @returns {Object} - Quiz criado com suas questões
+ * @throws {Error} - Se houver erro na criação ou se o professor não for encontrado
+ */
 async function createQuiz(userId, classId, subjectId, quizData) {
 	try {
 		const teacher = await prisma.teacher.findUnique({

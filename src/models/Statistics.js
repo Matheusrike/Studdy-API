@@ -1,7 +1,19 @@
 import prisma from '../../prisma/client.js';
 
+/**
+ * Model para operações de estatísticas e métricas do sistema
+ * Contém funções para calcular estatísticas de alunos, professores e quizzes
+ * Inclui métricas de desempenho, progresso e análises de dados educacionais
+ */
+
 // Funções de estatísticas do aluno
 
+/**
+ * Calcula a média de acertos do aluno em todos os quizzes completados
+ * @param {Object} student - Objeto do aluno
+ * @returns {Number} - Percentual de acertos (0-100) com 2 casas decimais
+ * @throws {Error} - Erro ao buscar dados ou calcular estatísticas
+ */
 // Calcula a média de acertos do aluno
 async function averageCorrectResponses(student) {
 	try {

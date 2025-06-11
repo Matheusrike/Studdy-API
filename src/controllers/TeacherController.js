@@ -17,8 +17,7 @@ import {
 import { ZodError } from 'zod/v4';
 import { getClassStatistics } from '../models/Statistics.js';
 
-// Controllers do /admin/teacher
-
+// Controller para listar todos os professores
 async function getAllTeachersController(req, res) {
 	try {
 		const teachers = await getAllTeachers();
@@ -29,6 +28,7 @@ async function getAllTeachersController(req, res) {
 	}
 }
 
+// Controller para obter um professor específico por ID
 async function getTeacherByIdController(req, res) {
 	try {
 		const teacher = await getTeacherById(parseInt(req.params.teacherId));
@@ -44,6 +44,7 @@ async function getTeacherByIdController(req, res) {
 	}
 }
 
+// Controller para criar um novo professor
 async function createTeacherController(req, res) {
 	let teacher;
 
