@@ -15,6 +15,7 @@ import {
 	updateTeacherSchema,
 } from '../schemas/teacher.schema.js';
 import { ZodError } from 'zod/v4';
+import { getClassStatistics } from '../models/Statistics.js';
 
 // Controllers do /admin/teacher
 
@@ -265,6 +266,18 @@ async function getTeacherStatisticsController(req, res) {
 	}
 }
 
+// Obter estatísticas da turma
+async function getClassStatisticsController(req, res) {
+	try {
+		const { classId } = req.params;
+		const statistics = await getClassStatistics(parseInt(classId));
+		return res.status(200).json(statistics);
+	} catch (error) {
+		console.error('Error fetching class statistics:', error);
+		return res.status(500).json({ message: 'Error fetching class statistics' });
+	}
+}
+
 export {
 	getAllTeachersController,
 	getTeacherByIdController,
@@ -276,4 +289,5 @@ export {
 	getSubjectQuizzesController,
 	getTeacherClassByIdController,
 	getTeacherStatisticsController,
+	getClassStatisticsController
 };

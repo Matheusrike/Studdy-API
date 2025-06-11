@@ -8,7 +8,5 @@ export const classSchema = z.object({
 		error: 'Invalid shift',
 	}),
 	course: z.string().min(3, { error: 'Invalid course name' }),
-	assignments: z
-		.array(assignmentSchema)
-		.min(1, { message: 'At least one assignment is required.' }),
+	assignments: z.array(assignmentSchema),
 });
